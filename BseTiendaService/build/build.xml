@@ -1,0 +1,29 @@
+<project name="EJB deploy" default="build" basedir=".">
+
+	<!-- Load the properties File -->
+	<property file="build.properties"/>
+
+	<target name="build">
+		<delete dir="${target.dir}"/>
+		<mkdir dir="${target.dir}"/>
+		<copy todir="${target.dir}">
+			<fileset dir="${source.dir}">
+				<include name="**/*.*"/>
+			</fileset>
+		</copy>
+		<jar jarfile="${base.dir}/${deploy.name}"
+			 basedir="${target.dir}"
+			 includes="**/*.*" />
+
+		<delete dir="${target.dir}"/>
+
+		<copy todir="${server.deploy.dir}">
+			<fileset dir="${base.dir}">
+				<include name="${deploy.name}"/>
+			</fileset>
+		</copy>
+
+		<delete file="${deploy.name}"/>
+	</target>
+
+</project>

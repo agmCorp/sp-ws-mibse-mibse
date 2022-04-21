@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="BseOnlineEar">
+        <wb-resource deploy-path="/" source-path="/EarContent" tag="defaultRootSource"/>
+        <dependent-module archiveName="BseOnlineEjb.jar" deploy-path="/" handle="module:/resource/BseOnlineEjb/BseOnlineEjb">
+            <dependent-object/>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="BseOnlineService.war" deploy-path="/" handle="module:/resource/BseOnlineService/BseOnlineService">
+            <dependent-object/>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="BseTiendaService.war" deploy-path="/" handle="module:/resource/BseTiendaService/BseTiendaService">
+            <dependent-object/>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="BseTiendaEjb.jar" deploy-path="/" handle="module:/resource/BseTiendaEjb/BseTiendaEjb">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+    </wb-module>
+</project-modules>

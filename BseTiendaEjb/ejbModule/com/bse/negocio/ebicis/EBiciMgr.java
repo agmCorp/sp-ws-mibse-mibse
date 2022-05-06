@@ -34,7 +34,7 @@ public class EBiciMgr implements IEBici{
 	
 	@Override
 	public CotizacionBici cotizarBiciAnonimo(EntityManager em, String planCobertura, Double valorBicicleta, Integer vigenciaSeguro) throws Exception, BSEException {
-		System.out.println("COTBICI 1.1 entrando a cotizar -------");
+		System.out.println("COTBICI 1.1 entrando a cotizar BseTienda -------");
 		//System.out.println(":::planCobertura:::"+planCobertura);
 
 		String planesPago = Codigos.getCodigos().getPlanesPagoSoa(em);

@@ -44,7 +44,7 @@ public class EIndiviMgr implements IEIndivi{
 	@Override
 	public CotizacionIndivi cotizarIndiviAnonimo(EntityManager em, String planCobertura, String marcaVehiculo, String modeloVehiculo, String anioVehiculo, String tipoVehiculo, 
 	        String combustible, String modalidad, String areaCirculacion, int planPago) throws Exception, BSEException {
-		System.out.println("COTINDIVI 1.1 entrando a cotizar -------");
+		System.out.println("COTINDIVI 1.1 entrando a cotizar BseTienda -------");
 //		System.out.println(":::planCobertura:::"+planCobertura);
 
 		if (marcaVehiculo == null || marcaVehiculo.equals(""))

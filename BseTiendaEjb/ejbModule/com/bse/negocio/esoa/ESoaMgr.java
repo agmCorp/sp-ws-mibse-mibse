@@ -110,7 +110,7 @@ public class ESoaMgr implements IESoa{
 
 	@Override
 	public CotizacionSoa cotizarSoaAnonimo(EntityManager em, String planCobertura, String marcaVehiculo, String anioVehiculo, String categoriaVehiculo, int planPago) throws Exception, BSEException {
-		System.out.println("COTSOA 1.1 entrando a cotizar -------");
+		System.out.println("COTSOA 1.1 entrando a cotizar BseTienda -------");
 		//System.out.println(":::planCobertura:::"+planCobertura);
 
 		if (marcaVehiculo == null || marcaVehiculo.equals(""))

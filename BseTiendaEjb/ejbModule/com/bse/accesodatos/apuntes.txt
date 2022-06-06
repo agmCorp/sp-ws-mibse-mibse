@@ -1,0 +1,31 @@
+\\bseasus\buffer
+
+
+-Djava.endorsed.dirs=C:/IBM/jBoss/jboss-5.1.0.GA/lib/endorsed
+
+
+C:\__SERGIO\APPS_JAVA_WEB\Desarrollo\Herramientas\jboss-5.1.0.GA\lib\endorsed
+
+C:/__SERGIO/APPS_JAVA_WEB/Desarrollo/Herramientas/jboss-5.1.0.GA/lib/endorsed
+
+
+http://svnhost:8000/repos/BseTienda/trunk
+
+Endpoints
+http://127.0.0.1:8080/bsetiendaws/EmisionSoa?wsdl
+http://127.0.0.1:8080/bsetiendaws/EmisionViajeros?wsdl
+http://127.0.0.1:8080/bsetiendaws/EmisionBici?wsdl
+http://127.0.0.1:8080/bsetiendaws/EmisionIndivi?wsdl
+http://127.0.0.1:8080/bsetiendaws/EmisionEDepor?wsdl
+http://127.0.0.1:8080/bsetiendaws/Parametros?wsdl
+http://127.0.0.1:8080/bsetiendaws/Administracion?wsdl
+http://127.0.0.1:8080/bsetiendaws/Polizas?wsdl
+
+Usuario y password para invocar a los servicios vía SoapUI:
+<usuario>bse</usuario>
+<contrasena>2018jueves.BSE</contrasena>
+
+         <!--Optional:-->
+         <usuario>bse</usuario>
+         <!--Optional:-->
+         <contrasena>2018jueves.BSE</contrasena>

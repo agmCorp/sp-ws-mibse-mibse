@@ -16,7 +16,7 @@ import javax.persistence.PersistenceContext;
 @Interceptors({Seguridadbseonlinews.class})
 public class BSEonlinewsAdmEJB implements IBSEonlinewsAdmEJBLocal {
 
-    @PersistenceContext(unitName = "bseonlinews-pu")
+    @PersistenceContext(unitName = "bsetiendaws-pu")
     private EntityManager em;
 
     public void cambiarContrasena(DTSesion sesion, String nuevaContrasena) throws BSEException {

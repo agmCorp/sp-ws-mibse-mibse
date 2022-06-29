@@ -19,7 +19,7 @@ import javax.persistence.PersistenceContext;
  */
 public class Seguridadbseonlinews {
 
-    @PersistenceContext(unitName = "bseonlinews-pu")
+    @PersistenceContext(unitName = "bsetiendaws-pu")
     private EntityManager em;
 
     @AroundInvoke

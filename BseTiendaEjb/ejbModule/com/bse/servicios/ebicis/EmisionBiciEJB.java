@@ -24,7 +24,7 @@ import javax.persistence.PersistenceContext;
 @Interceptors({Seguridadbseonlinews.class})
 public class EmisionBiciEJB implements IEmisionBiciEJBLocal {
 
-    @PersistenceContext(unitName = "bseonlinews-pu")
+    @PersistenceContext(unitName = "bsetiendaws-pu")
     private EntityManager em;
 
     

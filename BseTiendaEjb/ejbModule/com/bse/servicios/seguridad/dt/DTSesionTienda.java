@@ -2,7 +2,7 @@ package com.bse.servicios.seguridad.dt;
 
 import java.io.Serializable;
 
-public class DTSesion implements Serializable {
+public class DTSesionTienda implements Serializable {
 
     /**
 	 * 
@@ -13,13 +13,13 @@ public class DTSesion implements Serializable {
     private String direccionIp;
     private long sesionId;
 
-    public DTSesion(String nombreUsuario, String contrasena, String direccionIp) {
+    public DTSesionTienda(String nombreUsuario, String contrasena, String direccionIp) {
         this.nombreUsuario = nombreUsuario;
         this.contrasena = contrasena;
         this.direccionIp = direccionIp;
     }
 
-    public DTSesion() {
+    public DTSesionTienda() {
     }
 
     public void setNombreUsuario(String nombreUsuario) {

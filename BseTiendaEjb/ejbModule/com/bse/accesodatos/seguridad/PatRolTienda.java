@@ -7,7 +7,6 @@ package com.bse.accesodatos.seguridad;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -29,9 +28,9 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "PAT_ROL")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "PatRol.findAll", query = "SELECT p FROM PatRol p"),
-    @NamedQuery(name = "PatRol.findByNombreRol", query = "SELECT p FROM PatRol p WHERE p.nombreRol = :nombreRol")})
-public class PatRol implements Serializable {
+    @NamedQuery(name = "PatRolTienda.findAll", query = "SELECT p FROM PatRolTienda p"),
+    @NamedQuery(name = "PatRolTienda.findByNombreRol", query = "SELECT p FROM PatRolTienda p WHERE p.nombreRol = :nombreRol")})
+public class PatRolTienda implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -41,14 +40,14 @@ public class PatRol implements Serializable {
         @JoinColumn(name = "NOMBRE_ROL", referencedColumnName = "NOMBRE_ROL")}, inverseJoinColumns = {
         @JoinColumn(name = "NOMBRE_USUARIO", referencedColumnName = "NOMBRE_USUARIO")})
     @ManyToMany(fetch = FetchType.LAZY)
-    private List<PatUsuario> patUsuarioList;
+    private List<PatUsuarioTienda> patUsuarioList;
     @ManyToMany(mappedBy = "patRolList", fetch = FetchType.LAZY)
-    private List<PatOperacion> patOperacionList;
+    private List<PatOperacionTienda> patOperacionList;
 
-    public PatRol() {
+    public PatRolTienda() {
     }
 
-    public PatRol(String nombreRol) {
+    public PatRolTienda(String nombreRol) {
         this.nombreRol = nombreRol;
     }
 
@@ -61,20 +60,20 @@ public class PatRol implements Serializable {
     }
 
     @XmlTransient
-    public List<PatUsuario> getPatUsuarioList() {
+    public List<PatUsuarioTienda> getPatUsuarioList() {
         return patUsuarioList;
     }
 
-    public void setPatUsuarioList(List<PatUsuario> patUsuarioList) {
+    public void setPatUsuarioList(List<PatUsuarioTienda> patUsuarioList) {
         this.patUsuarioList = patUsuarioList;
     }
 
     @XmlTransient
-    public List<PatOperacion> getPatOperacionList() {
+    public List<PatOperacionTienda> getPatOperacionList() {
         return patOperacionList;
     }
 
-    public void setPatOperacionList(List<PatOperacion> patOperacionList) {
+    public void setPatOperacionList(List<PatOperacionTienda> patOperacionList) {
         this.patOperacionList = patOperacionList;
     }
 
@@ -88,10 +87,10 @@ public class PatRol implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof PatRol)) {
+        if (!(object instanceof PatRolTienda)) {
             return false;
         }
-        PatRol other = (PatRol) object;
+        PatRolTienda other = (PatRolTienda) object;
         if ((this.nombreRol == null && other.nombreRol != null) || (this.nombreRol != null && !this.nombreRol.equals(other.nombreRol))) {
             return false;
         }

@@ -7,7 +7,6 @@ package com.bse.accesodatos.seguridad;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -31,14 +30,14 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "PAT_OPERACION")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "PatOperacion.findAll", query = "SELECT p FROM PatOperacion p"),
-    @NamedQuery(name = "PatOperacion.findByInterfaz", query = "SELECT p FROM PatOperacion p WHERE p.patOperacionPK.interfaz = :interfaz"),
-    @NamedQuery(name = "PatOperacion.findByMetodo", query = "SELECT p FROM PatOperacion p WHERE p.patOperacionPK.metodo = :metodo"),
-    @NamedQuery(name = "PatOperacion.findByActivo", query = "SELECT p FROM PatOperacion p WHERE p.activo = :activo")})
-public class PatOperacion implements Serializable {
+    @NamedQuery(name = "PatOperacionTienda.findAll", query = "SELECT p FROM PatOperacionTienda p"),
+    @NamedQuery(name = "PatOperacionTienda.findByInterfaz", query = "SELECT p FROM PatOperacionTienda p WHERE p.patOperacionPK.interfaz = :interfaz"),
+    @NamedQuery(name = "PatOperacionTienda.findByMetodo", query = "SELECT p FROM PatOperacionTienda p WHERE p.patOperacionPK.metodo = :metodo"),
+    @NamedQuery(name = "PatOperacionTienda.findByActivo", query = "SELECT p FROM PatOperacionTienda p WHERE p.activo = :activo")})
+public class PatOperacionTienda implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
-    protected PatOperacionPK patOperacionPK;
+    protected PatOperacionPKTienda patOperacionPK;
     @Basic(optional = false)
     @Column(name = "ACTIVO")
     private short activo;
@@ -47,31 +46,31 @@ public class PatOperacion implements Serializable {
         @JoinColumn(name = "METODO", referencedColumnName = "METODO")}, inverseJoinColumns = {
         @JoinColumn(name = "NOMBRE_ROL", referencedColumnName = "NOMBRE_ROL")})
     @ManyToMany(fetch = FetchType.LAZY)
-    private List<PatRol> patRolList;
+    private List<PatRolTienda> patRolList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "patOperacion", fetch = FetchType.LAZY)
-    private List<PatSesion> patSesionList;
+    private List<PatSesionTienda> patSesionList;
 
-    public PatOperacion() {
+    public PatOperacionTienda() {
     }
 
-    public PatOperacion(PatOperacionPK patOperacionPK) {
+    public PatOperacionTienda(PatOperacionPKTienda patOperacionPK) {
         this.patOperacionPK = patOperacionPK;
     }
 
-    public PatOperacion(PatOperacionPK patOperacionPK, short activo) {
+    public PatOperacionTienda(PatOperacionPKTienda patOperacionPK, short activo) {
         this.patOperacionPK = patOperacionPK;
         this.activo = activo;
     }
 
-    public PatOperacion(String interfaz, String metodo) {
-        this.patOperacionPK = new PatOperacionPK(interfaz, metodo);
+    public PatOperacionTienda(String interfaz, String metodo) {
+        this.patOperacionPK = new PatOperacionPKTienda(interfaz, metodo);
     }
 
-    public PatOperacionPK getPatOperacionPK() {
+    public PatOperacionPKTienda getPatOperacionPK() {
         return patOperacionPK;
     }
 
-    public void setPatOperacionPK(PatOperacionPK patOperacionPK) {
+    public void setPatOperacionPK(PatOperacionPKTienda patOperacionPK) {
         this.patOperacionPK = patOperacionPK;
     }
 
@@ -84,20 +83,20 @@ public class PatOperacion implements Serializable {
     }
 
     @XmlTransient
-    public List<PatRol> getPatRolList() {
+    public List<PatRolTienda> getPatRolList() {
         return patRolList;
     }
 
-    public void setPatRolList(List<PatRol> patRolList) {
+    public void setPatRolList(List<PatRolTienda> patRolList) {
         this.patRolList = patRolList;
     }
 
     @XmlTransient
-    public List<PatSesion> getPatSesionList() {
+    public List<PatSesionTienda> getPatSesionList() {
         return patSesionList;
     }
 
-    public void setPatSesionList(List<PatSesion> patSesionList) {
+    public void setPatSesionList(List<PatSesionTienda> patSesionList) {
         this.patSesionList = patSesionList;
     }
 
@@ -111,10 +110,10 @@ public class PatOperacion implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof PatOperacion)) {
+        if (!(object instanceof PatOperacionTienda)) {
             return false;
         }
-        PatOperacion other = (PatOperacion) object;
+        PatOperacionTienda other = (PatOperacionTienda) object;
         if ((this.patOperacionPK == null && other.patOperacionPK != null) || (this.patOperacionPK != null && !this.patOperacionPK.equals(other.patOperacionPK))) {
             return false;
         }

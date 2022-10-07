@@ -14,7 +14,7 @@ import javax.persistence.Embeddable;
  * @author paranz
  */
 @Embeddable
-public class PatUsuarioRolPK implements Serializable {
+public class PatUsuarioRolPKTienda implements Serializable {
     /**
 	 * 
 	 */
@@ -26,10 +26,10 @@ public class PatUsuarioRolPK implements Serializable {
     @Column(name = "NOMBRE_USUARIO")
     private String nombreUsuario;
 
-    public PatUsuarioRolPK() {
+    public PatUsuarioRolPKTienda() {
     }
 
-    public PatUsuarioRolPK(String nombreRol, String nombreUsuario) {
+    public PatUsuarioRolPKTienda(String nombreRol, String nombreUsuario) {
         this.nombreRol = nombreRol;
         this.nombreUsuario = nombreUsuario;
     }
@@ -61,10 +61,10 @@ public class PatUsuarioRolPK implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof PatUsuarioRolPK)) {
+        if (!(object instanceof PatUsuarioRolPKTienda)) {
             return false;
         }
-        PatUsuarioRolPK other = (PatUsuarioRolPK) object;
+        PatUsuarioRolPKTienda other = (PatUsuarioRolPKTienda) object;
         if ((this.nombreRol == null && other.nombreRol != null) || (this.nombreRol != null && !this.nombreRol.equals(other.nombreRol))) {
             return false;
         }

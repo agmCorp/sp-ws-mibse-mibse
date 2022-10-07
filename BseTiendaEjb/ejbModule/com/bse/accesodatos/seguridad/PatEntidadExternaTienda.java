@@ -23,14 +23,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "PAT_ENTIDAD_EXTERNA")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "PatEntidadExterna.findAll", query = "SELECT p FROM PatEntidadExterna p"),
-    @NamedQuery(name = "PatEntidadExterna.findByIdEntidadExterna", query = "SELECT p FROM PatEntidadExterna p WHERE p.idEntidadExterna = :idEntidadExterna"),
-    @NamedQuery(name = "PatEntidadExterna.findByNombre", query = "SELECT p FROM PatEntidadExterna p WHERE p.nombre = :nombre"),
-    @NamedQuery(name = "PatEntidadExterna.findByDireccionIp", query = "SELECT p FROM PatEntidadExterna p WHERE p.direccionIp = :direccionIp"),
-    @NamedQuery(name = "PatEntidadExterna.findByValidarIp", query = "SELECT p FROM PatEntidadExterna p WHERE p.validarIp = :validarIp"),
-    @NamedQuery(name = "PatEntidadExterna.findByVendorId", query = "SELECT p FROM PatEntidadExterna p WHERE p.vendorId = :vendorId"),
-    @NamedQuery(name = "PatEntidadExterna.findByVendorSiteId", query = "SELECT p FROM PatEntidadExterna p WHERE p.vendorSiteId = :vendorSiteId")})
-public class PatEntidadExterna implements Serializable {
+    @NamedQuery(name = "PatEntidadExternaTienda.findAll", query = "SELECT p FROM PatEntidadExternaTienda p"),
+    @NamedQuery(name = "PatEntidadExternaTienda.findByIdEntidadExterna", query = "SELECT p FROM PatEntidadExternaTienda p WHERE p.idEntidadExterna = :idEntidadExterna"),
+    @NamedQuery(name = "PatEntidadExternaTienda.findByNombre", query = "SELECT p FROM PatEntidadExternaTienda p WHERE p.nombre = :nombre"),
+    @NamedQuery(name = "PatEntidadExternaTienda.findByDireccionIp", query = "SELECT p FROM PatEntidadExternaTienda p WHERE p.direccionIp = :direccionIp"),
+    @NamedQuery(name = "PatEntidadExternaTienda.findByValidarIp", query = "SELECT p FROM PatEntidadExternaTienda p WHERE p.validarIp = :validarIp"),
+    @NamedQuery(name = "PatEntidadExternaTienda.findByVendorId", query = "SELECT p FROM PatEntidadExternaTienda p WHERE p.vendorId = :vendorId"),
+    @NamedQuery(name = "PatEntidadExternaTienda.findByVendorSiteId", query = "SELECT p FROM PatEntidadExternaTienda p WHERE p.vendorSiteId = :vendorSiteId")})
+public class PatEntidadExternaTienda implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -52,14 +52,14 @@ public class PatEntidadExterna implements Serializable {
     @Column(name = "VENDOR_SITE_ID")
     private BigInteger vendorSiteId;
 
-    public PatEntidadExterna() {
+    public PatEntidadExternaTienda() {
     }
 
-    public PatEntidadExterna(Short idEntidadExterna) {
+    public PatEntidadExternaTienda(Short idEntidadExterna) {
         this.idEntidadExterna = idEntidadExterna;
     }
 
-    public PatEntidadExterna(Short idEntidadExterna, String nombre, String direccionIp, short validarIp, BigInteger vendorId, BigInteger vendorSiteId) {
+    public PatEntidadExternaTienda(Short idEntidadExterna, String nombre, String direccionIp, short validarIp, BigInteger vendorId, BigInteger vendorSiteId) {
         this.idEntidadExterna = idEntidadExterna;
         this.nombre = nombre;
         this.direccionIp = direccionIp;
@@ -126,10 +126,10 @@ public class PatEntidadExterna implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof PatEntidadExterna)) {
+        if (!(object instanceof PatEntidadExternaTienda)) {
             return false;
         }
-        PatEntidadExterna other = (PatEntidadExterna) object;
+        PatEntidadExternaTienda other = (PatEntidadExternaTienda) object;
         if ((this.idEntidadExterna == null && other.idEntidadExterna != null) || (this.idEntidadExterna != null && !this.idEntidadExterna.equals(other.idEntidadExterna))) {
             return false;
         }

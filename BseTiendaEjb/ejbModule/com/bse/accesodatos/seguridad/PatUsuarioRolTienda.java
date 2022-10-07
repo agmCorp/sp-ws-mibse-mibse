@@ -6,7 +6,6 @@ package com.bse.accesodatos.seguridad;
 
 import java.io.Serializable;
 
-import javax.persistence.Cacheable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -25,41 +24,41 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "PAT_USUARIO_ROL")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "PatUsuarioRol.findAll", query = "SELECT p FROM PatUsuarioRol p"),
-    @NamedQuery(name = "PatUsuarioRol.findByNombreRol", query = "SELECT p FROM PatUsuarioRol p WHERE p.patUsuarioRolPK.nombreRol = :nombreRol"),
-    @NamedQuery(name = "PatUsuarioRol.findByNombreUsuario", query = "SELECT p FROM PatUsuarioRol p WHERE p.patUsuarioRolPK.nombreUsuario = :nombreUsuario")})
-public class PatUsuarioRol implements Serializable {
+    @NamedQuery(name = "PatUsuarioRolTienda.findAll", query = "SELECT p FROM PatUsuarioRolTienda p"),
+    @NamedQuery(name = "PatUsuarioRolTienda.findByNombreRol", query = "SELECT p FROM PatUsuarioRolTienda p WHERE p.patUsuarioRolPK.nombreRol = :nombreRol"),
+    @NamedQuery(name = "PatUsuarioRolTienda.findByNombreUsuario", query = "SELECT p FROM PatUsuarioRolTienda p WHERE p.patUsuarioRolPK.nombreUsuario = :nombreUsuario")})
+public class PatUsuarioRolTienda implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
-    protected PatUsuarioRolPK patUsuarioRolPK;
+    protected PatUsuarioRolPKTienda patUsuarioRolPK;
     @JoinColumn(name = "NOMBRE_ROL", referencedColumnName = "NOMBRE_ROL", insertable = false, updatable = false)
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    private PatRol patRol;
+    private PatRolTienda patRol;
 
-    public PatUsuarioRol() {
+    public PatUsuarioRolTienda() {
     }
 
-    public PatUsuarioRol(PatUsuarioRolPK patUsuarioRolPK) {
+    public PatUsuarioRolTienda(PatUsuarioRolPKTienda patUsuarioRolPK) {
         this.patUsuarioRolPK = patUsuarioRolPK;
     }
 
-    public PatUsuarioRol(String nombreRol, String nombreUsuario) {
-        this.patUsuarioRolPK = new PatUsuarioRolPK(nombreRol, nombreUsuario);
+    public PatUsuarioRolTienda(String nombreRol, String nombreUsuario) {
+        this.patUsuarioRolPK = new PatUsuarioRolPKTienda(nombreRol, nombreUsuario);
     }
 
-    public PatUsuarioRolPK getPatUsuarioRolPK() {
+    public PatUsuarioRolPKTienda getPatUsuarioRolPK() {
         return patUsuarioRolPK;
     }
 
-    public void setPatUsuarioRolPK(PatUsuarioRolPK patUsuarioRolPK) {
+    public void setPatUsuarioRolPK(PatUsuarioRolPKTienda patUsuarioRolPK) {
         this.patUsuarioRolPK = patUsuarioRolPK;
     }
 
-    public PatRol getPatRol() {
+    public PatRolTienda getPatRol() {
         return patRol;
     }
 
-    public void setPatRol(PatRol patRol) {
+    public void setPatRol(PatRolTienda patRol) {
         this.patRol = patRol;
     }
 
@@ -73,10 +72,10 @@ public class PatUsuarioRol implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof PatUsuarioRol)) {
+        if (!(object instanceof PatUsuarioRolTienda)) {
             return false;
         }
-        PatUsuarioRol other = (PatUsuarioRol) object;
+        PatUsuarioRolTienda other = (PatUsuarioRolTienda) object;
         if ((this.patUsuarioRolPK == null && other.patUsuarioRolPK != null) || (this.patUsuarioRolPK != null && !this.patUsuarioRolPK.equals(other.patUsuarioRolPK))) {
             return false;
         }

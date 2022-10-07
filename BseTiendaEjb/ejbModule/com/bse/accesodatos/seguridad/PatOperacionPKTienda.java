@@ -14,7 +14,7 @@ import javax.persistence.Embeddable;
  * @author paranz
  */
 @Embeddable
-public class PatOperacionPK implements Serializable {
+public class PatOperacionPKTienda implements Serializable {
     /**
 	 * 
 	 */
@@ -26,10 +26,10 @@ public class PatOperacionPK implements Serializable {
     @Column(name = "METODO")
     private String metodo;
 
-    public PatOperacionPK() {
+    public PatOperacionPKTienda() {
     }
 
-    public PatOperacionPK(String interfaz, String metodo) {
+    public PatOperacionPKTienda(String interfaz, String metodo) {
         this.interfaz = interfaz;
         this.metodo = metodo;
     }
@@ -61,10 +61,10 @@ public class PatOperacionPK implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof PatOperacionPK)) {
+        if (!(object instanceof PatOperacionPKTienda)) {
             return false;
         }
-        PatOperacionPK other = (PatOperacionPK) object;
+        PatOperacionPKTienda other = (PatOperacionPKTienda) object;
         if ((this.interfaz == null && other.interfaz != null) || (this.interfaz != null && !this.interfaz.equals(other.interfaz))) {
             return false;
         }

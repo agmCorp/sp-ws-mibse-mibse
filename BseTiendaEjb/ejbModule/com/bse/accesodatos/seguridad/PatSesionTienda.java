@@ -7,7 +7,6 @@ package com.bse.accesodatos.seguridad;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -33,14 +32,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "PAT_SESION")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "PatSesion.findAll", query = "SELECT p FROM PatSesion p"),
-    @NamedQuery(name = "PatSesion.findByIdSesion", query = "SELECT p FROM PatSesion p WHERE p.idSesion = :idSesion"),
-    @NamedQuery(name = "PatSesion.findByNombreUsuario", query = "SELECT p FROM PatSesion p WHERE p.nombreUsuario = :nombreUsuario"),
-    @NamedQuery(name = "PatSesion.findByDireccionIp", query = "SELECT p FROM PatSesion p WHERE p.direccionIp = :direccionIp"),
-    @NamedQuery(name = "PatSesion.findByFechaLogueo", query = "SELECT p FROM PatSesion p WHERE p.fechaLogueo = :fechaLogueo"),
-    @NamedQuery(name = "PatSesion.findByResultado", query = "SELECT p FROM PatSesion p WHERE p.resultado = :resultado"),
-    @NamedQuery(name = "PatSesion.findByParametros", query = "SELECT p FROM PatSesion p WHERE p.parametros = :parametros")})
-public class PatSesion implements Serializable {
+    @NamedQuery(name = "PatSesionTienda.findAll", query = "SELECT p FROM PatSesionTienda p"),
+    @NamedQuery(name = "PatSesionTienda.findByIdSesion", query = "SELECT p FROM PatSesionTienda p WHERE p.idSesion = :idSesion"),
+    @NamedQuery(name = "PatSesionTienda.findByNombreUsuario", query = "SELECT p FROM PatSesionTienda p WHERE p.nombreUsuario = :nombreUsuario"),
+    @NamedQuery(name = "PatSesionTienda.findByDireccionIp", query = "SELECT p FROM PatSesionTienda p WHERE p.direccionIp = :direccionIp"),
+    @NamedQuery(name = "PatSesionTienda.findByFechaLogueo", query = "SELECT p FROM PatSesionTienda p WHERE p.fechaLogueo = :fechaLogueo"),
+    @NamedQuery(name = "PatSesionTienda.findByResultado", query = "SELECT p FROM PatSesionTienda p WHERE p.resultado = :resultado"),
+    @NamedQuery(name = "PatSesionTienda.findByParametros", query = "SELECT p FROM PatSesionTienda p WHERE p.parametros = :parametros")})
+public class PatSesionTienda implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -66,17 +65,17 @@ public class PatSesion implements Serializable {
         @JoinColumn(name = "INTERFAZ", referencedColumnName = "INTERFAZ"),
         @JoinColumn(name = "METODO", referencedColumnName = "METODO")})
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    private PatOperacion patOperacion;
+    private PatOperacionTienda patOperacion;
 
 
-	public PatSesion() {
+	public PatSesionTienda() {
     }
 
-    public PatSesion(Long idSesion) {
+    public PatSesionTienda(Long idSesion) {
         this.idSesion = idSesion;
     }
 
-    public PatSesion(Long idSesion, String direccionIp, Date fechaLogueo, short resultado) {
+    public PatSesionTienda(Long idSesion, String direccionIp, Date fechaLogueo, short resultado) {
         this.idSesion = idSesion;
         this.direccionIp = direccionIp;
         this.fechaLogueo = fechaLogueo;
@@ -131,13 +130,13 @@ public class PatSesion implements Serializable {
         this.parametros = parametros;
     }
 
-    public PatOperacion getPatOperacion() {
+    public PatOperacionTienda getPatOperacion() {
     	if (patOperacion == null)
-    		patOperacion = new PatOperacion();
+    		patOperacion = new PatOperacionTienda();
 		return patOperacion;
 	}
 
-	public void setPatOperacion(PatOperacion patOperacion) {
+	public void setPatOperacion(PatOperacionTienda patOperacion) {
 		this.patOperacion = patOperacion;
 	}
 
@@ -151,10 +150,10 @@ public class PatSesion implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof PatSesion)) {
+        if (!(object instanceof PatSesionTienda)) {
             return false;
         }
-        PatSesion other = (PatSesion) object;
+        PatSesionTienda other = (PatSesionTienda) object;
         if ((this.idSesion == null && other.idSesion != null) || (this.idSesion != null && !this.idSesion.equals(other.idSesion))) {
             return false;
         }

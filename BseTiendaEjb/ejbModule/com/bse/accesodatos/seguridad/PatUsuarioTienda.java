@@ -29,16 +29,16 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "PAT_USUARIO")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "PatUsuario.findAll", query = "SELECT p FROM PatUsuario p"),
-    @NamedQuery(name = "PatUsuario.findByNombreUsuario", query = "SELECT p FROM PatUsuario p WHERE p.nombreUsuario = :nombreUsuario"),
-    @NamedQuery(name = "PatUsuario.findByContrasena", query = "SELECT p FROM PatUsuario p WHERE p.contrasena = :contrasena"),
-    @NamedQuery(name = "PatUsuario.findByIdEntidadExterna", query = "SELECT p FROM PatUsuario p WHERE p.idEntidadExterna = :idEntidadExterna"),
-    @NamedQuery(name = "PatUsuario.findByFechaCreacion", query = "SELECT p FROM PatUsuario p WHERE p.fechaCreacion = :fechaCreacion"),
-    @NamedQuery(name = "PatUsuario.findByFechaFin", query = "SELECT p FROM PatUsuario p WHERE p.fechaFin = :fechaFin"),
-    @NamedQuery(name = "PatUsuario.findByValidarIp", query = "SELECT p FROM PatUsuario p WHERE p.validarIp = :validarIp"),
-    @NamedQuery(name = "PatUsuario.findByContador", query = "SELECT p FROM PatUsuario p WHERE p.contador = :contador"),
-    @NamedQuery(name = "PatUsuario.findByCambiarContrasena", query = "SELECT p FROM PatUsuario p WHERE p.cambiarContrasena = :cambiarContrasena")})
-public class PatUsuario implements Serializable {
+    @NamedQuery(name = "PatUsuarioTienda.findAll", query = "SELECT p FROM PatUsuarioTienda p"),
+    @NamedQuery(name = "PatUsuarioTienda.findByNombreUsuario", query = "SELECT p FROM PatUsuarioTienda p WHERE p.nombreUsuario = :nombreUsuario"),
+    @NamedQuery(name = "PatUsuarioTienda.findByContrasena", query = "SELECT p FROM PatUsuarioTienda p WHERE p.contrasena = :contrasena"),
+    @NamedQuery(name = "PatUsuarioTienda.findByIdEntidadExterna", query = "SELECT p FROM PatUsuarioTienda p WHERE p.idEntidadExterna = :idEntidadExterna"),
+    @NamedQuery(name = "PatUsuarioTienda.findByFechaCreacion", query = "SELECT p FROM PatUsuarioTienda p WHERE p.fechaCreacion = :fechaCreacion"),
+    @NamedQuery(name = "PatUsuarioTienda.findByFechaFin", query = "SELECT p FROM PatUsuarioTienda p WHERE p.fechaFin = :fechaFin"),
+    @NamedQuery(name = "PatUsuarioTienda.findByValidarIp", query = "SELECT p FROM PatUsuarioTienda p WHERE p.validarIp = :validarIp"),
+    @NamedQuery(name = "PatUsuarioTienda.findByContador", query = "SELECT p FROM PatUsuarioTienda p WHERE p.contador = :contador"),
+    @NamedQuery(name = "PatUsuarioTienda.findByCambiarContrasena", query = "SELECT p FROM PatUsuarioTienda p WHERE p.cambiarContrasena = :cambiarContrasena")})
+public class PatUsuarioTienda implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -64,19 +64,19 @@ public class PatUsuario implements Serializable {
     @Column(name = "CONTADOR")
     private short contador;
     @ManyToMany(mappedBy = "patUsuarioList", fetch = FetchType.LAZY)
-    private List<PatRol> patRolList;    
+    private List<PatRolTienda> patRolList;    
     @Basic(optional = false)
     @Column(name = "CAMBIAR_CONTRASENA")
     private short cambiarContrasena;
 
-    public PatUsuario() {
+    public PatUsuarioTienda() {
     }
 
-    public PatUsuario(String nombreUsuario) {
+    public PatUsuarioTienda(String nombreUsuario) {
         this.nombreUsuario = nombreUsuario;
     }
 
-    public PatUsuario(String nombreUsuario, String contrasena, short idEntidadExterna, Date fechaCreacion, short validarIp, short contador, short cambiarContrasena) {
+    public PatUsuarioTienda(String nombreUsuario, String contrasena, short idEntidadExterna, Date fechaCreacion, short validarIp, short contador, short cambiarContrasena) {
         this.nombreUsuario = nombreUsuario;
         this.contrasena = contrasena;
         this.idEntidadExterna = idEntidadExterna;
@@ -143,11 +143,11 @@ public class PatUsuario implements Serializable {
     }
 
     @XmlTransient
-    public List<PatRol> getPatRolList() {
+    public List<PatRolTienda> getPatRolList() {
         return patRolList;
     }
 
-    public void setPatRolList(List<PatRol> patRolList) {
+    public void setPatRolList(List<PatRolTienda> patRolList) {
         this.patRolList = patRolList;
     }    
     
@@ -169,10 +169,10 @@ public class PatUsuario implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof PatUsuario)) {
+        if (!(object instanceof PatUsuarioTienda)) {
             return false;
         }
-        PatUsuario other = (PatUsuario) object;
+        PatUsuarioTienda other = (PatUsuarioTienda) object;
         if ((this.nombreUsuario == null && other.nombreUsuario != null) || (this.nombreUsuario != null && !this.nombreUsuario.equals(other.nombreUsuario))) {
             return false;
         }

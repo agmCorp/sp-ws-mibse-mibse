@@ -24,50 +24,51 @@ import javax.persistence.Cacheable;
 @Table(name = "PAT_PARAMETROS")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "PatParametros.findAll", query = "SELECT p FROM PatParametros p"),
-    @NamedQuery(name = "PatParametros.findByAplicacion", query = "SELECT p FROM PatParametros p WHERE p.patParametrosPK.aplicacion = :aplicacion"),
-    @NamedQuery(name = "PatParametros.findByClave", query = "SELECT p FROM PatParametros p WHERE p.patParametrosPK.clave = :clave"),
-    @NamedQuery(name = "PatParametros.findBySubclave", query = "SELECT p FROM PatParametros p WHERE p.patParametrosPK.subclave = :subclave"),
-    @NamedQuery(name = "PatParametros.findByValor", query = "SELECT p FROM PatParametros p WHERE p.valor = :valor")})
-public class PatParametros implements Serializable {
+    @NamedQuery(name = "PatParametrosTienda.findAll", query = "SELECT p FROM PatParametrosTienda p"),
+    @NamedQuery(name = "PatParametrosTienda.findByAplicacion", query = "SELECT p FROM PatParametrosTienda p WHERE p.patParametrosPK.aplicacion = :aplicacion"),
+    @NamedQuery(name = "PatParametrosTienda.findByClave", query = "SELECT p FROM PatParametrosTienda p WHERE p.patParametrosPK.clave = :clave"),
+    @NamedQuery(name = "PatParametrosTienda.findBySubclave", query = "SELECT p FROM PatParametrosTienda p WHERE p.patParametrosPK.subclave = :subclave"),
+    @NamedQuery(name = "PatParametrosTienda.findByValor", query = "SELECT p FROM PatParametrosTienda p WHERE p.valor = :valor")})
+public class PatParametrosTienda implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
-    protected PatParametrosPK patParametrosPK;
+    protected PatParametrosPKTienda patParametrosPK;
     @Basic(optional = false)
     @Column(name = "VALOR")
     private String valor;
 
-    public PatParametros() {
+    public PatParametrosTienda() {
     }
 
-    public PatParametros(PatParametrosPK patParametrosPK) {
+    public PatParametrosTienda(PatParametrosPKTienda patParametrosPK) {
         this.patParametrosPK = patParametrosPK;
     }
 
-    public PatParametros(PatParametrosPK patParametrosPK, String valor) {
+    public PatParametrosTienda(PatParametrosPKTienda patParametrosPK, String valor) {
         this.patParametrosPK = patParametrosPK;
         this.valor = valor;
     }
 
-    public PatParametros(String aplicacion, String clave, String subclave) {
-        this.patParametrosPK = new PatParametrosPK(aplicacion, clave, subclave);
+    public PatParametrosTienda(String aplicacion, String clave, String subclave) {
+        this.patParametrosPK = new PatParametrosPKTienda(aplicacion, clave, subclave);
     }
 
-    public PatParametrosPK getPatParametrosPK() {
+
+    public PatParametrosPKTienda getPatParametrosPK() {
         return patParametrosPK;
     }
-
-    public void setPatParametrosPK(PatParametrosPK patParametrosPK) {
+    public void setPatParametrosPK(PatParametrosPKTienda patParametrosPK) {
         this.patParametrosPK = patParametrosPK;
     }
+
 
     public String getValor() {
         return valor;
     }
-
     public void setValor(String valor) {
         this.valor = valor;
     }
+
 
     @Override
     public int hashCode() {
@@ -76,18 +77,20 @@ public class PatParametros implements Serializable {
         return hash;
     }
 
+
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof PatParametros)) {
+        if (!(object instanceof PatParametrosTienda)) {
             return false;
         }
-        PatParametros other = (PatParametros) object;
+        PatParametrosTienda other = (PatParametrosTienda) object;
         if ((this.patParametrosPK == null && other.patParametrosPK != null) || (this.patParametrosPK != null && !this.patParametrosPK.equals(other.patParametrosPK))) {
             return false;
         }
         return true;
     }
+
 
     @Override
     public String toString() {

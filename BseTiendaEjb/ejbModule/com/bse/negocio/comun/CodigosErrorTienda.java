@@ -1,6 +1,6 @@
 package com.bse.negocio.comun;
 
-public class CodigosError {
+public class CodigosErrorTienda {
     //seguridad
     public static short excepcion_generica = 1;
     public static short login_error_credenciales = 2;
@@ -76,5 +76,17 @@ public class CodigosError {
 	public static short faltan_datos_bicicleta = 63;
 	public static short fecha_factura_invalida = 64;
 
+    public static short version_vehiculo_invalido = 65;
+    public static short combustible_invalido = 66;
+    public static short area_ciculacion_invalida = 67;
+    public static short familia_vehiculo_invalida = 68;
+
+    public static short tipo_objeto_invalido = 69;
+    public static short valor_objeto_invalido = 70;
+    public static short tipo_movilidad_invalida = 71;
+    public static short modalidad_invalida = 72;
+
+    public static short faltan_datos_opersonales = 73;
+    public static short falta_motor_o_chasis = 74;
 }   
  

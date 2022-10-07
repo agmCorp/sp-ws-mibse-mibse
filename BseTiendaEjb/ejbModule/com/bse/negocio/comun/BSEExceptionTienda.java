@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public class BSEException extends Exception implements Serializable{
+public class BSEExceptionTienda extends Exception implements Serializable{
 
     private static final long serialVersionUID = 1L;
     private int codigoError;
@@ -16,19 +16,19 @@ public class BSEException extends Exception implements Serializable{
         return desc;
     }
 
-    public BSEException(int codigoError) {
+    public BSEExceptionTienda(int codigoError) {
         super("Error: codigoError=" + codigoError);
         this.codigoError = codigoError;
         this.descripcion = getDescripcionError(codigoError);
     }
 
-    public BSEException(int codigoError, String descripcion) {
+    public BSEExceptionTienda(int codigoError, String descripcion) {
         super("Error: codigoError=" + codigoError);
         this.codigoError = codigoError;
         this.descripcion = descripcion;
     }
 
-    public BSEException(int codigoError, Throwable throwable) {
+    public BSEExceptionTienda(int codigoError, Throwable throwable) {
         super("Error: codigoError=" + codigoError, throwable);
         this.codigoError = codigoError;
         this.descripcion = getDescripcionError(codigoError);

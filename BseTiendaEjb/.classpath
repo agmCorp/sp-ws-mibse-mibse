@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="ejbModule"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/BseTiendaCommonUtil"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry exported="true" kind="lib" path="ejbModule/META-INF/lib/ironjacamar-jdbc.jar"/>
 	<classpathentry exported="true" kind="lib" path="ejbModule/META-INF/lib/javaee-api-6.0.jar"/>
@@ -13,5 +14,7 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="ejbModule/META-INF/lib/javax.persistence-api-2.2.jar"/>
+	<classpathentry kind="lib" path="ejbModule/META-INF/lib/org.eclipse.persistence.core-2.5.0-RC2.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

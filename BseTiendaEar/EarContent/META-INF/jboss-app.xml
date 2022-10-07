@@ -1,0 +1,5 @@
+<jboss-app>
+    <loader-repository>BseTiendaEar:loader=BseTiendaEar.ear
+        <loader-repository-config>java2ParentDelegation=false</loader-repository-config>
+    </loader-repository>
+</jboss-app>

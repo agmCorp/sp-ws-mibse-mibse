@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>BseOnlineEar</name>
+	<name>BseTiendaEar</name>
 	<comment></comment>
 	<projects>
-		<project>BseOnlineEjb</project>
-		<project>BseOnlineService</project>
+		<project>BseTiendaEjb</project>
+		<project>BseTiendaService</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

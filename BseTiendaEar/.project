@@ -5,6 +5,7 @@
 	<projects>
 		<project>BseTiendaService</project>
 		<project>BseTiendaEjb</project>
+		<project>BseTiendaCommonUtil</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

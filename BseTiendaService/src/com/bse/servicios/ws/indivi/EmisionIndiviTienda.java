@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 import com.bse.accesodatos.comun.ItemCodiguera;
 import com.bse.accesodatos.eindivi.CotizacionIndiviTienda;
 import com.bse.accesodatos.eindivi.DatosVariosIndivi;
+import com.bse.accesodatos.eindivi.ItemDeptoLocalidadArea;
 import com.bse.accesodatos.eindivi.PolizaIndiviTienda;
 import com.bse.negocio.comun.BSEExceptionTienda;
 import com.bse.negocio.comun.CodigosErrorTienda;
@@ -43,13 +44,13 @@ public class EmisionIndiviTienda {
      */
     private IEmisionIndiviTiendaEJBLocal getEJBManager() throws NamingException {
         InitialContext ctx = new InitialContext();
-        IEmisionIndiviTiendaEJBLocal bean = (IEmisionIndiviTiendaEJBLocal) 
+        IEmisionIndiviTiendaEJBLocal bean = (IEmisionIndiviTiendaEJBLocal)
                                                             ctx.lookup("BseTiendaEar/EmisionIndiviTiendaEJB/local");
         return bean;
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      *
@@ -58,7 +59,7 @@ public class EmisionIndiviTienda {
      */
     private IEmisionComunTiendaEJBLocal getComunEJBManager() throws NamingException {
         InitialContext ctx = new InitialContext();
-        IEmisionComunTiendaEJBLocal bean = (IEmisionComunTiendaEJBLocal) 
+        IEmisionComunTiendaEJBLocal bean = (IEmisionComunTiendaEJBLocal)
                                                             ctx.lookup("BseTiendaEar/EmisionComunTiendaEJB/local");
         return bean;
     }
@@ -153,8 +154,8 @@ public class EmisionIndiviTienda {
      * @param nroCotizacion - OBLIGATORIO
      * @param matriculaVehiculo - OPCIONAL
      * @param padronVehiculo - OPCIONAL
-     * @param motorVehiculo - OBLIGATORIO, en conjunto con chasis, al menos uno de ellos debe indicarse 
-     * @param chasisVehiculo - OBLIGATORIO, en conjunto con motor, al menos uno de ellos debe indicarse 
+     * @param motorVehiculo - OBLIGATORIO, en conjunto con chasis, al menos uno de ellos debe indicarse
+     * @param chasisVehiculo - OBLIGATORIO, en conjunto con motor, al menos uno de ellos debe indicarse
      * @param planCobertura - OBLIGATORIO
      * @param planPago - OBLIGATORIO
      * @param modalidad - OBLIGATORIO
@@ -556,6 +557,86 @@ public class EmisionIndiviTienda {
             String codError  = String.valueOf(CodigosErrorTienda.excepcion_generica);
             String descError = BSEExceptionTienda.getDescripcionError(CodigosErrorTienda.excepcion_generica);
             result = new DatosVariosTiendaResp(codError, descError);
+            logger.error(logEncabezado + logError(codError, descError), ex1);
+            ex1.printStackTrace();
+        }
+
+        //logger.info(logEncabezado + " - RESULT : " + result.toString());
+        return result;
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Retorna el área de circulación asociada a cada uno de los departamentos
+     * En el caso que dentro de un departamento se tengan mas de un área asociada, se retorna valor nulo para el área.
+     * @param usuario - OBLIGATORIO
+     * @param contrasena - OBLIGATORIO
+     * @return
+     */
+    @WebMethod
+    public DeptosAreaCirculacionResp consultaDepartamentosArea( @WebParam(name = "usuario")    String usuario,
+                                                                @WebParam(name = "contrasena") String contrasena ) {
+        String logEncabezado = "SERVICE - INDIVI - consultaDepartamentosArea - TIENDA";
+
+        DeptosAreaCirculacionResp result = null;
+        try {
+            List<ItemDeptoLocalidadArea> lista = getEJBManager().consultaDepartamentosArea(getDTSesion(usuario, contrasena));
+            result = new DeptosAreaCirculacionResp(lista, "00", "");
+
+        } catch (BSEExceptionTienda ex2) {
+            String codError  = String.valueOf(ex2.getCodigoError());
+            String descError = ex2.getDescripcion();
+            result = new DeptosAreaCirculacionResp(codError, descError);
+            logger.error(logEncabezado + logError(codError, descError), ex2);
+
+        } catch (Exception ex1) {
+            String codError  = String.valueOf(CodigosErrorTienda.excepcion_generica);
+            String descError = BSEExceptionTienda.getDescripcionError(CodigosErrorTienda.excepcion_generica);
+            result = new DeptosAreaCirculacionResp(codError, descError);
+            logger.error(logEncabezado + logError(codError, descError), ex1);
+            ex1.printStackTrace();
+        }
+
+        //logger.info(logEncabezado + " - RESULT : " + result.toString());
+        return result;
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Retorna el área de circulación asociada a cada uno de las localidades del departamento dado.
+     * @param usuario - OBLIGATORIO
+     * @param contrasena - OBLIGATORIO
+     * @param idDepto - OBLIGATORIO
+     * @return
+     */
+    @WebMethod
+    public LocalidadesAreaCirculacionResp consultaLocalidadesDeptoArea( @WebParam(name = "usuario")      String usuario,
+                                                                        @WebParam(name = "contrasena")   String contrasena,
+                                                                        @WebParam(name = "departamento") String idDepto ) {
+        String logEncabezado = "SERVICE - INDIVI - consultaLocalidadesDeptoArea - TIENDA";
+
+        LocalidadesAreaCirculacionResp result = null;
+        try {
+            List<ItemDeptoLocalidadArea> lista =
+                                getEJBManager().consultaLocalidadesDeptoArea(getDTSesion(usuario, contrasena), idDepto);
+            result = new LocalidadesAreaCirculacionResp(lista, "00", "");
+
+        } catch (BSEExceptionTienda ex2) {
+            String codError  = String.valueOf(ex2.getCodigoError());
+            String descError = ex2.getDescripcion();
+            result = new LocalidadesAreaCirculacionResp(codError, descError);
+            logger.error(logEncabezado + logError(codError, descError), ex2);
+
+        } catch (Exception ex1) {
+            String codError  = String.valueOf(CodigosErrorTienda.excepcion_generica);
+            String descError = BSEExceptionTienda.getDescripcionError(CodigosErrorTienda.excepcion_generica);
+            result = new LocalidadesAreaCirculacionResp(codError, descError);
             logger.error(logEncabezado + logError(codError, descError), ex1);
             ex1.printStackTrace();
         }

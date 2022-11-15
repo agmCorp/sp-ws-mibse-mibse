@@ -6,6 +6,7 @@ import java.util.List;
 import com.bse.accesodatos.comun.ItemCodiguera;
 import com.bse.accesodatos.eindivi.CotizacionIndiviTienda;
 import com.bse.accesodatos.eindivi.DatosVariosIndivi;
+import com.bse.accesodatos.eindivi.ItemDeptoLocalidadArea;
 import com.bse.accesodatos.eindivi.PolizaIndiviTienda;
 
 import javax.ejb.Stateless;
@@ -150,6 +151,26 @@ public class EmisionIndiviTiendaEJB implements IEmisionIndiviTiendaEJBLocal {
     public DatosVariosIndivi consultaDatosVarios(DTSesionTienda dtSesion) throws Exception, BSEExceptionTienda {
         IEIndiviTienda eIndiviManager = FabricaNegocioTienda.getFabricaNegocio().getEIndiviMgr();
         return eIndiviManager.consultaDatosVarios(em);
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    @Override
+    public List<ItemDeptoLocalidadArea> consultaDepartamentosArea(DTSesionTienda dtSesion)
+                                                                                  throws Exception, BSEExceptionTienda {
+        IEIndiviTienda eIndiviManager = FabricaNegocioTienda.getFabricaNegocio().getEIndiviMgr();
+        return eIndiviManager.consultaDepartamentosArea(em);
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    @Override
+    public List<ItemDeptoLocalidadArea> consultaLocalidadesDeptoArea(DTSesionTienda dtSesion, String idDepto)
+                                                                                  throws Exception, BSEExceptionTienda {
+        IEIndiviTienda eIndiviManager = FabricaNegocioTienda.getFabricaNegocio().getEIndiviMgr();
+        return eIndiviManager.consultaLocalidadesDeptoArea(em, idDepto);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

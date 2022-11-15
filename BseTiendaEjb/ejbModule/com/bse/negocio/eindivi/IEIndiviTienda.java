@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import com.bse.accesodatos.comun.ItemCodiguera;
 import com.bse.accesodatos.eindivi.CotizacionIndiviTienda;
 import com.bse.accesodatos.eindivi.DatosVariosIndivi;
+import com.bse.accesodatos.eindivi.ItemDeptoLocalidadArea;
 import com.bse.accesodatos.eindivi.PolizaIndiviTienda;
 import com.bse.negocio.comun.BSEExceptionTienda;
 
@@ -55,5 +56,12 @@ public interface IEIndiviTienda {
                                                             String familiaVehiculo)throws Exception, BSEExceptionTienda;
 
     public DatosVariosIndivi   consultaDatosVarios        ( EntityManager em )    throws Exception, BSEExceptionTienda;
+
+    public List<ItemDeptoLocalidadArea> consultaDepartamentosArea
+                                                          ( EntityManager em )    throws Exception, BSEExceptionTienda;
+
+    public List<ItemDeptoLocalidadArea> consultaLocalidadesDeptoArea
+                                                          ( EntityManager em,
+                                                            String idDepto   )    throws Exception, BSEExceptionTienda;
 
 }

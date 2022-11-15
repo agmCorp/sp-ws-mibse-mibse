@@ -290,7 +290,7 @@ public class EComunMgrTienda implements IEComunTienda {
         return null;
     }
 
-
+    
     /**
     *
     * @param em

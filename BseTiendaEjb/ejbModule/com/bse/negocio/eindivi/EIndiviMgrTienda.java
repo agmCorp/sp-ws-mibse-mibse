@@ -20,6 +20,8 @@ import com.bse.accesodatos.comun.CretTablasTienda;
 import com.bse.accesodatos.comun.ItemCodiguera;
 import com.bse.accesodatos.eindivi.CotizacionIndiviTienda;
 import com.bse.accesodatos.eindivi.DatosVariosIndivi;
+import com.bse.accesodatos.eindivi.ItemDeptoLocalidadArea;
+import com.bse.accesodatos.eindivi.PatDeptoLocalidadZona;
 import com.bse.accesodatos.eindivi.PolizaIndiviTienda;
 import com.bse.accesodatos.eindivi.XmlCotizacion;
 import com.bse.accesodatos.eindivi.XmlPlanCobertura;
@@ -1124,6 +1126,93 @@ public class EIndiviMgrTienda implements IEIndiviTienda{
         //logger.info(logEncabezado + " - RESULT - [" + datosVarios.toString() + "].");
         logger.info(logEncabezado + " - FIN");
         return datosVarios;
+    }
+
+
+
+    /**
+     *
+     * @param em
+     * @return
+     * @throws Exception
+     * @throws BSEExceptionTienda
+     */
+    @Override
+    public List<ItemDeptoLocalidadArea> consultaDepartamentosArea( EntityManager em ) throws Exception, BSEExceptionTienda {
+        String logEncabezado = "INDIVI - consultaDepartamentosArea";
+        //logger.info(logEncabezado + " - INICIO");
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Desde BASE de DATOS - Obtener AREA de CIRCULACION para c/u de los DEPARTAMENTOS
+        Query query = em.createNamedQuery("PatDeptoLocalidadZona.findDepartamentos");
+
+        List<PatDeptoLocalidadZona> result = UtilTienda.castList(PatDeptoLocalidadZona.class, query.getResultList());
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // GENERAR RESULTADO
+        ArrayList<ItemDeptoLocalidadArea> lista = new ArrayList<ItemDeptoLocalidadArea>();
+        if (result != null && result.size() > 0) {
+            for (int i = 0; i < result.size(); i++) {
+                PatDeptoLocalidadZona tabla = (PatDeptoLocalidadZona) result.get(i);
+
+                ItemDeptoLocalidadArea item = new ItemDeptoLocalidadArea();
+                item.setCodigo        (tabla.getPk().getDeptoId().toString());                 // Codigo DEPARTAMENTO
+                item.setNombre        (tabla.getDeptoNombre());                                // Nombre DEPARTAMENTO
+                item.setAreaCiculacion(tabla.getZona()!=null?tabla.getZona().toString():null); // AREA CIRCULACION
+
+                lista.add(item);
+            }
+        } else { logger.info(logEncabezado + " - BASE de DATOS no retorna DEPARTAMENTOS"); }
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        logger.info(logEncabezado + " - RESULT - [" + Integer.toString(lista.size()) + "] elementos.");
+        return lista;
+    }
+
+
+
+    /**
+     *
+     * @param em
+     * @param idDepto
+     * @return
+     * @throws Exception
+     * @throws BSEExceptionTienda
+     */
+    @Override
+    public List<ItemDeptoLocalidadArea> consultaLocalidadesDeptoArea( EntityManager em,
+                                                                      String idDepto ) throws Exception, BSEExceptionTienda {
+        String logEncabezado = "INDIVI - consultaLocalidadesDeptoArea";
+        //logger.info(logEncabezado + " - INICIO");
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Desde BASE de DATOS - Obtener AREA de CIRCULACION de c/u de las LOCALIDADES del DEPARTAMENTO indicado
+        Query query = em.createNamedQuery("PatDeptoLocalidadZona.findLocalidadesDepto");
+        query.setParameter("codigoDepto", Integer.valueOf(idDepto));
+
+        List<PatDeptoLocalidadZona> result = UtilTienda.castList(PatDeptoLocalidadZona.class, query.getResultList());
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // GENERAR RESULTADO
+        ArrayList<ItemDeptoLocalidadArea> lista = new ArrayList<ItemDeptoLocalidadArea>();
+        if (result != null && result.size() > 0) {
+            for (int i = 0; i < result.size(); i++) {
+                PatDeptoLocalidadZona tabla = (PatDeptoLocalidadZona) result.get(i);
+
+                ItemDeptoLocalidadArea item = new ItemDeptoLocalidadArea();
+                item.setCodigo        (tabla.getPk().getLocalidadId().toString());              // Codigo LOCALIDAD
+                item.setNombre        (tabla.getLocalidadNombre());                             // Nombre LOCALIDAD
+                item.setAreaCiculacion(tabla.getZona()!=null?tabla.getZona().toString():null);  // AREA CIRCULACION
+
+                lista.add(item);
+            }
+        } else { logger.info(logEncabezado+" - BASE de DATOS no retorna LOCALIDADES para DEPARTAMENTO ["+idDepto+"]"); }
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        logger.info(logEncabezado + " - RESULT - [" + Integer.toString(lista.size()) + "] elementos.");
+        return lista;
     }
 
 

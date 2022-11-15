@@ -7,6 +7,7 @@ import com.bse.servicios.seguridad.dt.DTSesionTienda;
 import com.bse.accesodatos.comun.ItemCodiguera;
 import com.bse.accesodatos.eindivi.CotizacionIndiviTienda;
 import com.bse.accesodatos.eindivi.DatosVariosIndivi;
+import com.bse.accesodatos.eindivi.ItemDeptoLocalidadArea;
 import com.bse.accesodatos.eindivi.PolizaIndiviTienda;
 import com.bse.negocio.comun.BSEExceptionTienda;
 import javax.ejb.Local;
@@ -57,5 +58,13 @@ public interface IEmisionIndiviTiendaEJBLocal {
                                                                String familiaVehiculo )    throws Exception, BSEExceptionTienda;
 
     public DatosVariosIndivi      consultaDatosVarios        ( DTSesionTienda dtSesion )   throws Exception, BSEExceptionTienda;
+
+
+    public List<ItemDeptoLocalidadArea> consultaDepartamentosArea
+                                                             ( DTSesionTienda dtSesion )   throws Exception, BSEExceptionTienda;
+
+    public List<ItemDeptoLocalidadArea> consultaLocalidadesDeptoArea
+                                                             ( DTSesionTienda dtSesion,
+                                                               String idDepto )            throws Exception, BSEExceptionTienda;
 
 }

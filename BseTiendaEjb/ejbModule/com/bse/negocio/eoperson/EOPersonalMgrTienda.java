@@ -779,8 +779,15 @@ public class EOPersonalMgrTienda implements IEOPersonalTienda {
             for (int i = 0; i < result.size(); i++) {
                 PlanCoberturaTienda pc = (PlanCoberturaTienda)result.get(i);
                 if ( map.containsKey(pc.getPlan()) ) { // Verifico si esta en MAP
-                    pc.setDescripcion(map.get(pc.getPlan())); // Descripcion - Desde configuracion y no de base de datos
-                    lista.add(pc);
+                    //pc.setDescripcion(map.get(pc.getPlan())); // Descripcion - Desde configuracion y no de base de datos
+                    //lista.add(pc);
+                    // 12/12/2022 - se corrige xq JPA pisa la descripcion de CART_PRODPLANES
+                    PlanCoberturaTienda newpc = new PlanCoberturaTienda();
+                    newpc.setDescripcion(map.get(pc.getPlan())); // Descripcion - Desde configuracion y no de base de datos
+                    newpc.setPlan(pc.getPlan());
+                    newpc.setProducto(pc.getProducto());
+                    newpc.setRamo(pc.getRamo());
+                    lista.add(newpc);
                 }
             }
         } else { logger.info(logEncabezado + " - BASE de DATOS no retorna PLANES de COBERTURAS"); }

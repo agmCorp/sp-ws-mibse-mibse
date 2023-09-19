@@ -114,7 +114,7 @@ public class EIndiviMgrTienda implements IEIndiviTienda{
             er = CodigosErrorTienda.area_ciculacion_invalida;
         }
         if ( er > -1 ) { throw new BSEExceptionTienda(er); }
-        logger.info(logEncabezado + " - PARAMETROS1 - OK");
+        logger.info(logEncabezado + " - PARAMETROS - OK");
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 

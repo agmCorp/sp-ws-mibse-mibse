@@ -10,8 +10,6 @@ import javax.persistence.TemporalType;
 @Embeddable
 public class CobtPagosBancariosRechPKTienda {
 
-private static final long serialVersionUID = 1L;
-
 @Column(name = "CPBR_ENTIDAD")
 private int entidad;
 
@@ -19,7 +17,7 @@ private int entidad;
 private String idTransaccion;
 
 @Temporal(TemporalType.TIMESTAMP)
-@Column(name = "CPBR_FECHA") 
+@Column(name = "CPBR_FECHA")
 private Date fecha;
 
 

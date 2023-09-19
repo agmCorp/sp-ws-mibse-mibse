@@ -93,7 +93,7 @@ public class CodigosTienda {
     
     public short getTopeLogin(EntityManager em) {
         PatParametrosPKTienda key = new PatParametrosPKTienda("WS", "TOPE", "LOGIN");
-        return new Short(getCache(em, key));
+        return Short.valueOf(getCache(em, key));
     }   
     
     public boolean esPlanAuxilio(EntityManager em, String plan) {
@@ -124,32 +124,32 @@ public class CodigosTienda {
     
     public int getToleranciaDias(EntityManager em) {
         PatParametrosPKTienda key = new PatParametrosPKTienda("AUME", "TOLERANCIA", "DIAS");
-        return new Integer(getCache(em, key));
+        return Integer.valueOf(getCache(em, key));
     }
 
     public int getAuxiliosGlobalAnuales(EntityManager em) {
         PatParametrosPKTienda key = new PatParametrosPKTienda("AUME", "CANTIDAD_GLOBAL", "AUXILIOS");
-        return new Integer(getCache(em, key));
+        return Integer.valueOf(getCache(em, key));
     }
     
     public int getAuxiliosTripleAnuales(EntityManager em) {
         PatParametrosPKTienda key = new PatParametrosPKTienda("AUME", "CANTIDAD_TRIPLE", "AUXILIOS");
-        return new Integer(getCache(em, key));
+        return Integer.valueOf(getCache(em, key));
     }
     
     public int getAuxiliosDobleAnuales(EntityManager em) {
         PatParametrosPKTienda key = new PatParametrosPKTienda("AUME", "CANTIDAD_DOBLE", "AUXILIOS");
-        return new Integer(getCache(em, key));
+        return Integer.valueOf(getCache(em, key));
     }        
     
     public int getAuxiliosBasicoAnuales(EntityManager em) {
         PatParametrosPKTienda key = new PatParametrosPKTienda("AUME", "CANTIDAD_BASICO", "AUXILIOS");
-        return new Integer(getCache(em, key));
+        return Integer.valueOf(getCache(em, key));
     }        
     
     public int getForzarRegistroAuxilio(EntityManager em) {
         PatParametrosPKTienda key = new PatParametrosPKTienda("AUME", "FORZAR", "REGISTRO");
-        return new Integer(getCache(em, key));
+        return Integer.valueOf(getCache(em, key));
     }    
     
     public boolean esTipoVehiculoAuxilio(EntityManager em, String tipoVehiculo) {
@@ -199,32 +199,32 @@ public class CodigosTienda {
 
     public Short getEstadoImpagoAfap(EntityManager em) {
         PatParametrosPKTienda key = new PatParametrosPKTienda("AFAP", "ESTADO", "IMPAGO");
-        return new Short(getCache(em, key));
+        return Short.valueOf(getCache(em, key));
     }
     
     public Short getEstadoImpagoSerdom(EntityManager em) {
         PatParametrosPKTienda key = new PatParametrosPKTienda("SERDOM", "ESTADO", "IMPAGO");
-        return new Short(getCache(em, key));
+        return Short.valueOf(getCache(em, key));
     }   
     
     public Short getEstadoPagoSerdom(EntityManager em) {
         PatParametrosPKTienda key = new PatParametrosPKTienda("SERDOM", "ESTADO", "PAGO");
-        return new Short(getCache(em, key));
+        return Short.valueOf(getCache(em, key));
     }      
     
     public Short getEstadoImpagoPrestamos(EntityManager em) {
         PatParametrosPKTienda key = new PatParametrosPKTienda("PRESTAMOS", "ESTADO", "IMPAGO");
-        return new Short(getCache(em, key));
+        return Short.valueOf(getCache(em, key));
     }   
     
     public Short getEstadoPagoPrestamos(EntityManager em) {
         PatParametrosPKTienda key = new PatParametrosPKTienda("PRESTAMOS", "ESTADO", "PAGO");
-        return new Short(getCache(em, key));
+        return Short.valueOf(getCache(em, key));
     }      
 
     public Short getEstadoPagoAfap(EntityManager em) {
         PatParametrosPKTienda key = new PatParametrosPKTienda("AFAP", "ESTADO", "PAGO");
-        return new Short(getCache(em, key));
+        return Short.valueOf(getCache(em, key));
     }    
     
     public String getTablaAfap(EntityManager em) {

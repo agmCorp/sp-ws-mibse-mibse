@@ -10,8 +10,6 @@ import javax.persistence.TemporalType;
 @Embeddable
 public class CobtPagosBancariosLogPKTienda {
 
-private static final long serialVersionUID = 1L;
-
 @Column(name = "CPBL_ENTIDAD")
 private int entidad;
 

@@ -4,10 +4,11 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 public class FacturaTienda implements Comparable<FacturaTienda>, Serializable{
+
+	private static final long serialVersionUID = 50299483143076489L;
 
 private Integer ramo;
 private Integer poliza;
@@ -233,11 +234,11 @@ public String getCuotas() {
 
 @Override
 public int compareTo(FacturaTienda factura) {
-	SimpleDateFormat dt = new SimpleDateFormat("yyyyMMdd"); 
-	
-	String clave1 = getRamo().toString()+"-"+getProducto()+"-"+getPoliza().toString()+"-"+dt.format(getFechaVto1()); 
+	SimpleDateFormat dt = new SimpleDateFormat("yyyyMMdd");
+
+	String clave1 = getRamo().toString()+"-"+getProducto()+"-"+getPoliza().toString()+"-"+dt.format(getFechaVto1());
 	String clave2 = factura.getRamo().toString()+"-"+factura.getProducto()+"-"+factura.getPoliza().toString()+"-"+dt.format(factura.getFechaVto1());
-	
+
 	return clave1.compareTo(clave2);
 }
 

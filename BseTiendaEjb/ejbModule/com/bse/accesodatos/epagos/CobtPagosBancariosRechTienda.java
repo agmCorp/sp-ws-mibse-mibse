@@ -1,19 +1,11 @@
 package com.bse.accesodatos.epagos;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.NamedNativeQueries;
-import javax.persistence.NamedNativeQuery;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
 @Table(name = "COBT_PAGOS_BANCARIOS_RECH")
@@ -26,19 +18,19 @@ public class CobtPagosBancariosRechTienda implements Serializable {
 
     @Column(name = "CPBR_NU_FACTURA")
 	private Long nroFactura;
-    
+
     @Column(name = "CPBR_COD_RESPUESTA_ENTIDAD")
-	private String codRespuesta; 
-    
+	private String codRespuesta;
+
     @Column(name = "CPBR_COD_AUTORIZACION_BANCO")
     private String codAutorizacionBanco;
 
     @Column(name = "CPBR_MONEDA")
 	private String moneda;
-    
+
     @Column(name = "CPBR_IMPORTE")
 	private Double importe;
-    
+
     @Column(name = "CPBR_IMPORTE_DEVOLUCION")
 	private Double importeDevolucion;
 
@@ -50,11 +42,11 @@ public class CobtPagosBancariosRechTienda implements Serializable {
 
 	@Column(name = "CPBR_DESC_ERROR_BSE")
     private String descError;
-	
+
 	@Column(name = "CPBR_COD_BANCO_BCU")
 	private Integer codBancoBcu;
 
-	
+
     public CobtPagosBancariosRechPKTienda getCobtPagosBancariosRechPK() {
 		return cobtPagosBancariosRechPK;
 	}
@@ -142,7 +134,7 @@ public class CobtPagosBancariosRechTienda implements Serializable {
 	public void setCodBancoBcu(Integer codBancoBcu) {
 		this.codBancoBcu=codBancoBcu;
 	}
-	
-	
-	
+
+
+
 }

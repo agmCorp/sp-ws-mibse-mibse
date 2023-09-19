@@ -6,8 +6,6 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class CobtPagosBancariosPKTienda {
 
-private static final long serialVersionUID = 1L;
-
 @Column(name = "CPB_ENTIDAD")
 private int entidad;
 

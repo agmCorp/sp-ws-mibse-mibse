@@ -1,24 +1,17 @@
 package com.bse.accesodatos.epagos;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.NamedNativeQueries;
-import javax.persistence.NamedNativeQuery;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
 @Table(name = "COBT_PAGOS_BANCARIOS_LOG")
 @XmlRootElement
-    
+
 
 public class CobtPagosBancariosLogTienda implements Serializable {
 
@@ -27,43 +20,43 @@ public class CobtPagosBancariosLogTienda implements Serializable {
 	@EmbeddedId
     protected CobtPagosBancariosLogPKTienda cobtPagosBancariosLogPK;
 
-	@Column(name = "CPBL_CARP_CD_RAMO") 
+	@Column(name = "CPBL_CARP_CD_RAMO")
     private Integer ramo;
-    
-	@Column(name = "CPBL_CAPO_NU_POLIZA") 
+
+	@Column(name = "CPBL_CAPO_NU_POLIZA")
     private Integer poliza;
 
-	@Column(name = "CPBL_CACE_NU_CERTIFICADO") 
+	@Column(name = "CPBL_CACE_NU_CERTIFICADO")
     private Integer certificado;
 
 	@Column(name = "CPBL_TP_DOCUMENTO")
     private String tipoDocumento;
-    
+
 	@Column(name = "CPBL_DOCUMENTO")
     private String documento;
-    
+
     @Column(name = "CPBL_NU_FACTURA")
 	private Long nroFactura;
-    
+
     @Column(name = "CPBL_COD_RESPUESTA_ENTIDAD")
-	private String codRespuesta; 
-    
+	private String codRespuesta;
+
     @Column(name = "CPBL_COD_AUTORIZACION_BANCO")
     private String codAutorizacionBanco;
 
     @Column(name = "CPBL_MONEDA")
 	private String moneda;
-    
+
     @Column(name = "CPBL_IMPORTE")
 	private Double importe;
-    
+
     @Column(name = "CPBL_IMPORTE_DEVOLUCION")
 	private Double importeDevolucion;
 
     @Column(name = "CPBL_OPERACION")
 	private String operacion;
 
-    @Column(name = "CPBL_OBS") 
+    @Column(name = "CPBL_OBS")
 	private String obs;
 
     @Column(name = "CPBL_USUARIO")
@@ -200,5 +193,5 @@ public class CobtPagosBancariosLogTienda implements Serializable {
 		this.codBancoBcu=codBancoBcu;
 	}
 
-	
+
 }

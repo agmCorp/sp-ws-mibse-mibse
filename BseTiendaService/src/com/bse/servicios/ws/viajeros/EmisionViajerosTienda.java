@@ -14,7 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.bse.accesodatos.esoa.PlanCoberturaTienda;
 import com.bse.accesodatos.esoa.PlanPagoTienda;
@@ -33,10 +34,14 @@ import com.bse.servicios.ws.soa.PlanPagoTiendaResp;
 import com.bse.servicios.ws.soa.PlanesCoberturaTiendaResp;
 import com.bse.servicios.ws.soa.PlanesPagoTiendaResp;
 
+import uy.com.bse.common.audit.annotations.Audit;
+import uy.com.bse.common.audit.interceptors.AuditorManager;
+import uy.com.bse.common.webservices.monitoring.constants.Constants;
+
 @WebService(serviceName = "EmisionViajeros")
 public class EmisionViajerosTienda {
 
-    private static final Logger logger = Logger.getLogger(EmisionViajerosTienda.class);
+    private static final Logger logger = LogManager.getLogger(EmisionViajerosTienda.class);
 
 
     @Resource
@@ -49,8 +54,11 @@ public class EmisionViajerosTienda {
      */
     private IEmisionViajerosTiendaEJBLocal getEJBManager() throws NamingException {
         InitialContext ctx = new InitialContext();
+      //  IEmisionViajerosTiendaEJBLocal bean = (IEmisionViajerosTiendaEJBLocal)
+        //                                                    ctx.lookup("BseTiendaEar/EmisionViajerosTiendaEJB/local");
         IEmisionViajerosTiendaEJBLocal bean = (IEmisionViajerosTiendaEJBLocal)
-                                                            ctx.lookup("BseTiendaEar/EmisionViajerosTiendaEJB/local");
+                ctx.lookup("java:global/BseTiendaEar/BseTiendaEjb/EmisionViajerosTiendaEJB!com.bse.servicios.eviajeros.IEmisionViajerosTiendaEJBLocal");
+
         return bean;
     }
 
@@ -63,8 +71,11 @@ public class EmisionViajerosTienda {
     */
     private IEmisionComunTiendaEJBLocal getComunEJBManager() throws NamingException {
         InitialContext ctx = new InitialContext();
+      //  IEmisionComunTiendaEJBLocal bean = (IEmisionComunTiendaEJBLocal)
+        //                                                    ctx.lookup("BseTiendaEar/EmisionComunTiendaEJB/local");
         IEmisionComunTiendaEJBLocal bean = (IEmisionComunTiendaEJBLocal)
-                                                            ctx.lookup("BseTiendaEar/EmisionComunTiendaEJB/local");
+                ctx.lookup("java:global/BseTiendaEar/BseTiendaEjb/EmisionComunTiendaEJB!com.bse.servicios.comun.IEmisionComunTiendaEJBLocal");
+
         return bean;
     }
 
@@ -95,6 +106,7 @@ public class EmisionViajerosTienda {
      * @param fechaSalidaPais
      * @return
      */
+    @Audit(excludedParams = "arg1")
     @WebMethod
     public CotizacionViajerosTiendaResp cotizarViajerosAnonimo( @WebParam(name = "usuario")         String usuario,
                                                                 @WebParam(name = "contrasena")      String contrasena,
@@ -112,6 +124,7 @@ public class EmisionViajerosTienda {
 
         CotizacionViajerosTiendaResp result = new CotizacionViajerosTiendaResp();
         try {
+        	AuditorManager.addStatusAudit(Constants.STATUS_OK);
             result.setCodigoError("00");
             result.setDescripcionError("");
 
@@ -127,6 +140,9 @@ public class EmisionViajerosTienda {
             result.setCotizacionViajeros(cotizacionViajeros);
 
         } catch (BSEExceptionTienda ex2) {
+        	AuditorManager.addStatusAudit(Constants.STATUS_ERROR);
+			AuditorManager.addExceptionAudit(ex2);
+			AuditorManager.LogExceptionAudit(ex2);
             String codError  = String.valueOf(ex2.getCodigoError());
             String descError = ex2.getDescripcion();
             result.setCodigoError(codError);
@@ -134,6 +150,9 @@ public class EmisionViajerosTienda {
             logger.error(logEncabezado + logError(codError, descError), ex2);
 
         } catch (Exception ex1) {
+        	AuditorManager.addStatusAudit(Constants.STATUS_ERROR);
+			AuditorManager.addExceptionAudit(ex1);
+			AuditorManager.LogExceptionAudit(ex1);
             String codError  = String.valueOf(CodigosErrorTienda.excepcion_generica);
             String descError = BSEExceptionTienda.getDescripcionError(CodigosErrorTienda.excepcion_generica);
             result.setCodigoError(codError);
@@ -161,6 +180,7 @@ public class EmisionViajerosTienda {
      * @param fechaSalidaPais
      * @return
      */
+    @Audit(excludedParams = "arg1")
     @WebMethod
     public EmisionViajerosTiendaResp emitirViajeros( @WebParam(name = "usuario")                  String usuario,
                                                      @WebParam(name = "contrasena")               String contrasena,
@@ -179,6 +199,8 @@ public class EmisionViajerosTienda {
         EmisionViajerosTiendaResp result = new EmisionViajerosTiendaResp();
 
         try {
+        	AuditorManager.addStatusAudit(Constants.STATUS_OK);
+
             PolizaViajerosTienda poliza = getEJBManager().emitirViajeros( getDTSesion(usuario, contrasena),
                                                                           tipoDocumentoContratante,
                                                                           documentoContratante,
@@ -192,6 +214,9 @@ public class EmisionViajerosTienda {
             result.setDescripcionError("");
 
         } catch (BSEExceptionTienda ex2) {
+        	AuditorManager.addStatusAudit(Constants.STATUS_ERROR);
+			AuditorManager.addExceptionAudit(ex2);
+			AuditorManager.LogExceptionAudit(ex2);
             String codError  = String.valueOf(ex2.getCodigoError());
             String descError = ex2.getDescripcion();
             result.setCodigoError(codError);
@@ -199,6 +224,9 @@ public class EmisionViajerosTienda {
             logger.error(logEncabezado + logError(codError, descError), ex2);
 
         } catch (Exception ex1) {
+        	AuditorManager.addStatusAudit(Constants.STATUS_ERROR);
+			AuditorManager.addExceptionAudit(ex1);
+			AuditorManager.LogExceptionAudit(ex1);
             String codError  = String.valueOf(CodigosErrorTienda.excepcion_generica);
             String descError = BSEExceptionTienda.getDescripcionError(CodigosErrorTienda.excepcion_generica);
             result.setCodigoError(codError);
@@ -219,6 +247,7 @@ public class EmisionViajerosTienda {
      * @param contrasena
      * @return
      */
+    @Audit(excludedParams = "arg1")
     @WebMethod
     public CoberturasPrexistentesTiendaResp consultaCoberturasPrexistentes( @WebParam(name = "usuario")    String usuario,
                                                                             @WebParam(name = "contrasena") String contrasena) {
@@ -226,12 +255,16 @@ public class EmisionViajerosTienda {
 
         CoberturasPrexistentesTiendaResp result = new CoberturasPrexistentesTiendaResp();
         try {
+        	AuditorManager.addStatusAudit(Constants.STATUS_OK);
             result.setCodigoError("00");
             result.setDescripcionError("");
             List<CoberturaPrexistentesTienda> lista = getEJBManager().consultaCoberturasPrexistentes(getDTSesion(usuario, contrasena));
             result.setCoberturasPrexistentes(lista);
 
         } catch (BSEExceptionTienda ex2) {
+        	AuditorManager.addStatusAudit(Constants.STATUS_ERROR);
+			AuditorManager.addExceptionAudit(ex2);
+			AuditorManager.LogExceptionAudit(ex2);
             String codError  = String.valueOf(ex2.getCodigoError());
             String descError = ex2.getDescripcion();
             result.setCodigoError(codError);
@@ -239,6 +272,9 @@ public class EmisionViajerosTienda {
             logger.error(logEncabezado + logError(codError, descError), ex2);
 
         } catch (Exception ex1) {
+        	AuditorManager.addStatusAudit(Constants.STATUS_ERROR);
+			AuditorManager.addExceptionAudit(ex1);
+			AuditorManager.LogExceptionAudit(ex1);
             String codError  = String.valueOf(CodigosErrorTienda.excepcion_generica);
             String descError = BSEExceptionTienda.getDescripcionError(CodigosErrorTienda.excepcion_generica);
             result.setCodigoError(codError);
@@ -256,6 +292,7 @@ public class EmisionViajerosTienda {
      * @param contrasena
      * @return
      */
+    @Audit(excludedParams = "arg1")
     @WebMethod
     public CoberturasMuerteTiendaResp consultaCoberturasMuerte( @WebParam(name = "usuario")    String usuario,
                                                                 @WebParam(name = "contrasena") String contrasena) {
@@ -263,12 +300,16 @@ public class EmisionViajerosTienda {
 
         CoberturasMuerteTiendaResp result = new CoberturasMuerteTiendaResp();
         try {
+        	AuditorManager.addStatusAudit(Constants.STATUS_OK);
             result.setCodigoError("00");
             result.setDescripcionError("");
             List<CoberturaMuerteTienda> lista = getEJBManager().consultaCoberturasMuerte(getDTSesion(usuario, contrasena));
             result.setCoberturasMuerte(lista);
 
         } catch (BSEExceptionTienda ex2) {
+        	AuditorManager.addStatusAudit(Constants.STATUS_ERROR);
+			AuditorManager.addExceptionAudit(ex2);
+			AuditorManager.LogExceptionAudit(ex2);
             String codError  = String.valueOf(ex2.getCodigoError());
             String descError = ex2.getDescripcion();
             result.setCodigoError(codError);
@@ -276,6 +317,9 @@ public class EmisionViajerosTienda {
             logger.error(logEncabezado + logError(codError, descError), ex2);
 
         } catch (Exception ex1) {
+        	AuditorManager.addStatusAudit(Constants.STATUS_ERROR);
+			AuditorManager.addExceptionAudit(ex1);
+			AuditorManager.LogExceptionAudit(ex1);
             String codError  = String.valueOf(CodigosErrorTienda.excepcion_generica);
             String descError = BSEExceptionTienda.getDescripcionError(CodigosErrorTienda.excepcion_generica);
             result.setCodigoError(codError);
@@ -295,6 +339,7 @@ public class EmisionViajerosTienda {
      * @param producto
      * @return
      */
+    @Audit(excludedParams = "arg1")
     @WebMethod
     public PlanesCoberturaTiendaResp consultaPlanesCobertura( @WebParam(name = "usuario")    String usuario,
                                                               @WebParam(name = "contrasena") String contrasena,
@@ -304,12 +349,16 @@ public class EmisionViajerosTienda {
 
         PlanesCoberturaTiendaResp result = new PlanesCoberturaTiendaResp();
         try {
+        	AuditorManager.addStatusAudit(Constants.STATUS_OK);
             result.setCodigoError("00");
             result.setDescripcionError("");
             List<PlanCoberturaTienda> lista = getComunEJBManager().consultaPlanesCobertura(getDTSesion(usuario, contrasena), ramo, producto);
             result.setPlanesCobertura(lista);
 
         } catch (BSEExceptionTienda ex2) {
+        	AuditorManager.addStatusAudit(Constants.STATUS_ERROR);
+			AuditorManager.addExceptionAudit(ex2);
+			AuditorManager.LogExceptionAudit(ex2);
             String codError  = String.valueOf(ex2.getCodigoError());
             String descError = ex2.getDescripcion();
             result.setCodigoError(codError);
@@ -317,6 +366,9 @@ public class EmisionViajerosTienda {
             logger.error(logEncabezado + logError(codError, descError), ex2);
 
         } catch (Exception ex1) {
+        	AuditorManager.addStatusAudit(Constants.STATUS_ERROR);
+			AuditorManager.addExceptionAudit(ex1);
+			AuditorManager.LogExceptionAudit(ex1);
             String codError  = String.valueOf(CodigosErrorTienda.excepcion_generica);
             String descError = BSEExceptionTienda.getDescripcionError(CodigosErrorTienda.excepcion_generica);
             result.setCodigoError(codError);
@@ -335,6 +387,7 @@ public class EmisionViajerosTienda {
      * @param plan
      * @return
      */
+    @Audit(excludedParams = "arg1")
     @WebMethod
     public PlanCoberturaTiendaResp consultaPlanCobertura( @WebParam(name = "usuario")    String usuario,
                                                           @WebParam(name = "contrasena") String contrasena,
@@ -343,6 +396,7 @@ public class EmisionViajerosTienda {
 
         PlanCoberturaTiendaResp result = new PlanCoberturaTiendaResp();
         try {
+        	AuditorManager.addStatusAudit(Constants.STATUS_OK);
             result.setCodigoError("00");
             result.setDescripcionError("");
             PlanCoberturaTienda planObj = getComunEJBManager().consultaPlanCobertura( getDTSesion(usuario, contrasena),
@@ -350,6 +404,9 @@ public class EmisionViajerosTienda {
             result.setPlanCobertura(planObj);
 
         } catch (BSEExceptionTienda ex2) {
+        	AuditorManager.addStatusAudit(Constants.STATUS_ERROR);
+			AuditorManager.addExceptionAudit(ex2);
+			AuditorManager.LogExceptionAudit(ex2);
             String codError  = String.valueOf(ex2.getCodigoError());
             String descError = ex2.getDescripcion();
             result.setCodigoError(codError);
@@ -357,6 +414,9 @@ public class EmisionViajerosTienda {
             logger.error(logEncabezado + logError(codError, descError), ex2);
 
         } catch (Exception ex1) {
+        	AuditorManager.addStatusAudit(Constants.STATUS_ERROR);
+			AuditorManager.addExceptionAudit(ex1);
+			AuditorManager.LogExceptionAudit(ex1);
             String codError  = String.valueOf(CodigosErrorTienda.excepcion_generica);
             String descError = BSEExceptionTienda.getDescripcionError(CodigosErrorTienda.excepcion_generica);
             result.setCodigoError(codError);
@@ -374,6 +434,7 @@ public class EmisionViajerosTienda {
      * @param contrasena
      * @return
      */
+    @Audit(excludedParams = "arg1")
     @WebMethod
     public PlanesPagoTiendaResp consultaPlanesPago( @WebParam(name = "usuario")    String usuario,
                                                     @WebParam(name = "contrasena") String contrasena ) {
@@ -381,12 +442,16 @@ public class EmisionViajerosTienda {
 
         PlanesPagoTiendaResp result = new PlanesPagoTiendaResp();
         try {
+        	AuditorManager.addStatusAudit(Constants.STATUS_OK);
             result.setCodigoError("00");
             result.setDescripcionError("");
             List<PlanPagoTienda> lista = getComunEJBManager().consultaPlanesPago(getDTSesion(usuario, contrasena));
             result.setPlanesPago(lista);
 
         } catch (BSEExceptionTienda ex2) {
+        	AuditorManager.addStatusAudit(Constants.STATUS_ERROR);
+			AuditorManager.addExceptionAudit(ex2);
+			AuditorManager.LogExceptionAudit(ex2);
             String codError  = String.valueOf(ex2.getCodigoError());
             String descError = ex2.getDescripcion();
             result.setCodigoError(codError);
@@ -394,6 +459,9 @@ public class EmisionViajerosTienda {
             logger.error(logEncabezado + logError(codError, descError), ex2);
 
         } catch (Exception ex1) {
+        	AuditorManager.addStatusAudit(Constants.STATUS_ERROR);
+			AuditorManager.addExceptionAudit(ex1);
+			AuditorManager.LogExceptionAudit(ex1);
             String codError  = String.valueOf(CodigosErrorTienda.excepcion_generica);
             String descError = BSEExceptionTienda.getDescripcionError(CodigosErrorTienda.excepcion_generica);
             result.setCodigoError(codError);
@@ -412,6 +480,7 @@ public class EmisionViajerosTienda {
      * @param plan
      * @return
      */
+    @Audit(excludedParams = "arg1")
     @WebMethod
     public PlanPagoTiendaResp consultaPlanPago( @WebParam(name = "usuario")    String usuario,
                                                 @WebParam(name = "contrasena") String contrasena,
@@ -420,12 +489,16 @@ public class EmisionViajerosTienda {
 
         PlanPagoTiendaResp result = new PlanPagoTiendaResp();
         try {
+        	AuditorManager.addStatusAudit(Constants.STATUS_OK);
             result.setCodigoError("00");
             result.setDescripcionError("");
             PlanPagoTienda planObj = getComunEJBManager().consultaPlanPago(getDTSesion(usuario, contrasena), plan);
             result.setPlanPago(planObj);
 
         } catch (BSEExceptionTienda ex2) {
+        	AuditorManager.addStatusAudit(Constants.STATUS_ERROR);
+			AuditorManager.addExceptionAudit(ex2);
+			AuditorManager.LogExceptionAudit(ex2);
             String codError  = String.valueOf(ex2.getCodigoError());
             String descError = ex2.getDescripcion();
             result.setCodigoError(codError);
@@ -433,6 +506,9 @@ public class EmisionViajerosTienda {
             logger.error(logEncabezado + logError(codError, descError), ex2);
 
         } catch (Exception ex1) {
+        	AuditorManager.addStatusAudit(Constants.STATUS_ERROR);
+			AuditorManager.addExceptionAudit(ex1);
+			AuditorManager.LogExceptionAudit(ex1);
             String codError  = String.valueOf(CodigosErrorTienda.excepcion_generica);
             String descError = BSEExceptionTienda.getDescripcionError(CodigosErrorTienda.excepcion_generica);
             result.setCodigoError(codError);

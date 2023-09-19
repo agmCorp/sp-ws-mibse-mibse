@@ -10,22 +10,27 @@ import javax.servlet.http.HttpServletRequest;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.bse.negocio.comun.BSEExceptionTienda;
-import com.bse.servicios.parametros.*;
+import com.bse.servicios.parametros.IParametrosTiendaEJBLocal;
 import com.bse.servicios.seguridad.dt.DTSesionTienda;
 
 @WebService(serviceName = "Parametros")
 public class ParametrosTienda {
+
+    private static final Logger logger = LogManager.getLogger(ParametrosTienda.class);
 
 @Resource
 private WebServiceContext wsContext;
 
 private IParametrosTiendaEJBLocal getEJBManager() throws NamingException {
     InitialContext ctx = new InitialContext();
-    IParametrosTiendaEJBLocal bean = (IParametrosTiendaEJBLocal) ctx.lookup("BseTiendaEar/ParametrosTiendaEJB/local");
+ //   IParametrosTiendaEJBLocal bean = (IParametrosTiendaEJBLocal) ctx.lookup("BseTiendaEar/ParametrosTiendaEJB/local");
+    IParametrosTiendaEJBLocal bean = (IParametrosTiendaEJBLocal) ctx.lookup("java:global/BseTiendaEar/BseTiendaEjb/ParametrosTiendaEJB!com.bse.servicios.parametros.IParametrosTiendaEJBLocal");
+
     return bean;
 }
 
@@ -36,7 +41,7 @@ private DTSesionTienda getDTSesion(String usuario, String contrasena) {
 }
 
 @WebMethod
-public String actualizarParametro(@WebParam(name = "usuario") String usuario, 
+public String actualizarParametro(@WebParam(name = "usuario") String usuario,
                                   @WebParam(name = "contrasena") String contrasena,
                                   @WebParam(name = "aplicacion") String aplicacion,
                                   @WebParam(name = "clave") String clave,
@@ -45,16 +50,18 @@ public String actualizarParametro(@WebParam(name = "usuario") String usuario,
     try {
     	return getEJBManager().actualizarParametro(getDTSesion(usuario, contrasena), aplicacion, clave, subclave, valor);
     } catch (BSEExceptionTienda ex2) {
-		Logger.getLogger(ParametrosTienda.class.getName()).log(Level.ERROR, null, ex2);
+		//Logger.getLogger(ParametrosTienda.class.getName()).log(Level.ERROR, null, ex2);
+        logger.log(Level.ERROR, "", ex2);
     } catch (Exception ex1) {
-		Logger.getLogger(ParametrosTienda.class.getName()).log(Level.ERROR, null, ex1);
+		//Logger.getLogger(ParametrosTienda.class.getName()).log(Level.ERROR, null, ex1);
+        logger.log(Level.ERROR, "", ex1);
 		ex1.printStackTrace();
     }
     return "ERROR";
 }
 
 @WebMethod
-public String agregarParametro(@WebParam(name = "usuario") String usuario, 
+public String agregarParametro(@WebParam(name = "usuario") String usuario,
                                @WebParam(name = "contrasena") String contrasena,
                                @WebParam(name = "aplicacion") String aplicacion,
                                @WebParam(name = "clave") String clave,
@@ -63,88 +70,100 @@ public String agregarParametro(@WebParam(name = "usuario") String usuario,
     try {
     	return getEJBManager().agregarParametro(getDTSesion(usuario, contrasena), aplicacion, clave, subclave, valor);
     } catch (BSEExceptionTienda ex2) {
-		Logger.getLogger(ParametrosTienda.class.getName()).log(Level.ERROR, null, ex2);
+		//Logger.getLogger(ParametrosTienda.class.getName()).log(Level.ERROR, null, ex2);
+        logger.log(Level.ERROR, "", ex2);
     } catch (Exception ex1) {
-		Logger.getLogger(ParametrosTienda.class.getName()).log(Level.ERROR, null, ex1);
+		//Logger.getLogger(ParametrosTienda.class.getName()).log(Level.ERROR, null, ex1);
+        logger.log(Level.ERROR, "", ex1);
 		ex1.printStackTrace();
     }
     return "ERROR";
 }
 
 @WebMethod
-public String agregarRol(@WebParam(name = "usuario") String usuario, 
+public String agregarRol(@WebParam(name = "usuario") String usuario,
                          @WebParam(name = "contrasena") String contrasena,
                          @WebParam(name = "rol") String rol) {
     try {
     	return getEJBManager().agregarRol(getDTSesion(usuario, contrasena), rol);
     } catch (BSEExceptionTienda ex2) {
-		Logger.getLogger(ParametrosTienda.class.getName()).log(Level.ERROR, null, ex2);
+		//Logger.getLogger(ParametrosTienda.class.getName()).log(Level.ERROR, null, ex2);
+        logger.log(Level.ERROR, "", ex2);
     } catch (Exception ex1) {
-		Logger.getLogger(ParametrosTienda.class.getName()).log(Level.ERROR, null, ex1);
+		//Logger.getLogger(ParametrosTienda.class.getName()).log(Level.ERROR, null, ex1);
+        logger.log(Level.ERROR, "", ex1);
 		ex1.printStackTrace();
     }
     return "ERROR";
 }
 
 @WebMethod
-public String agregarOperacion(@WebParam(name = "usuario") String usuario, 
+public String agregarOperacion(@WebParam(name = "usuario") String usuario,
                                @WebParam(name = "contrasena") String contrasena,
-                               @WebParam(name = "interfaz") String interfaz, 
-                               @WebParam(name = "metodo") String metodo, 
+                               @WebParam(name = "interfaz") String interfaz,
+                               @WebParam(name = "metodo") String metodo,
                                @WebParam(name = "activo") short activo) {
     try {
     	return getEJBManager().agregarOperacion(getDTSesion(usuario, contrasena), interfaz, metodo, activo);
     } catch (BSEExceptionTienda ex2) {
-		Logger.getLogger(ParametrosTienda.class.getName()).log(Level.ERROR, null, ex2);
+		//Logger.getLogger(ParametrosTienda.class.getName()).log(Level.ERROR, null, ex2);
+        logger.log(Level.ERROR, "", ex2);
     } catch (Exception ex1) {
-		Logger.getLogger(ParametrosTienda.class.getName()).log(Level.ERROR, null, ex1);
+		//Logger.getLogger(ParametrosTienda.class.getName()).log(Level.ERROR, null, ex1);
+        logger.log(Level.ERROR, "", ex1);
 		ex1.printStackTrace();
     }
     return "ERROR";
 }
 
 @WebMethod
-public String agregarRolOperacion(@WebParam(name = "usuario") String usuario, 
+public String agregarRolOperacion(@WebParam(name = "usuario") String usuario,
                                   @WebParam(name = "contrasena") String contrasena,
-                                  @WebParam(name = "rol") String rol, 
-                                  @WebParam(name = "interfaz") String interfaz, 
+                                  @WebParam(name = "rol") String rol,
+                                  @WebParam(name = "interfaz") String interfaz,
                                   @WebParam(name = "metodo") String metodo) {
     try {
     	return getEJBManager().agregarRolOperacion(getDTSesion(usuario, contrasena), rol, interfaz, metodo);
     } catch (BSEExceptionTienda ex2) {
-		Logger.getLogger(ParametrosTienda.class.getName()).log(Level.ERROR, null, ex2);
+		//Logger.getLogger(ParametrosTienda.class.getName()).log(Level.ERROR, null, ex2);
+        logger.log(Level.ERROR, "", ex2);
     } catch (Exception ex1) {
-		Logger.getLogger(ParametrosTienda.class.getName()).log(Level.ERROR, null, ex1);
+		//Logger.getLogger(ParametrosTienda.class.getName()).log(Level.ERROR, null, ex1);
+        logger.log(Level.ERROR, "", ex1);
 		ex1.printStackTrace();
     }
     return "ERROR";
 }
 
 @WebMethod
-public String agregarUsuarioRol(@WebParam(name = "usuario") String usuario, 
+public String agregarUsuarioRol(@WebParam(name = "usuario") String usuario,
                                 @WebParam(name = "contrasena") String contrasena,
-                                @WebParam(name = "rol") String rol, 
+                                @WebParam(name = "rol") String rol,
                                 @WebParam(name = "usuarioDelRol") String usuarioDelRol) {
     try {
     	return getEJBManager().agregarUsuarioRol(getDTSesion(usuario, contrasena), rol, usuarioDelRol);
     } catch (BSEExceptionTienda ex2) {
-		Logger.getLogger(ParametrosTienda.class.getName()).log(Level.ERROR, null, ex2);
+		//Logger.getLogger(ParametrosTienda.class.getName()).log(Level.ERROR, null, ex2);
+        logger.log(Level.ERROR, "", ex2);
     } catch (Exception ex1) {
-		Logger.getLogger(ParametrosTienda.class.getName()).log(Level.ERROR, null, ex1);
+		//Logger.getLogger(ParametrosTienda.class.getName()).log(Level.ERROR, null, ex1);
+        logger.log(Level.ERROR, "", ex1);
 		ex1.printStackTrace();
     }
     return "ERROR";
 }
 
 @WebMethod
-public String clearCache(@WebParam(name = "usuario") String usuario, 
+public String clearCache(@WebParam(name = "usuario") String usuario,
                          @WebParam(name = "contrasena") String contrasena) {
     try {
     	return getEJBManager().clearCache(getDTSesion(usuario, contrasena));
     } catch (BSEExceptionTienda ex2) {
-		Logger.getLogger(ParametrosTienda.class.getName()).log(Level.ERROR, null, ex2);
+		//Logger.getLogger(ParametrosTienda.class.getName()).log(Level.ERROR, null, ex2);
+        logger.log(Level.ERROR, "", ex2);
     } catch (Exception ex1) {
-		Logger.getLogger(ParametrosTienda.class.getName()).log(Level.ERROR, null, ex1);
+		//Logger.getLogger(ParametrosTienda.class.getName()).log(Level.ERROR, null, ex1);
+        logger.log(Level.ERROR, "", ex1);
 		ex1.printStackTrace();
     }
     return "ERROR";

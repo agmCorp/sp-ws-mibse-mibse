@@ -13,7 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.bse.accesodatos.comun.ItemCodiguera;
 import com.bse.accesodatos.eoperson.CotizacionOPersonalTienda;
@@ -30,7 +31,7 @@ import com.bse.servicios.ws.comun.ClienteDeudaTiendaResp;
 @WebService(serviceName = "EmisionOPersonal")
 public class EmisionOPersonalTienda {
 
-    private static final Logger logger = Logger.getLogger(EmisionOPersonalTienda.class);
+    private static final Logger logger = LogManager.getLogger(EmisionOPersonalTienda.class);
 
 
     @Resource
@@ -44,8 +45,12 @@ public class EmisionOPersonalTienda {
      */
     private IEmisionOPersonalTiendaEJBLocal getEJBManager() throws NamingException {
         InitialContext ctx = new InitialContext();
-        IEmisionOPersonalTiendaEJBLocal bean = (IEmisionOPersonalTiendaEJBLocal) 
-                                                            ctx.lookup("BseTiendaEar/EmisionOPersonalTiendaEJB/local");
+      //  IEmisionOPersonalTiendaEJBLocal bean = (IEmisionOPersonalTiendaEJBLocal)
+      //                                                      ctx.lookup("BseTiendaEar/EmisionOPersonalTiendaEJB/local");  IEmisionOPersonalTiendaEJBLocal bean = (IEmisionOPersonalTiendaEJBLocal)
+          IEmisionOPersonalTiendaEJBLocal bean = (IEmisionOPersonalTiendaEJBLocal)
+
+        ctx.lookup("java:global/BseTiendaEar/BseTiendaEjb/EmisionOPersonalTiendaEJB!com.bse.servicios.eoperson.IEmisionOPersonalTiendaEJBLocal");
+
         return bean;
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,8 +64,11 @@ public class EmisionOPersonalTienda {
      */
     private IEmisionComunTiendaEJBLocal getComunEJBManager() throws NamingException {
         InitialContext ctx = new InitialContext();
-        IEmisionComunTiendaEJBLocal bean = (IEmisionComunTiendaEJBLocal) 
-                                                            ctx.lookup("BseTiendaEar/EmisionComunTiendaEJB/local");
+      //  IEmisionComunTiendaEJBLocal bean = (IEmisionComunTiendaEJBLocal)
+       //                                                     ctx.lookup("BseTiendaEar/EmisionComunTiendaEJB/local");
+        IEmisionComunTiendaEJBLocal bean = (IEmisionComunTiendaEJBLocal)
+                ctx.lookup("java:global/BseTiendaEar/BseTiendaEjb/EmisionComunTiendaEJB!com.bse.servicios.comun.IEmisionComunTiendaEJBLocal");
+
         return bean;
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -140,7 +148,7 @@ public class EmisionOPersonalTienda {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
-     * Genera la póliza para el objeto personal indicado y de acuerdo a la cotización previamente realizada
+     * Genera la pï¿½liza para el objeto personal indicado y de acuerdo a la cotizaciï¿½n previamente realizada
      * @param usuario - OBLIGATORIO
      * @param contrasena - OBLIGATORIO
      * @param tipoDocumento - OBLIGATORIO

@@ -210,7 +210,7 @@ public class Logueo {
      */
     public void setExecMilis(final Long milisegundos) {
         if (milisegundos != null) {
-            this.ejecucion = new Double(milisegundos / 1000);
+            this.ejecucion = Double.valueOf(milisegundos / 1000);
         }
     }
 

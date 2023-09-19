@@ -159,11 +159,11 @@ public class Herramientas {
      * @return El valor por defecto que es el primer parametro recibido
      */
     public Integer checkValorPropertiesNumerico(Integer valorDefecto, String valorComprobar){
-        Integer codigo = new Integer(valorDefecto);
+        Integer codigo = Integer.valueOf(valorDefecto);
 
         if(valorComprobar != null){
             if(isNumeric(valorComprobar)){
-                codigo = new Integer(valorComprobar);
+                codigo = Integer.valueOf(valorComprobar);
             }
         }
 

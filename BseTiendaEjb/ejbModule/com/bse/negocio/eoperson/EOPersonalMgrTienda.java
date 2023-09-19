@@ -9,7 +9,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.bse.accesodatos.comun.CretTablasTienda;
 import com.bse.accesodatos.comun.ItemCodiguera;
@@ -33,7 +34,7 @@ import com.bse.servicios.utilitario.log.Logueo;
 
 public class EOPersonalMgrTienda implements IEOPersonalTienda {
 
-    private static final Logger logger = Logger.getLogger(EOPersonalMgrTienda.class);
+    private static final Logger logger = LogManager.getLogger(EOPersonalMgrTienda.class);
 
     /**
      * CONSTRUCTOR
@@ -84,10 +85,15 @@ public class EOPersonalMgrTienda implements IEOPersonalTienda {
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // CONTROL de PARAMETROS - OBLIGATORIEDAD
         short er = -1;
-        if      (planCobertura == null || planCobertura.equals(""))     er = CodigosErrorTienda.plan_cobertura_invalido;
-        else if (tipoObjeto    == null || tipoObjeto.equals(""))        er = CodigosErrorTienda.tipo_objeto_invalido;
-        else if (valorObjeto   == null || valorObjeto.doubleValue()<=0) er = CodigosErrorTienda.valor_objeto_invalido;
-        else if (tipoMovilidad == null || tipoMovilidad.equals(""))     er = CodigosErrorTienda.tipo_movilidad_invalida;
+        if      ((planCobertura == null) || planCobertura.equals("")) {
+            er = CodigosErrorTienda.plan_cobertura_invalido;
+        } else if ((tipoObjeto    == null) || tipoObjeto.equals("")) {
+            er = CodigosErrorTienda.tipo_objeto_invalido;
+        } else if ((valorObjeto   == null) || (valorObjeto.doubleValue()<=0)) {
+            er = CodigosErrorTienda.valor_objeto_invalido;
+        } else if ((tipoMovilidad == null) || tipoMovilidad.equals("")) {
+            er = CodigosErrorTienda.tipo_movilidad_invalida;
+        }
         if ( er > -1 ) { throw new BSEExceptionTienda(er); }
         logger.info(logEncabezado + " - PARAMETROS - OK");
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -102,7 +108,7 @@ public class EOPersonalMgrTienda implements IEOPersonalTienda {
         String  producto      = CodigosTienda.getCodigos().getProductoEmisionOPersonal(em);           // "RD04"
         String  productor     = CodigosTienda.getCodigos().getProductorEmisionOPersonal(em);          // "1"
         Date    fechaDesde    = new Date();
-        Integer planPago      = new Integer(0);
+        Integer planPago      = Integer.valueOf(0);
 
         String  moneda        = CodigosTienda.getCodigos().getMonedaEmisionOPersonal(em);             // "37"
         String  tipoCalculo   = CodigosTienda.getCodigos().getTipoCalculoEmisionOPersonal(em).trim(); // "N"
@@ -122,7 +128,7 @@ public class EOPersonalMgrTienda implements IEOPersonalTienda {
         logger.info(logEncabezado + " - DATOS desde CONFIGURACION - OK");
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        // LOGUEO PARAMETROS de la Invocación PL
+        // LOGUEO PARAMETROS de la Invocaciï¿½n PL
         logGuiones(logEncabezado);
         logCotizarOPersonalPl2( logEncabezado, "PACK_EMI_MIBSE.PRO_COTIZAR_VARIOS",
                                 tipoDocumento, documento , sucursal       , ramo       , producto,
@@ -196,7 +202,7 @@ public class EOPersonalMgrTienda implements IEOPersonalTienda {
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // En caso de ERROR, se retorna el error especificado por el PL
-        if (r[6] != null && !((String)r[6]).equals("0")) {
+        if ((r[6] != null) && !((String)r[6]).equals("0")) {
             String codError  = (String)r[6];
             String descError = (r[7]!=null)?((String)r[7]):"";
             BSEExceptionTienda exc = new BSEExceptionTienda(CodigosErrorTienda.error_cotizacion_rector, descError);
@@ -215,7 +221,7 @@ public class EOPersonalMgrTienda implements IEOPersonalTienda {
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        int nroCotizacion      = (r[0] != null)?((Integer)r[0]).intValue():0;   // - PL OUT - P_COTIZACION_EMITIDA
+        int nroCotizacion      = (r[0] != null)?((Long)r[0]).intValue():0;   // - PL OUT - P_COTIZACION_EMITIDA
         double premio          = (r[1] != null)?((Double)r[1]).doubleValue():0; // - PL OUT - P_PREMIO_COTIZACION
         double premioAFacturar = (r[2] != null)?((Double)r[2]).doubleValue():0; // - PL OUT - P_PREMIO_COTIZACION_FACTURAR
         Date   fechaHasta      = (Date)r[3];                                    // - PL OUT - P_FECHA_HASTA
@@ -326,7 +332,7 @@ public class EOPersonalMgrTienda implements IEOPersonalTienda {
                 String plan = planes[i];  // 3;3;4875;1:1625#2:1625#3:1625#
                 //logger.info("PLAN de " + i + " [" + plan + "]"); // PLAN de 3 [3;3;209.69;1:69.89#2:69.89#3:69.91#]
 
-                if (plan == null || plan.equals("")) { continue; }
+                if ((plan == null) || plan.equals("")) { continue; }
 
                 String[] partes = plan.split(";");
                 // Para EJEMPLO : PLAN = 3;3;4875;1:1625#2:1625#3:1625#
@@ -428,21 +434,29 @@ public class EOPersonalMgrTienda implements IEOPersonalTienda {
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // CONTROL de PARAMETROS - OBLIGATORIEDAD
         short er = -1;
-        if      (tipoDocumento == null || tipoDocumento.equals("") )     er = CodigosErrorTienda.tipo_documento_invalido;
-        else if (documento     == null || documento.equals("") )         er = CodigosErrorTienda.documento_invalido;
-        else if (      (marca  == null || marca.equals(""))
-                 ||    (serie  == null || serie.equals(""))
-                 ||    (modelo == null || modelo.equals("")) )           er = CodigosErrorTienda.faltan_datos_opersonales;
-        else if (nroCotizacion <= 0)                                     er = CodigosErrorTienda.cotizacion_invalida;
-        else if (planPago      == null || planPago.equals("") )          er = CodigosErrorTienda.plan_pago_invalido;
-        else if ( fechaFactura == null )                                 er = CodigosErrorTienda.fecha_factura_invalida;
-        else if (!consumoFinal.equals("S") && !consumoFinal.equals("N")) er = CodigosErrorTienda.consumidor_final_invalido;
+        if      ((tipoDocumento == null) || tipoDocumento.equals("") ) {
+            er = CodigosErrorTienda.tipo_documento_invalido;
+        } else if ((documento     == null) || documento.equals("") ) {
+            er = CodigosErrorTienda.documento_invalido;
+        } else if (      ((marca  == null) || marca.equals(""))
+                 ||    ((serie  == null) || serie.equals(""))
+                 ||    ((modelo == null) || modelo.equals("")) ) {
+            er = CodigosErrorTienda.faltan_datos_opersonales;
+        } else if (nroCotizacion <= 0) {
+            er = CodigosErrorTienda.cotizacion_invalida;
+        } else if ((planPago      == null) || planPago.equals("") ) {
+            er = CodigosErrorTienda.plan_pago_invalido;
+        } else if ( fechaFactura == null ) {
+            er = CodigosErrorTienda.fecha_factura_invalida;
+        } else if (!consumoFinal.equals("S") && !consumoFinal.equals("N")) {
+            er = CodigosErrorTienda.consumidor_final_invalido;
+        }
         if ( er > -1 ) { throw new BSEExceptionTienda(er); }
         logger.info(logEncabezado + " - PARAMETROS - OK");
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Valida Fecha Factura - Con MENOS de 1 AÑO de ANTIGUEDAD y NO SER una fecha futura
+        // Valida Fecha Factura - Con MENOS de 1 Aï¿½O de ANTIGUEDAD y NO SER una fecha futura
         String sqlFecha = "SELECT TO_NUMBER(TO_CHAR(TRUNC(SYSDATE), 'YYYYMMDD')), "
                         +        "TO_NUMBER(TO_CHAR(ADD_MONTHS(TRUNC(SYSDATE), -12), 'YYYYMMDD')), "
                         +        "TO_NUMBER(TO_CHAR(TRUNC(?), 'YYYYMMDD')) "
@@ -463,12 +477,12 @@ public class EOPersonalMgrTienda implements IEOPersonalTienda {
                    + Integer.toString(fechaFacturaInt) + "] Fecha Actual=[" + Integer.toString(fechaDiaActual) + "]");
             throw new BSEExceptionTienda(CodigosErrorTienda.fecha_factura_invalida);
         } else if (fechaFacturaInt < fechaUnAnioAtras) {
-            logger.info(logEncabezado + " - Fecha Factura con MAS de 1 AÑO de ANTIGUEDAD - Fecha Factura=["
-                   + Integer.toString(fechaFacturaInt)+"] Fecha de 1 año atras=["+Integer.toString(fechaUnAnioAtras)+"]");
+            logger.info(logEncabezado + " - Fecha Factura con MAS de 1 Aï¿½O de ANTIGUEDAD - Fecha Factura=["
+                   + Integer.toString(fechaFacturaInt)+"] Fecha de 1 aï¿½o atras=["+Integer.toString(fechaUnAnioAtras)+"]");
             throw new BSEExceptionTienda(CodigosErrorTienda.fecha_factura_invalida);
         }
-        logger.info(logEncabezado +" - FECHA FACTURA (ANTIGUEDAD) - OK - MENOS de 1 AÑO de ANTIGUEDAD - Fecha Factura["
-                + Integer.toString(fechaFacturaInt) + "] >= Fecha 1 año atras["+Integer.toString(fechaUnAnioAtras)+"]");
+        logger.info(logEncabezado +" - FECHA FACTURA (ANTIGUEDAD) - OK - MENOS de 1 Aï¿½O de ANTIGUEDAD - Fecha Factura["
+                + Integer.toString(fechaFacturaInt) + "] >= Fecha 1 aï¿½o atras["+Integer.toString(fechaUnAnioAtras)+"]");
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -485,12 +499,13 @@ public class EOPersonalMgrTienda implements IEOPersonalTienda {
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Valida Nro. Cotizacion
         boolean cotizacionOk = eComunManager.validarExistenciaCotizacion( em, sucursal, nroCotizacion, ramo, producto );
-        if (!cotizacionOk)
+        if (!cotizacionOk) {
             throw new BSEExceptionTienda(CodigosErrorTienda.cotizacion_invalida);
+        }
         logger.info(logEncabezado + " - NRO. COTIZACION - OK");
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        // LOGUEO PARAMETROS de la Invocación PL
+        // LOGUEO PARAMETROS de la Invocaciï¿½n PL
         logGuiones(logEncabezado);
         logEmitirOPersonalPl2( logEncabezado, "PACK_EMI_MIBSE.PRO_EMITIR_VARIOS",
                                tipoDocumento, documento,
@@ -531,7 +546,7 @@ public class EOPersonalMgrTienda implements IEOPersonalTienda {
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // LOGUEO de RESULTADO obtenidos
-        //      -> R[0]  = P_POLIZA_EMITIDA              - type=Long.class
+        //      -> R[0]  = P_POLIZA_EMITIDA              - type=Integer.class
         //      -> R[1]  = P_PREMIO_COTIZACION           - type=Float.class
         //      -> R[2]  = P_PREMIO_COTIZACION_FACTURAR  - type=Float.class
         //      -> R[3]  = P_FECHA_DESDE                 - type=Date.class
@@ -675,7 +690,7 @@ public class EOPersonalMgrTienda implements IEOPersonalTienda {
 
             ArrayList<CuotaPagoTienda> listaCuotas = new ArrayList<CuotaPagoTienda>();
             for(int z = 0; z < vecCuotas.length; z++){
-              if (vecCuotas[z] != null && !vecCuotas[z].trim().equals("")){
+              if ((vecCuotas[z] != null) && !vecCuotas[z].trim().equals("")){
                 CuotaPagoTienda cuota = new CuotaPagoTienda();
 
                 int inicio = vecCuotas[z].indexOf("<nrocuota>")+"<nrocuota>".length();
@@ -773,11 +788,11 @@ public class EOPersonalMgrTienda implements IEOPersonalTienda {
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // GENERAR RESULTADO - PLANES de COBERTURA registrados en BASE pero que además estén indicados por CONFIGURACION
+        // GENERAR RESULTADO - PLANES de COBERTURA registrados en BASE pero que ademï¿½s estï¿½n indicados por CONFIGURACION
         ArrayList<PlanCoberturaTienda> lista = new ArrayList<PlanCoberturaTienda>();
-        if (result != null && result.size() > 0) {
+        if ((result != null) && (result.size() > 0)) {
             for (int i = 0; i < result.size(); i++) {
-                PlanCoberturaTienda pc = (PlanCoberturaTienda)result.get(i);
+                PlanCoberturaTienda pc = result.get(i);
                 if ( map.containsKey(pc.getPlan()) ) { // Verifico si esta en MAP
                     //pc.setDescripcion(map.get(pc.getPlan())); // Descripcion - Desde configuracion y no de base de datos
                     //lista.add(pc);
@@ -835,11 +850,11 @@ public class EOPersonalMgrTienda implements IEOPersonalTienda {
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // GENERAR RESULTADO - TIPOS de OBJETOS registrados en BASE pero que además estén indicados por CONFIGURACION
+        // GENERAR RESULTADO - TIPOS de OBJETOS registrados en BASE pero que ademï¿½s estï¿½n indicados por CONFIGURACION
         ArrayList<ItemCodiguera> lista = new ArrayList<ItemCodiguera>();
-        if (result != null && result.size() > 0) {
+        if ((result != null) && (result.size() > 0)) {
             for (int i = 0; i < result.size(); i++) {
-                CretTablasTienda tabla = (CretTablasTienda) result.get(i);
+                CretTablasTienda tabla = result.get(i);
                 if ( map.containsKey(tabla.getDato1()) ) { // Verifico si esta en MAP
                     ItemCodiguera tipo = new ItemCodiguera(tabla.getDato1(), tabla.getDescripcion());
                     lista.add(tipo);
@@ -890,11 +905,11 @@ public class EOPersonalMgrTienda implements IEOPersonalTienda {
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // GENERAR RESULTADO - TIPOS de MOVILIDAD registrados en BASE pero que además estén indicados por CONFIGURACION
+        // GENERAR RESULTADO - TIPOS de MOVILIDAD registrados en BASE pero que ademï¿½s estï¿½n indicados por CONFIGURACION
         ArrayList<ItemCodiguera> lista = new ArrayList<ItemCodiguera>();
-        if (result != null && result.size() > 0) {
+        if ((result != null) && (result.size() > 0)) {
             for (int i = 0; i < result.size(); i++) {
-                CretTablasTienda tabla = (CretTablasTienda) result.get(i);
+                CretTablasTienda tabla = result.get(i);
                 if ( map.containsKey(tabla.getDato1()) ) { // Verifico si esta en MAP
                     ItemCodiguera tipo = new ItemCodiguera(tabla.getDato1(), tabla.getDescripcion());
                     lista.add(tipo);

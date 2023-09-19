@@ -1,31 +1,35 @@
 package com.bse.negocio.seguridad;
 
-import com.bse.accesodatos.comun.PatUsuarioIpTienda;
-import com.bse.accesodatos.comun.PatUsuarioIpPKTienda;
-import com.bse.accesodatos.seguridad.PatOperacionTienda;
-import com.bse.accesodatos.seguridad.PatOperacionPKTienda;
-import com.bse.accesodatos.seguridad.PatRolTienda;
-import com.bse.accesodatos.seguridad.PatSesionTienda;
-import com.bse.accesodatos.seguridad.PatUsuarioTienda;
-import com.bse.servicios.seguridad.dt.DTSesionTienda;
-import com.bse.negocio.comun.CodigosTienda;
-import com.bse.negocio.comun.CodigosErrorTienda;
-import com.bse.negocio.comun.BSEExceptionTienda;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
-
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import javax.persistence.EntityManager;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.bse.accesodatos.comun.PatUsuarioIpPKTienda;
+import com.bse.accesodatos.comun.PatUsuarioIpTienda;
+import com.bse.accesodatos.seguridad.PatOperacionPKTienda;
+import com.bse.accesodatos.seguridad.PatOperacionTienda;
+import com.bse.accesodatos.seguridad.PatRolTienda;
+import com.bse.accesodatos.seguridad.PatSesionTienda;
+import com.bse.accesodatos.seguridad.PatUsuarioTienda;
+import com.bse.negocio.comun.BSEExceptionTienda;
+import com.bse.negocio.comun.CodigosErrorTienda;
+import com.bse.negocio.comun.CodigosTienda;
+import com.bse.servicios.seguridad.dt.DTSesionTienda;
+
 public class SeguridadMgrTienda implements ISeguridadTienda {
+
+    private static final Logger logger = LogManager.getLogger(SeguridadMgrTienda.class);
+
 
     private SeguridadMgrTienda() {
     }
@@ -35,15 +39,16 @@ public class SeguridadMgrTienda implements ISeguridadTienda {
     }
 
    // @Override
+    @Override
     public short validarCredenciales(EntityManager em, DTSesionTienda sesion, String interfaz, String metodo) {
         //logger.info("SeguridadMgrTienda - SEGURIDAD - validarCredenciales - TIENDA");
     	//System.out.println("*****************Usuario " + sesion.getNombreUsuario());
     	//System.out.println("*****************interfaz " + interfaz);
     	//System.out.println("*****************metodo " + metodo);
-    	
+
         if (sesion.getNombreUsuario() != null) {
         	PatUsuarioTienda us = em.find(PatUsuarioTienda.class, sesion.getNombreUsuario());
-       	
+
             short cred = auditarCredenciales(em, sesion, us, interfaz, metodo);
             if ((cred == CodigosTienda.login_ok) || (cred == CodigosErrorTienda.debe_cambiar_contrasena)) {
                 us.setContador((short) 0);
@@ -92,7 +97,7 @@ public class SeguridadMgrTienda implements ISeguridadTienda {
         }
         return hexString.toString();
     }
-    
+
     private boolean validarIP(EntityManager em, DTSesionTienda sesion, PatUsuarioTienda us) {
         if (us.getValidarIp() == 1) {
             PatUsuarioIpTienda ent = em.find(PatUsuarioIpTienda.class, new PatUsuarioIpPKTienda(sesion.getNombreUsuario(), sesion.getDireccionIp()));
@@ -112,17 +117,18 @@ public class SeguridadMgrTienda implements ISeguridadTienda {
                 if (validarIP(em, sesion, us)) {
                     String contrasenaMD5;
                     try {
-                        contrasenaMD5 = encriptarContrasena(contrasena);                       
+                        contrasenaMD5 = encriptarContrasena(contrasena);
                     } catch (NoSuchAlgorithmException ex) {
-                        Logger.getLogger(SeguridadMgrTienda.class.getName()).log(Level.ERROR, "login_error_otros", ex);
+                        //Logger.getLogger(SeguridadMgrTienda.class.getName()).log(Level.ERROR, "login_error_otros", ex);
+                        logger.log(Level.ERROR, "login_error_otros", ex);
                         return CodigosErrorTienda.excepcion_generica;
                     }
-                    
+
                     //System.out.println("BASE->" + us.getContrasena().trim());
                     //System.out.println("MD5 ->" + contrasenaMD5.trim());
-                    
+
                     if (us.getContrasena().trim().equalsIgnoreCase(contrasenaMD5)) {
-                        //System.out.println("ENTRO CONTRASEÑA IGUAL");
+                        //System.out.println("ENTRO CONTRASEï¿½A IGUAL");
                         //System.out.println("Interfaz buscada: " + interfaz);
                         //System.out.println("Metodo   buscado: " + metodo);
                         for (PatRolTienda r : us.getPatRolList()) {
@@ -141,34 +147,40 @@ public class SeguridadMgrTienda implements ISeguridadTienda {
                                 }
                             }
                         }
-                        Logger.getLogger(SeguridadMgrTienda.class.getName()).log(Level.INFO, "login_error_credenciales");
+                        //Logger.getLogger(SeguridadMgrTienda.class.getName()).log(Level.INFO, "login_error_credenciales");
+                        logger.log(Level.INFO, "login_error_credenciales");
                         return CodigosErrorTienda.login_error_credenciales;
                     } else {
-                    	
+
                     	//System.out.println("*****************PASS IGUALES? " + us.getContrasena().trim().equalsIgnoreCase(contrasenaMD5));
-                    	
-                        Logger.getLogger(SeguridadMgrTienda.class.getName()).log(Level.INFO, "login_error_usuario_contrasena");
+
+                        //Logger.getLogger(SeguridadMgrTienda.class.getName()).log(Level.INFO, "login_error_usuario_contrasena");
+                        logger.log(Level.INFO, "login_error_usuario_contrasena");
                         return CodigosErrorTienda.login_error_usuario_contrasena;
                     }
                 } else {
-                    Logger.getLogger(SeguridadMgrTienda.class.getName()).log(Level.INFO, "login_error_ip_invalida");
+                    //Logger.getLogger(SeguridadMgrTienda.class.getName()).log(Level.INFO, "login_error_ip_invalida");
+                    logger.log(Level.INFO, "login_error_ip_invalida");
                     return CodigosErrorTienda.login_error_ip_invalida;
                 }
             } else {
                 //System.out.println("us.getFechaFin() :" + ((us!=null&&us.getFechaFin()!=null)?us.getFechaFin().toString():null));
                 //System.out.println("compare :" +(us.getFechaFin().compareTo(new Date())));
-                Logger.getLogger(SeguridadMgrTienda.class.getName()).log(Level.INFO, "login_error_usuario_bloqueado");
+                //Logger.getLogger(SeguridadMgrTienda.class.getName()).log(Level.INFO, "login_error_usuario_bloqueado");
+                logger.log(Level.INFO, "login_error_usuario_bloqueado");
                 return CodigosErrorTienda.login_error_usuario_bloqueado;
             }
         } else {
         	//System.out.println("*****************US NULO? " + us);
 
-            Logger.getLogger(SeguridadMgrTienda.class.getName()).log(Level.INFO, "login_error_usuario_contrasena");
+            //Logger.getLogger(SeguridadMgrTienda.class.getName()).log(Level.INFO, "login_error_usuario_contrasena");
+            logger.log(Level.INFO, "login_error_usuario_contrasena");
             return CodigosErrorTienda.login_error_usuario_contrasena;
         }
     }
-    
+
     //@Override
+    @Override
     public long crearSesion(EntityManager em, DTSesionTienda sesion, String interfaz, String metodo, short resultado, String parametros) {
         String usuario = sesion.getNombreUsuario();
         if (usuario == null) {
@@ -192,6 +204,7 @@ public class SeguridadMgrTienda implements ISeguridadTienda {
         return s.getIdSesion();
     }
 
+    @Override
     public void cambiarContrasena(EntityManager em, DTSesionTienda sesion, String nuevaContrasena) throws BSEExceptionTienda, NoSuchAlgorithmException {
         System.out.println("SeguridadMgrTienda - SEGURIDAD - cambiarContrasena - TIENDA");
         Pattern pattern;

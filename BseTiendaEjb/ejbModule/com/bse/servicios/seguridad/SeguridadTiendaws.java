@@ -25,6 +25,7 @@ public class SeguridadTiendaws {
     @AroundInvoke
     public Object auditarCredenciales(InvocationContext inv) throws Exception {
         String interfaz = inv.getTarget().getClass().getSimpleName().split("_")[0];
+     
         String metodo = inv.getMethod().getName().trim();
         Object[] params = inv.getParameters();
         DTSesionTienda sesion = (DTSesionTienda) params[0];

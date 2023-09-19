@@ -4,10 +4,12 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.bse.accesodatos.comun.CretTablasTienda;
 import com.bse.accesodatos.esoa.CategoriaVehiculoTienda;
@@ -17,22 +19,22 @@ import com.bse.accesodatos.esoa.MarcaVehiculoTienda;
 import com.bse.accesodatos.esoa.MonedaTienda;
 import com.bse.accesodatos.esoa.PlanCoberturaTienda;
 import com.bse.accesodatos.esoa.PlanPagoTienda;
-import com.bse.accesodatos.esoa.PolizaPortalTienda;
 import com.bse.accesodatos.esoa.PolizaPortalPKTienda;
+import com.bse.accesodatos.esoa.PolizaPortalTienda;
 import com.bse.accesodatos.esoa.PolizaSoaTienda;
 import com.bse.accesodatos.esoa.ProductoTienda;
 import com.bse.accesodatos.esoa.RamoTienda;
 import com.bse.negocio.FabricaNegocioTienda;
 import com.bse.negocio.comun.BSEExceptionTienda;
-import com.bse.negocio.comun.CodigosTienda;
 import com.bse.negocio.comun.CodigosErrorTienda;
+import com.bse.negocio.comun.CodigosTienda;
 import com.bse.negocio.comun.IEComunTienda;
 import com.bse.negocio.comun.UtilTienda;
 import com.bse.servicios.utilitario.log.Logueo;
 
 public class ESoaMgrTienda implements IESoaTienda{
 
-    private static final Logger logger = Logger.getLogger(ESoaMgrTienda.class);
+    private static final Logger logger = LogManager.getLogger(ESoaMgrTienda.class);
 
     /**
      * CONSTRUCTOR
@@ -84,14 +86,18 @@ public class ESoaMgrTienda implements IESoaTienda{
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // CONTROL de PARAMETROS - OBLIGATORIEDAD
-        if (marcaVehiculo == null || marcaVehiculo.equals(""))
+        if ((marcaVehiculo == null) || marcaVehiculo.equals("")) {
             throw new BSEExceptionTienda(CodigosErrorTienda.marca_vehiculo_invalida);
-        if (anioVehiculo == null || anioVehiculo.equals(""))
+        }
+        if ((anioVehiculo == null) || anioVehiculo.equals("")) {
             throw new BSEExceptionTienda(CodigosErrorTienda.anio_vehiculo_invalido);
-        if (categoriaVehiculo == null || categoriaVehiculo.equals(""))
+        }
+        if ((categoriaVehiculo == null) || categoriaVehiculo.equals("")) {
             throw new BSEExceptionTienda(CodigosErrorTienda.categoria_vehiculo_invalida);
-        if (planCobertura == null || planCobertura.equals(""))
+        }
+        if ((planCobertura == null) || planCobertura.equals("")) {
             throw new BSEExceptionTienda(CodigosErrorTienda.plan_cobertura_invalido);
+        }
 
         // Valida Plan de Pago segun configuracion
         String planesPago = CodigosTienda.getCodigos().getPlanesPagoSoa(em);
@@ -105,8 +111,9 @@ public class ESoaMgrTienda implements IESoaTienda{
                 i = planesVec.length;
             }
         }
-        if (!planValido)
+        if (!planValido) {
             throw new BSEExceptionTienda(CodigosErrorTienda.plan_pago_invalido);
+        }
 
         logger.info(logEncabezado + " - PARAMETROS - OK");
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -144,7 +151,7 @@ public class ESoaMgrTienda implements IESoaTienda{
         logger.info(logEncabezado + " - DATOS desde CONFIGURACION - OK");
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        // LOGUEO PARAMETROS de la Invocación PL
+        // LOGUEO PARAMETROS de la Invocaciï¿½n PL
         logGuiones(logEncabezado);
         logCotizarSoaPl2( logEncabezado, "PACK_EMI_MIBSE.PRO_COTIZAR_SOA",
                           tipoDocumento , documento        , sucursal         , ramoSoa       ,
@@ -223,7 +230,7 @@ public class ESoaMgrTienda implements IESoaTienda{
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // En caso de ERROR, se retorna el error especificado por el PL
-        if (r[6] != null && !((String)r[6]).equals("0")) {
+        if ((r[6] != null) && !((String)r[6]).equals("0")) {
             String codError  = (String)r[6];
             String descError = (r[7]!=null)?((String)r[7]):"";
             // 16/09/2022 - SCapretti - Definicion Leticia - Conversado telefonicamente
@@ -258,8 +265,9 @@ public class ESoaMgrTienda implements IESoaTienda{
         cotizacion.setSucursal(sucursal);
 
         cotizacion.setNroCotizacion(0);
-        if (r[0] != null)
-            cotizacion.setNroCotizacion(((Integer)r[0]).intValue());
+        if (r[0] != null) {
+            cotizacion.setNroCotizacion(((Long)r[0]).intValue());
+        }
 
         cotizacion.setTipoDocumento("");
         cotizacion.setNroDocumento("");
@@ -269,12 +277,14 @@ public class ESoaMgrTienda implements IESoaTienda{
         cotizacion.setMoneda(monedaObj);
 
         cotizacion.setPremio(0);
-        if (r[1] != null)
+        if (r[1] != null) {
             cotizacion.setPremio(((Double)r[1]).doubleValue());
+        }
 
         cotizacion.setPremioFacturar(0);
-        if (r[2] != null)
+        if (r[2] != null) {
             cotizacion.setPremioFacturar(((Double)r[2]).doubleValue());
+        }
 
         cotizacion.setFechaDesde(fechaDesde);
         cotizacion.setFechaHasta((Date)r[3]);
@@ -283,7 +293,7 @@ public class ESoaMgrTienda implements IESoaTienda{
         planPagoObj.setCodigo(planPago);
         cotizacion.setPlanPago(planPagoObj);
 
-        MarcaVehiculoTienda marca = this.consultaMarcaVehiculo(em, marcaVehiculo);
+        MarcaVehiculoTienda marca = consultaMarcaVehiculo(em, marcaVehiculo);
         cotizacion.setMarcaVehiculo(marca);
 
         CategoriaVehiculoTienda categoria = consultaCategoriaVehiculo(em, categoriaVehiculo);
@@ -351,17 +361,22 @@ public class ESoaMgrTienda implements IESoaTienda{
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // CONTROL de PARAMETROS - OBLIGATORIEDAD
-        if (tipoDocumento == null || tipoDocumento.equals(""))
+        if ((tipoDocumento == null) || tipoDocumento.equals("")) {
             throw new BSEExceptionTienda(CodigosErrorTienda.tipo_documento_invalido);
-        if (documento == null || documento.equals(""))
+        }
+        if ((documento == null) || documento.equals("")) {
             throw new BSEExceptionTienda(CodigosErrorTienda.documento_invalido);
-        if (nroCotizacion == 0)
+        }
+        if (nroCotizacion == 0) {
             throw new BSEExceptionTienda(CodigosErrorTienda.cotizacion_invalida);
-        if (!consumoFinal.equals("S") && !consumoFinal.equals("N"))
+        }
+        if (!consumoFinal.equals("S") && !consumoFinal.equals("N")) {
             throw new BSEExceptionTienda(CodigosErrorTienda.consumidor_final_invalido);
-        if ( (matriculaVehiculo == null || matriculaVehiculo.equals("")) &&
-             (chasisVehiculo == null || chasisVehiculo.equals("")) )
+        }
+        if ( ((matriculaVehiculo == null) || matriculaVehiculo.equals("")) &&
+             ((chasisVehiculo == null) || chasisVehiculo.equals("")) ) {
             throw new BSEExceptionTienda(CodigosErrorTienda.matricula_vehiculo_invalida);
+        }
         logger.info(logEncabezado + " - PARAMETROS - OK");
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -390,19 +405,20 @@ public class ESoaMgrTienda implements IESoaTienda{
         @SuppressWarnings("unchecked")
         List<Object[]> resultCot = queryCot.getResultList();
 
-        if (resultCot == null || resultCot.size() == 0)
+        if ((resultCot == null) || (resultCot.size() == 0)) {
             throw new BSEExceptionTienda(CodigosErrorTienda.cotizacion_invalida);
+        }
         logger.info(logEncabezado + " - NRO. COTIZACION - OK");
 
         int planPago = 0;
         for (int i = 0; i < resultCot.size(); i++) {
-            Object[] row = (Object[]) resultCot.get(i);
+            Object[] row = resultCot.get(i);
             planPago = ((BigDecimal)row[0]).intValue();
         }
         logger.info(logEncabezado + " - PLAN de PAGO desde COTIZACION - [" + Integer.toString(planPago) + "]");
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        // LOGUEO PARAMETROS de la Invocación PL
+        // LOGUEO PARAMETROS de la Invocaciï¿½n PL
         logGuiones(logEncabezado);
         logEmitirSoaPl2( logEncabezado, "PACK_EMI_MIBSE.PRO_EMITIR_SOA",
                          tipoDocumento    , documento     , sucursal     , ramoSoa       , productoSoa,
@@ -438,7 +454,7 @@ public class ESoaMgrTienda implements IESoaTienda{
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // LOGUEO de RESULTADO obtenidos
-        //      -> R[0]  = P_POLIZA_EMITIDA              - type=Long.class
+        //      -> R[0]  = P_POLIZA_EMITIDA              - type=Integer.class
         //      -> R[1]  = P_PREMIO_COTIZACION           - type=Float.class
         //      -> R[2]  = P_PREMIO_COTIZACION_FACTURAR  - type=Float.class
         //      -> R[3]  = P_MARCA_VEHICULO              - type=String.class
@@ -547,7 +563,7 @@ public class ESoaMgrTienda implements IESoaTienda{
 
         ArrayList<CuotaPagoTienda> listaCuotas = new ArrayList<CuotaPagoTienda>();
         for(int z = 0; z < vecCuotas.length; z++){
-            if (vecCuotas[z] != null && !vecCuotas[z].trim().equals("")){
+            if ((vecCuotas[z] != null) && !vecCuotas[z].trim().equals("")){
                 CuotaPagoTienda cuota = new CuotaPagoTienda();
 
                 int inicio = vecCuotas[z].indexOf("<nrocuota>")+"<nrocuota>".length();
@@ -595,9 +611,9 @@ public class ESoaMgrTienda implements IESoaTienda{
 
         List<CretTablasTienda> result = UtilTienda.castList(CretTablasTienda.class, query.getResultList());
 
-        if (result != null && result.size() > 0) {
+        if ((result != null) && (result.size() > 0)) {
             for (int i = 0; i < result.size(); i++) {
-                CretTablasTienda tabla = (CretTablasTienda) result.get(i);
+                CretTablasTienda tabla = result.get(i);
                 MarcaVehiculoTienda marca = new MarcaVehiculoTienda(tabla.getDato1(), tabla.getDescripcion());
                 lista.add(marca);
             }
@@ -630,8 +646,8 @@ public class ESoaMgrTienda implements IESoaTienda{
 
         List<CretTablasTienda> result = UtilTienda.castList(CretTablasTienda.class, query.getResultList());
 
-        if (result != null && result.size() > 0) {
-            CretTablasTienda tabla = (CretTablasTienda) result.get(0);
+        if ((result != null) && (result.size() > 0)) {
+            CretTablasTienda tabla = result.get(0);
             MarcaVehiculoTienda marcaObj = new MarcaVehiculoTienda(tabla.getDato1(), tabla.getDescripcion());
 
             logger.info(logEncabezado + logParametros + " - RESULT -> ["+ marcaObj.toString() +"]");
@@ -663,9 +679,9 @@ public class ESoaMgrTienda implements IESoaTienda{
 
         List<CretTablasTienda> result = UtilTienda.castList(CretTablasTienda.class, query.getResultList());
 
-        if (result != null && result.size() > 0) {
+        if ((result != null) && (result.size() > 0)) {
             for (int i = 0; i < result.size(); i++) {
-                CretTablasTienda tabla = (CretTablasTienda) result.get(i);
+                CretTablasTienda tabla = result.get(i);
                 CategoriaVehiculoTienda cat = new CategoriaVehiculoTienda(tabla.getDato1(), tabla.getDescripcion());
                 lista.add(cat);
             }
@@ -698,8 +714,8 @@ public class ESoaMgrTienda implements IESoaTienda{
 
         List<CretTablasTienda> result = UtilTienda.castList(CretTablasTienda.class, query.getResultList());
 
-        if (result != null && result.size() > 0) {
-            CretTablasTienda tabla = (CretTablasTienda) result.get(0);
+        if ((result != null) && (result.size() > 0)) {
+            CretTablasTienda tabla = result.get(0);
             CategoriaVehiculoTienda categoriaObj = new CategoriaVehiculoTienda(tabla.getDato1(), tabla.getDescripcion());
 
             logger.info(logEncabezado + logParametros + " - RESULT -> ["+ categoriaObj.toString() +"]");
@@ -726,8 +742,9 @@ public class ESoaMgrTienda implements IESoaTienda{
         logger.info("SOA - alertarPagoRedes");
 
         try {
-            if (sucursal == 0 || ramo == 0 || producto == null || producto.trim().equals("") || nroCotizacion == 0)
+            if ((sucursal == 0) || (ramo == 0) || (producto == null) || producto.trim().equals("") || (nroCotizacion == 0)) {
                 throw new BSEExceptionTienda(CodigosErrorTienda.datos_de_consulta_vacios);
+            }
 
             PolizaPortalPKTienda pk = new PolizaPortalPKTienda();
             pk.setSucursal(sucursal);
@@ -736,8 +753,9 @@ public class ESoaMgrTienda implements IESoaTienda{
             pk.setNroCotizacion(nroCotizacion);
             PolizaPortalTienda polizaPortalObj = em.find(PolizaPortalTienda.class, pk);
 
-            if (polizaPortalObj.getEstado() != PolizaPortalTienda.ESTADO_POLIZA_EMITIDA)
+            if (polizaPortalObj.getEstado() != PolizaPortalTienda.ESTADO_POLIZA_EMITIDA) {
                 throw new BSEExceptionTienda(CodigosErrorTienda.cotizacion_invalida);
+            }
 
             polizaPortalObj.setFechaMod(new Date());
             polizaPortalObj.setPagoRedes("S");

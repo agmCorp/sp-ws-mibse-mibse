@@ -12,7 +12,8 @@ public class BSEExceptionTienda extends Exception implements Serializable{
 
     public static String getDescripcionError(int codigoError) { 
         Locale idioma = new Locale("es", "UY");
-        String desc = ResourceBundle.getBundle("BSEDescentralizado", idioma).getString("ex-" + codigoError);
+    //    String desc = ResourceBundle.getBundle("BSEDescentralizado", idioma).getString("ex-" + codigoError);
+        String desc =Config.getString("ex-" + codigoError);
         return desc;
     }
 

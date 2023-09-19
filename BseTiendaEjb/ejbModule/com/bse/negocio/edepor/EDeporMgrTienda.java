@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.bse.accesodatos.comun.CretTablasTienda;
 import com.bse.accesodatos.edepor.CoberturaRcTienda;
@@ -22,8 +24,8 @@ import com.bse.accesodatos.esoa.ProductoTienda;
 import com.bse.accesodatos.esoa.RamoTienda;
 import com.bse.negocio.FabricaNegocioTienda;
 import com.bse.negocio.comun.BSEExceptionTienda;
-import com.bse.negocio.comun.CodigosTienda;
 import com.bse.negocio.comun.CodigosErrorTienda;
+import com.bse.negocio.comun.CodigosTienda;
 import com.bse.negocio.comun.IEComunTienda;
 import com.bse.negocio.comun.UtilTienda;
 import com.bse.servicios.utilitario.log.Logueo;
@@ -31,7 +33,7 @@ import com.bse.servicios.utilitario.log.Logueo;
 
 public class EDeporMgrTienda implements IEDeporTienda{
 
-    private static final Logger logger = Logger.getLogger(EDeporMgrTienda.class);
+    private static final Logger logger = LogManager.getLogger(EDeporMgrTienda.class);
 
     /**
      * CONSTRUCTOR
@@ -85,10 +87,12 @@ public class EDeporMgrTienda implements IEDeporTienda{
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // CONTROL de PARAMETROS - OBLIGATORIEDAD - VALORES
-        if (tipoBuque == null || tipoBuque.equals(""))
+        if ((tipoBuque == null) || tipoBuque.equals("")) {
             throw new BSEExceptionTienda(CodigosErrorTienda.tipo_buque_invalido);
-        if (planCobertura == null || planCobertura.equals(""))
+        }
+        if ((planCobertura == null) || planCobertura.equals("")) {
             throw new BSEExceptionTienda(CodigosErrorTienda.plan_cobertura_invalido);
+        }
 
         // Valida Plan de Pago segun configuracion
         String planesPago = CodigosTienda.getCodigos().getPlanesPagoEDepor(em);
@@ -102,12 +106,15 @@ public class EDeporMgrTienda implements IEDeporTienda{
                 i = planesVec.length;
             }
         }
-        if (!planValido)
+        if (!planValido) {
             throw new BSEExceptionTienda(CodigosErrorTienda.plan_pago_invalido);
-        if (fechaDesde == null || fechaHasta == null)
+        }
+        if ((fechaDesde == null) || (fechaHasta == null)) {
             throw new BSEExceptionTienda(CodigosErrorTienda.fechas_invalidas);
-        if (fechaHasta.before(fechaDesde))
+        }
+        if (fechaHasta.before(fechaDesde)) {
             throw new BSEExceptionTienda(CodigosErrorTienda.fechas_invalidas);
+        }
 
         // valido fechas
         Date ayer = new Date();
@@ -115,8 +122,9 @@ public class EDeporMgrTienda implements IEDeporTienda{
         calendar.setTime(ayer);
         calendar.add(Calendar.DAY_OF_YEAR, -1);
         ayer = calendar.getTime();
-        if (!fechaDesde.after(ayer))
+        if (!fechaDesde.after(ayer)) {
             throw new BSEExceptionTienda(CodigosErrorTienda.fechas_invalidas);
+        }
 
         Calendar cDesde = Calendar.getInstance();
         Calendar cHasta = Calendar.getInstance();
@@ -125,8 +133,9 @@ public class EDeporMgrTienda implements IEDeporTienda{
         int daysBetween = (int) ((fechaHasta.getTime() - fechaDesde.getTime()) / (1000 * 60 * 60 * 24));
 
         daysBetween++;
-        if (daysBetween > 366)
+        if (daysBetween > 366) {
             throw new BSEExceptionTienda(CodigosErrorTienda.fechas_invalidas);
+        }
 
         TipoBuqueTienda tipoBuqueObj = null;
         try {
@@ -165,7 +174,7 @@ public class EDeporMgrTienda implements IEDeporTienda{
         logger.info(logEncabezado + " - DATOS desde CONFIGURACION - OK");
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        // LOGUEO PARAMETROS de la Invocación PL
+        // LOGUEO PARAMETROS de la Invocaciï¿½n PL
         logGuiones(logEncabezado);
         logCotizarEDeporPl2( logEncabezado, "PACK_EMI_MIBSE.PRO_COTIZAR_EDEPOR",
                              tipoDocumento, documento  , sucursal  , ramoEDepor   , productoEDepor,
@@ -235,7 +244,7 @@ public class EDeporMgrTienda implements IEDeporTienda{
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // En caso de ERROR, se retorna el error especificado por el PL
-        if (r[4] != null && !((String)r[4]).equals("0")) {
+        if ((r[4] != null) && !((String)r[4]).equals("0")) {
             String codError  = (String)r[4];
             String descError = (r[5]!=null)?((String)r[5]):"";
             BSEExceptionTienda exc = new BSEExceptionTienda(CodigosErrorTienda.error_cotizacion_rector, descError);
@@ -267,8 +276,9 @@ public class EDeporMgrTienda implements IEDeporTienda{
         cotizacion.setSucursal(sucursal);
 
         cotizacion.setNroCotizacion(0);
-        if (r[0] != null)
-            cotizacion.setNroCotizacion(((Integer)r[0]).intValue());
+        if (r[0] != null) {
+            cotizacion.setNroCotizacion(((Long)r[0]).intValue());
+        }
 
         cotizacion.setTipoDocumento("");
         cotizacion.setNroDocumento("");
@@ -278,12 +288,14 @@ public class EDeporMgrTienda implements IEDeporTienda{
         cotizacion.setMoneda(monedaObj);
 
         cotizacion.setPremio(0);
-        if (r[1] != null)
+        if (r[1] != null) {
             cotizacion.setPremio(((Double)r[1]).doubleValue());
+        }
 
         cotizacion.setPremioFacturar(0);
-        if (r[2] != null)
+        if (r[2] != null) {
             cotizacion.setPremioFacturar(((Double)r[2]).doubleValue());
+        }
 
         cotizacion.setFechaDesde(fechaDesde);
         cotizacion.setFechaHasta(fechaHasta);
@@ -359,18 +371,24 @@ public class EDeporMgrTienda implements IEDeporTienda{
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // CONTROL de PARAMETROS - OBLIGATORIEDAD
-        if (tipoDocumento == null || tipoDocumento.equals(""))
+        if ((tipoDocumento == null) || tipoDocumento.equals("")) {
             throw new BSEExceptionTienda(CodigosErrorTienda.tipo_documento_invalido);
-        if (documento == null || documento.equals(""))
+        }
+        if ((documento == null) || documento.equals("")) {
             throw new BSEExceptionTienda(CodigosErrorTienda.documento_invalido);
-        if (nroCotizacion == 0)
+        }
+        if (nroCotizacion == 0) {
             throw new BSEExceptionTienda(CodigosErrorTienda.cotizacion_invalida);
-        if (!consumoFinal.equals("S") && !consumoFinal.equals("N"))
+        }
+        if (!consumoFinal.equals("S") && !consumoFinal.equals("N")) {
             throw new BSEExceptionTienda(CodigosErrorTienda.consumidor_final_invalido);
-        if (matriculaBuque == null || matriculaBuque.equals(""))
+        }
+        if ((matriculaBuque == null) || matriculaBuque.equals("")) {
             throw new BSEExceptionTienda(CodigosErrorTienda.matricula_vehiculo_invalida);
-        if (nombreBuque == null || nombreBuque.equals(""))
+        }
+        if ((nombreBuque == null) || nombreBuque.equals("")) {
             throw new BSEExceptionTienda(CodigosErrorTienda.nombre_invalido);
+        }
         logger.info(logEncabezado + " - PARAMETROS - OK");
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -389,12 +407,13 @@ public class EDeporMgrTienda implements IEDeporTienda{
         // Valida Nro. Cotizacion
         boolean cotizacionOk = eComunManager.validarExistenciaCotizacion
                                                             ( em, sucursal, nroCotizacion, ramoEDepor, productoEDepor );
-        if (!cotizacionOk)
+        if (!cotizacionOk) {
             throw new BSEExceptionTienda(CodigosErrorTienda.cotizacion_invalida);
+        }
         logger.info(logEncabezado + " - NRO. COTIZACION - OK");
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        // LOGUEO PARAMETROS de la Invocación PL
+        // LOGUEO PARAMETROS de la Invocaciï¿½n PL
         logGuiones(logEncabezado);
         logEmitirEDeporPl2( logEncabezado, "PACK_EMI_MIBSE.PRO_EMITIR_EDEPOR",
                             tipoDocumento, documento   , sucursal      , ramoEDepor , productoEDepor,
@@ -430,7 +449,7 @@ public class EDeporMgrTienda implements IEDeporTienda{
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // LOGUEO de RESULTADO obtenidos
-        //      -> R[0]  = P_POLIZA_EMITIDA              - type=Long.class
+        //      -> R[0]  = P_POLIZA_EMITIDA              - type=Integer.class
         //      -> R[1]  = P_PREMIO_COTIZACION           - type=Float.class
         //      -> R[2]  = P_PREMIO_COTIZACION_FACTURAR  - type=Float.class
         //      -> R[3]  = P_FECHA_DESDE                 - type=Date.class
@@ -526,7 +545,7 @@ public class EDeporMgrTienda implements IEDeporTienda{
         String[] vecCuotas = cuotas.split("%");
         ArrayList<CuotaPagoTienda> listaCuotas = new ArrayList<CuotaPagoTienda>();
         for(int z = 0; z < vecCuotas.length; z++){
-            if (vecCuotas[z] != null && !vecCuotas[z].trim().equals("")){
+            if ((vecCuotas[z] != null) && !vecCuotas[z].trim().equals("")){
                 CuotaPagoTienda cuota = new CuotaPagoTienda();
 
                 int inicio = vecCuotas[z].indexOf("<nrocuota>")+"<nrocuota>".length();
@@ -580,9 +599,9 @@ public class EDeporMgrTienda implements IEDeporTienda{
 
         List<CretTablasTienda> result = UtilTienda.castList(CretTablasTienda.class, query.getResultList());
 
-        if (result != null && result.size() > 0) {
+        if ((result != null) && (result.size() > 0)) {
             for (int i = 0; i < result.size(); i++) {
-                CretTablasTienda tabla = (CretTablasTienda) result.get(i);
+                CretTablasTienda tabla = result.get(i);
                 TipoBuqueTienda o = new TipoBuqueTienda(tabla.getDato1(), tabla.getDescripcion());
                 lista.add(o);
             }
@@ -636,9 +655,9 @@ public class EDeporMgrTienda implements IEDeporTienda{
 
         List<CretTablasTienda> result = UtilTienda.castList(CretTablasTienda.class, query.getResultList());
 
-        if (result != null && result.size() > 0) {
+        if ((result != null) && (result.size() > 0)) {
             for (int i = 0; i < result.size(); i++) {
-                CretTablasTienda tabla = (CretTablasTienda) result.get(i);
+                CretTablasTienda tabla = result.get(i);
                 CoberturaRcTienda o = new CoberturaRcTienda(tabla.getDato1(), tabla.getDescripcion());
                 lista.add(o);
                 //logger.info(logEncabezado + " - " + o.toString());

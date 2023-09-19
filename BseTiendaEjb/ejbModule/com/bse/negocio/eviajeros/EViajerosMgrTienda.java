@@ -6,11 +6,16 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import com.bse.accesodatos.esoa.CuotaPagoTienda;
 import com.bse.accesodatos.esoa.MonedaTienda;
 import com.bse.accesodatos.esoa.PlanCoberturaTienda;
 import com.bse.accesodatos.esoa.PlanPagoTienda;
@@ -23,18 +28,15 @@ import com.bse.accesodatos.eviajeros.PolizaViajerosTienda;
 import com.bse.accesodatos.eviajeros.ViajeroTienda;
 import com.bse.negocio.FabricaNegocioTienda;
 import com.bse.negocio.comun.BSEExceptionTienda;
-import com.bse.negocio.comun.CodigosTienda;
 import com.bse.negocio.comun.CodigosErrorTienda;
+import com.bse.negocio.comun.CodigosTienda;
 import com.bse.negocio.comun.IEComunTienda;
 import com.bse.servicios.utilitario.log.Logueo;
-import com.bse.accesodatos.esoa.CuotaPagoTienda;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 public class EViajerosMgrTienda implements IEViajerosTienda{
 
-    private static final Logger logger = Logger.getLogger(EViajerosMgrTienda.class);
+    private static final Logger logger = LogManager.getLogger(EViajerosMgrTienda.class);
 
     /**
      * CONSTRUCTOR
@@ -104,15 +106,19 @@ public class EViajerosMgrTienda implements IEViajerosTienda{
                 i = planesVec.length;
             }
         }
-        if (!planValido)
+        if (!planValido) {
             throw new BSEExceptionTienda(CodigosErrorTienda.plan_pago_invalido);
+        }
 
-        if (planCobertura == null || planCobertura.trim().equals(""))
+        if ((planCobertura == null) || planCobertura.trim().equals("")) {
             throw new BSEExceptionTienda(CodigosErrorTienda.plan_cobertura_invalido);
-        if (fechaDesde == null || fechaHasta == null)
+        }
+        if ((fechaDesde == null) || (fechaHasta == null)) {
             throw new BSEExceptionTienda(CodigosErrorTienda.fechas_invalidas);
-        if (!fechaHasta.after(fechaDesde))
+        }
+        if (!fechaHasta.after(fechaDesde)) {
             throw new BSEExceptionTienda(CodigosErrorTienda.fechas_invalidas);
+        }
 
         // valido fechas
         Date ayer = new Date();
@@ -120,8 +126,9 @@ public class EViajerosMgrTienda implements IEViajerosTienda{
         calendar.setTime(ayer);
         calendar.add(Calendar.DAY_OF_YEAR, -1);
         ayer = calendar.getTime();
-        if (!fechaDesde.after(ayer))
+        if (!fechaDesde.after(ayer)) {
             throw new BSEExceptionTienda(CodigosErrorTienda.fechas_invalidas);
+        }
 
         Calendar cDesde = Calendar.getInstance();
         Calendar cHasta = Calendar.getInstance();
@@ -130,16 +137,20 @@ public class EViajerosMgrTienda implements IEViajerosTienda{
         int daysBetween = (int) ((fechaHasta.getTime() - fechaDesde.getTime()) / (1000 * 60 * 60 * 24));
 
         daysBetween++;
-        if (daysBetween > 366)
+        if (daysBetween > 366) {
             throw new BSEExceptionTienda(CodigosErrorTienda.fechas_invalidas);
+        }
 
-        if (listaPersonas == null || listaPersonas.size() == 0)
+        if ((listaPersonas == null) || (listaPersonas.size() == 0)) {
             throw new BSEExceptionTienda(CodigosErrorTienda.lista_personas_invalida);
+        }
 
-        if (extension == null || extension.trim().equals(""))
+        if ((extension == null) || extension.trim().equals("")) {
             extension = "N";
-        if (extension.equals("N"))
+        }
+        if (extension.equals("N")) {
             fechaSalidaPais = fechaDesde;
+        }
 
         // valido plan de pago
         PlanPagoTienda planPagoObj = null;
@@ -182,17 +193,21 @@ public class EViajerosMgrTienda implements IEViajerosTienda{
         // valido lista de viajeros
         String slistaPersonas = ""; //"43,gmuller2004@gmail.com,20000; 20,pedro@gmail.com,20000;";
         for(int i = 0; i < listaPersonas.size(); i++){
-            if (listaPersonas.get(i).getCapitalMuerte() == null || listaPersonas.get(i).getCapitalMuerte().floatValue() <= 0)
+            if ((listaPersonas.get(i).getCapitalMuerte() == null) || (listaPersonas.get(i).getCapitalMuerte().floatValue() <= 0)) {
                 throw new BSEExceptionTienda(CodigosErrorTienda.capital_muerte_invalido);
-            if (listaPersonas.get(i).getCoberturaPrexistentes() == null || listaPersonas.get(i).getCoberturaPrexistentes().floatValue() <= 0)
+            }
+            if ((listaPersonas.get(i).getCoberturaPrexistentes() == null) || (listaPersonas.get(i).getCoberturaPrexistentes().floatValue() <= 0)) {
                 throw new BSEExceptionTienda(CodigosErrorTienda.capital_cobertura_prexistentes_invalido);
+            }
 
             String coberturaCovid = "N,N";
             if (listaPersonas.get(i).getCoberturaCovid() != null){
-                if (listaPersonas.get(i).getCoberturaCovid().equals(ViajeroTienda.COVID_COBERTURA_PLUS))
+                if (listaPersonas.get(i).getCoberturaCovid().equals(ViajeroTienda.COVID_COBERTURA_PLUS)) {
                     coberturaCovid = "N,S";
-                if (listaPersonas.get(i).getCoberturaCovid().equals(ViajeroTienda.COVID_COBERTURA_BASICA))
+                }
+                if (listaPersonas.get(i).getCoberturaCovid().equals(ViajeroTienda.COVID_COBERTURA_BASICA)) {
                     coberturaCovid = "S,N";
+                }
             }
 
             slistaPersonas += "20" + "," + "pp@gmail.com" + "," + // edad, email, cap muerte, cob preexistentes, covid, covid plus
@@ -203,19 +218,21 @@ public class EViajerosMgrTienda implements IEViajerosTienda{
         // valido plan de cobertura
         boolean planOk = false;
         List<PlanCoberturaTienda> planesCobertura = eComunManager.consultaPlanesCobertura(em, ramoViajeros, productoViajeros);
-        if (planesCobertura != null && planesCobertura.size() > 0) {
+        if ((planesCobertura != null) && (planesCobertura.size() > 0)) {
             for (int i = 0; i < planesCobertura.size(); i++) {
-                PlanCoberturaTienda pc = (PlanCoberturaTienda)planesCobertura.get(i);
+                PlanCoberturaTienda pc = planesCobertura.get(i);
                 if (pc.getPlan().equals(planCobertura)){
                     planOk = true;
                 }
             }
         }
         if (!planOk)
+         {
             throw new BSEExceptionTienda(CodigosErrorTienda.plan_cobertura_invalido);
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        }
 
-        // LOGUEO PARAMETROS de la Invocación PL
+        // LOGUEO PARAMETROS de la Invocaciï¿½n PL
         logGuiones(logEncabezado);
         logCotizarViajerosPl2( logEncabezado  , "PACK_EMI_MIBSE.PRO_COTIZAR_VIAJEROS",
                                tipoDocumento  , documento  , sucursal  , ramoViajeros , productoViajeros,
@@ -287,7 +304,7 @@ public class EViajerosMgrTienda implements IEViajerosTienda{
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // En caso de ERROR, se retorna el error especificado por el PL
-        if (r[5] != null && !((String)r[5]).equals("0")) {
+        if ((r[5] != null) && !((String)r[5]).equals("0")) {
             String codError  = (String)r[5];
             String descError = (r[6]!=null)?((String)r[6]):"";
             BSEExceptionTienda exc = new BSEExceptionTienda(CodigosErrorTienda.error_cotizacion_rector, descError);
@@ -321,8 +338,9 @@ public class EViajerosMgrTienda implements IEViajerosTienda{
         cotizacion.setSucursal(sucursal);
 
         cotizacion.setNroCotizacion(0);
-        if (r[0] != null)
-            cotizacion.setNroCotizacion(((Integer)r[0]).intValue());
+        if (r[0] != null) {
+            cotizacion.setNroCotizacion(((Long)r[0]).intValue());
+        }
 
         cotizacion.setTipoDocumento("");
         cotizacion.setNroDocumento("");
@@ -332,12 +350,14 @@ public class EViajerosMgrTienda implements IEViajerosTienda{
         cotizacion.setMoneda(monedaObj);
 
         cotizacion.setPremio(0);
-        if (r[1] != null)
+        if (r[1] != null) {
             cotizacion.setPremio(((Double)r[1]).doubleValue());
+        }
 
         cotizacion.setPremioFacturar(0);
-        if (r[2] != null)
+        if (r[2] != null) {
             cotizacion.setPremioFacturar(((Double)r[2]).doubleValue());
+        }
 
         planPagoObj = eComunManager.consultaPlanPago(em, planPago); // .setCodigo(planPago);
         cotizacion.setPlanPago(planPagoObj);
@@ -391,8 +411,9 @@ public class EViajerosMgrTienda implements IEViajerosTienda{
                 int consecutivo = ((BigDecimal)rPlanes[0]).intValue();
                 Float premio = ((BigDecimal)rPlanes[1]).floatValue();
 
-                if (consecutivo == (i+1))
+                if (consecutivo == (i+1)) {
                     viajero2.setPremio(premio * tasaMsp);
+                }
             }
 
             viajeros.add(viajero2);
@@ -461,8 +482,9 @@ public class EViajerosMgrTienda implements IEViajerosTienda{
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Valida Nro. Cotizacion
-        if (nroCotizacion == 0)
+        if (nroCotizacion == 0) {
             throw new BSEExceptionTienda(CodigosErrorTienda.cotizacion_invalida);
+        }
 
         String sqlCot = "select * " +
                         "from cart_cotiza_banco " +
@@ -477,23 +499,28 @@ public class EViajerosMgrTienda implements IEViajerosTienda{
         @SuppressWarnings("unchecked")
         List<Object[]> resultCot = queryCot.getResultList();
 
-        if (resultCot == null || resultCot.size() == 0)
+        if ((resultCot == null) || (resultCot.size() == 0)) {
             throw new BSEExceptionTienda(CodigosErrorTienda.cotizacion_invalida);
+        }
         logger.info(logEncabezado + " - NRO. COTIZACION - OK");
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // CONTROL de PARAMETROS - OBLIGATORIEDAD
-        if (listaPersonas == null || listaPersonas.size() == 0)
+        if ((listaPersonas == null) || (listaPersonas.size() == 0)) {
             throw new BSEExceptionTienda(CodigosErrorTienda.lista_personas_invalida);
+        }
 
-        if (consumoFinal == null || (!consumoFinal.trim().equals("S") && !consumoFinal.trim().equals("N")))
+        if ((consumoFinal == null) || (!consumoFinal.trim().equals("S") && !consumoFinal.trim().equals("N"))) {
             throw new BSEExceptionTienda(CodigosErrorTienda.consumidor_final_invalido);
+        }
 
-        if (extension == null || extension.trim().equals(""))
+        if ((extension == null) || extension.trim().equals("")) {
             extension = "N";
-        if (extension.equals("N") && fechaSalidaPais  == null)
+        }
+        if (extension.equals("N") && (fechaSalidaPais  == null)) {
             fechaSalidaPais = new Date();
+        }
 
         String sqlCot2 = "select max(cazb_nu_consecutivo) from cart_cotiza_banco " +
                          "where cazb_capj_cd_sucursal = ? and cazb_nu_cotizacion = ? and " +
@@ -505,8 +532,9 @@ public class EViajerosMgrTienda implements IEViajerosTienda{
         queryCot2.setParameter(4, productoViajeros);
         Object res = queryCot2.getSingleResult();
         BigDecimal qty = (BigDecimal)res;
-        if (listaPersonas.size() != qty.intValue())
+        if (listaPersonas.size() != qty.intValue()) {
             throw new BSEExceptionTienda(CodigosErrorTienda.lista_personas_invalida);
+        }
 
         String regexEmail = "^(.+)@(.+)$";
         Pattern pattern = Pattern.compile(regexEmail);
@@ -517,45 +545,57 @@ public class EViajerosMgrTienda implements IEViajerosTienda{
         for(int i = 0; i < listaPersonas.size(); i++){
             ViajeroTienda viajero = listaPersonas.get(i);
 
-            if ((viajero.getEdad() < 0) || (viajero.getEdad() > 140))
+            if ((viajero.getEdad() < 0) || (viajero.getEdad() > 140)) {
                 throw new BSEExceptionTienda(CodigosErrorTienda.edad_invalida);
+            }
 
-            if (viajero.getEmail() == null || viajero.getEmail().trim().equals(""))
+            if ((viajero.getEmail() == null) || viajero.getEmail().trim().equals("")) {
                 throw new BSEExceptionTienda(CodigosErrorTienda.email_invalido);
+            }
 
             Matcher matcher = pattern.matcher(viajero.getEmail());
-            if (!matcher.matches())
+            if (!matcher.matches()) {
                 throw new BSEExceptionTienda(CodigosErrorTienda.email_invalido);
+            }
 
-            if (viajero.getTipoDocumento() == null || viajero.getTipoDocumento().trim().equals(""))
+            if ((viajero.getTipoDocumento() == null) || viajero.getTipoDocumento().trim().equals("")) {
                 throw new BSEExceptionTienda(CodigosErrorTienda.tipo_documento_invalido);
-            if (viajero.getDocumento() == null || viajero.getDocumento().trim().equals(""))
+            }
+            if ((viajero.getDocumento() == null) || viajero.getDocumento().trim().equals("")) {
                 throw new BSEExceptionTienda(CodigosErrorTienda.documento_invalido);
-            if (viajero.getCapitalMuerte() == null || viajero.getCapitalMuerte().floatValue() <= 0)
+            }
+            if ((viajero.getCapitalMuerte() == null) || (viajero.getCapitalMuerte().floatValue() <= 0)) {
                 throw new BSEExceptionTienda(CodigosErrorTienda.capital_muerte_invalido);
-            if (viajero.getCoberturaPrexistentes() == null || viajero.getCoberturaPrexistentes().floatValue() <= 0)
+            }
+            if ((viajero.getCoberturaPrexistentes() == null) || (viajero.getCoberturaPrexistentes().floatValue() <= 0)) {
                 throw new BSEExceptionTienda(CodigosErrorTienda.capital_cobertura_prexistentes_invalido);
+            }
 
             String key = viajero.getTipoDocumento() + "-" + viajero.getDocumento();
-            if (!control.containsKey(key))
+            if (!control.containsKey(key)) {
                 control.put(key, key);
-            else
+            } else {
                 throw new BSEExceptionTienda(CodigosErrorTienda.lista_personas_invalida);
+            }
 
             String nombre = " ";
-            if (viajero.getNombre() != null && !viajero.getNombre().equals(""))
+            if ((viajero.getNombre() != null) && !viajero.getNombre().equals("")) {
                 nombre = viajero.getNombre();
+            }
 
             String apellido = " ";
-            if (viajero.getApellido() != null && !viajero.getApellido().equals(""))
+            if ((viajero.getApellido() != null) && !viajero.getApellido().equals("")) {
                 apellido = viajero.getApellido();
+            }
 
             String coberturaCovid = "N,N";
             if (listaPersonas.get(i).getCoberturaCovid() != null){
-                if (listaPersonas.get(i).getCoberturaCovid().equals(ViajeroTienda.COVID_COBERTURA_PLUS))
+                if (listaPersonas.get(i).getCoberturaCovid().equals(ViajeroTienda.COVID_COBERTURA_PLUS)) {
                     coberturaCovid = "N,S";
-                if (listaPersonas.get(i).getCoberturaCovid().equals(ViajeroTienda.COVID_COBERTURA_BASICA))
+                }
+                if (listaPersonas.get(i).getCoberturaCovid().equals(ViajeroTienda.COVID_COBERTURA_BASICA)) {
                     coberturaCovid = "S,N";
+                }
             }
 
             slistaPersonas += viajero.getEdad() + ","
@@ -570,7 +610,7 @@ public class EViajerosMgrTienda implements IEViajerosTienda{
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        // LOGUEO PARAMETROS de la Invocación PL
+        // LOGUEO PARAMETROS de la Invocaciï¿½n PL
         logGuiones(logEncabezado);
         logEmitirViajerosPl2( logEncabezado, "PACK_EMI_MIBSE.PRO_EMITIR_VIAJEROS",
                               tipoDocumentoContratante, documentoContratante, sucursal    , ramoViajeros  ,
@@ -606,7 +646,7 @@ public class EViajerosMgrTienda implements IEViajerosTienda{
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // LOGUEO de RESULTADO obtenidos
-        //      -> R[0]  = P_POLIZA_EMITIDA              - type=Long.class
+        //      -> R[0]  = P_POLIZA_EMITIDA              - type=Integer.class
         //      -> R[1]  = P_PREMIO_COTIZACION           - type=Float.class
         //      -> R[2]  = P_PREMIO_COTIZACION_FACTURAR  - type=Float.class
         //      -> R[3]  = P_FECHA_DESDE                 - type=Date.class
@@ -705,8 +745,9 @@ public class EViajerosMgrTienda implements IEViajerosTienda{
                 int consecutivoViajero = ((BigDecimal)rPlanes[0]).intValue();
                 Float premioViajero = ((BigDecimal)rPlanes[1]).floatValue();
 
-                if (consecutivoViajero == (i+1))
+                if (consecutivoViajero == (i+1)) {
                     viajero2.setPremio(premioViajero * tasaMsp);
+                }
             }
         }
 
@@ -722,7 +763,7 @@ public class EViajerosMgrTienda implements IEViajerosTienda{
 
         ArrayList<CuotaPagoTienda> listaCuotas = new ArrayList<CuotaPagoTienda>();
         for(int z = 0; z < vecCuotas.length; z++){
-            if (vecCuotas[z] != null && !vecCuotas[z].trim().equals("")){
+            if ((vecCuotas[z] != null) && !vecCuotas[z].trim().equals("")){
                 CuotaPagoTienda cuota = new CuotaPagoTienda();
 
                 int inicio = vecCuotas[z].indexOf("<nrocuota>")+"<nrocuota>".length();
@@ -782,7 +823,7 @@ public class EViajerosMgrTienda implements IEViajerosTienda{
 
         CoberturaPrexistentesTienda obj = new CoberturaPrexistentesTienda();
         obj.setCobertura(500); // parametrizar esto!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        obj.setDescCobertura("U$S 500 BÁSICO");
+        obj.setDescCobertura("U$S 500 Bï¿½SICO");
         lista.add(obj);
         logger.info(logEncabezado + " - " + obj.toString());
 

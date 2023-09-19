@@ -14,7 +14,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.bse.accesodatos.comun.CretTablasTienda;
 import com.bse.accesodatos.comun.ItemCodiguera;
@@ -34,8 +35,8 @@ import com.bse.accesodatos.esoa.ProductoTienda;
 import com.bse.accesodatos.esoa.RamoTienda;
 import com.bse.negocio.FabricaNegocioTienda;
 import com.bse.negocio.comun.BSEExceptionTienda;
-import com.bse.negocio.comun.CodigosTienda;
 import com.bse.negocio.comun.CodigosErrorTienda;
+import com.bse.negocio.comun.CodigosTienda;
 import com.bse.negocio.comun.IEComunTienda;
 import com.bse.negocio.comun.UtilTienda;
 import com.bse.servicios.utilitario.log.Logueo;
@@ -44,7 +45,7 @@ import com.bse.servicios.utilitario.util.Herramientas;
 
 public class EIndiviMgrTienda implements IEIndiviTienda{
 
-    private static final Logger logger = Logger.getLogger(EIndiviMgrTienda.class);
+    private static final Logger logger = LogManager.getLogger(EIndiviMgrTienda.class);
 
     /**
      * CONSTRUCTOR
@@ -99,14 +100,21 @@ public class EIndiviMgrTienda implements IEIndiviTienda{
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // CONTROL de PARAMETROS - OBLIGATORIEDAD
         short er = -1;
-        if      ( marcaVehiculo   == null || marcaVehiculo.equals("") )   er = CodigosErrorTienda.marca_vehiculo_invalida;
-        else if ( anioVehiculo    == null || anioVehiculo.equals("") )    er = CodigosErrorTienda.anio_vehiculo_invalido;
-        else if ( tipoVehiculo    == null || tipoVehiculo.equals("") )    er = CodigosErrorTienda.tipo_vehiculo_invalido;
-        else if ( combustible     == null || combustible.equals("") )     er = CodigosErrorTienda.combustible_invalido;
-        else if ( versionVehiculo == null || versionVehiculo.equals("") ) er = CodigosErrorTienda.version_vehiculo_invalido;
-        else if ( areaCirculacion == null || areaCirculacion.equals("") ) er = CodigosErrorTienda.area_ciculacion_invalida;
+        if      ( (marcaVehiculo   == null) || marcaVehiculo.equals("") ) {
+            er = CodigosErrorTienda.marca_vehiculo_invalida;
+        } else if ( (anioVehiculo    == null) || anioVehiculo.equals("") ) {
+            er = CodigosErrorTienda.anio_vehiculo_invalido;
+        } else if ( (tipoVehiculo    == null) || tipoVehiculo.equals("") ) {
+            er = CodigosErrorTienda.tipo_vehiculo_invalido;
+        } else if ( (combustible     == null) || combustible.equals("") ) {
+            er = CodigosErrorTienda.combustible_invalido;
+        } else if ( (versionVehiculo == null) || versionVehiculo.equals("") ) {
+            er = CodigosErrorTienda.version_vehiculo_invalido;
+        } else if ( (areaCirculacion == null) || areaCirculacion.equals("") ) {
+            er = CodigosErrorTienda.area_ciculacion_invalida;
+        }
         if ( er > -1 ) { throw new BSEExceptionTienda(er); }
-        logger.info(logEncabezado + " - PARAMETROS - OK");
+        logger.info(logEncabezado + " - PARAMETROS1 - OK");
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -129,7 +137,7 @@ public class EIndiviMgrTienda implements IEIndiviTienda{
         logger.info(logEncabezado + " - DATOS desde CONFIGURACION - OK");
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        // LOGUEO PARAMETROS de la Invocación PL
+        // LOGUEO PARAMETROS de la Invocaciï¿½n PL
         logGuiones(logEncabezado);
         logCotizarIndiviPl2( logEncabezado, "PACK_EMI_MIBSE.PRO_COTIZAR_INDIVI",
                              tipoDocumento, documento      , tipoFact,
@@ -196,7 +204,7 @@ public class EIndiviMgrTienda implements IEIndiviTienda{
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // En caso de ERROR, se retorna el error especificado por el PL
-        if (r[0] != null && ((Integer)r[0]).intValue() != 0){
+        if ((r[0] != null) && (((Integer)r[0]).intValue() != 0)){
             Integer codError  = (Integer)r[0];
             String  descError = (r[1]!=null)?((String)r[1]):"";
             BSEExceptionTienda exc = new BSEExceptionTienda(CodigosErrorTienda.error_cotizacion_rector, descError);
@@ -226,7 +234,7 @@ public class EIndiviMgrTienda implements IEIndiviTienda{
         Herramientas herramientas = new Herramientas();
         String strClob = herramientas.convertirClob(resultado);
         if ( strClob == null ) {
-            String descError = "Error al obtener la información de la cotización";
+            String descError = "Error al obtener la informaciï¿½n de la cotizaciï¿½n";
             BSEExceptionTienda exc = new BSEExceptionTienda(CodigosErrorTienda.error_cotizacion_rector, descError);
             throw exc;
         }
@@ -234,7 +242,7 @@ public class EIndiviMgrTienda implements IEIndiviTienda{
 
         XmlCotizacion cotizacionXML = getCotizacion(logEncabezado, strClob);
         if ( cotizacionXML == null ) {
-            String descError = "Error al obtener la información de la cotización";
+            String descError = "Error al obtener la informaciï¿½n de la cotizaciï¿½n";
             BSEExceptionTienda exc = new BSEExceptionTienda(CodigosErrorTienda.error_cotizacion_rector, descError);
             throw exc;
         }
@@ -277,7 +285,7 @@ public class EIndiviMgrTienda implements IEIndiviTienda{
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Area de Circulación
+        // Area de Circulaciï¿½n
         cotizacion.setAreaCirculacion(areaCirculacion);
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -405,15 +413,24 @@ public class EIndiviMgrTienda implements IEIndiviTienda{
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // CONTROL de PARAMETROS - OBLIGATORIEDAD
         short er = -1;
-        if      ( tipoDocumento      == null || tipoDocumento.equals(""))   er = CodigosErrorTienda.tipo_documento_invalido;
-        else if ( documento == null || documento.equals(""))                er = CodigosErrorTienda.documento_invalido;
-        else if ( nroCotizacion <= 0)                                       er = CodigosErrorTienda.cotizacion_invalida;
-        else if (    (motorVehiculo  == null || motorVehiculo.equals(""))
-                 &&  (chasisVehiculo == null || chasisVehiculo.equals(""))) er = CodigosErrorTienda.falta_motor_o_chasis;
-        else if ( planCobertura      == null || planCobertura.equals(""))   er = CodigosErrorTienda.plan_cobertura_invalido;
-        else if ( planPago           == null || planPago.equals(""))        er = CodigosErrorTienda.plan_pago_invalido;
-        else if ( modalidad          == null || modalidad.equals(""))       er = CodigosErrorTienda.modalidad_invalida;
-        else if ( !consumoFinal.equals("S") && !consumoFinal.equals("N"))   er = CodigosErrorTienda.consumidor_final_invalido;
+        if      ( (tipoDocumento      == null) || tipoDocumento.equals("")) {
+            er = CodigosErrorTienda.tipo_documento_invalido;
+        } else if ( (documento == null) || documento.equals("")) {
+            er = CodigosErrorTienda.documento_invalido;
+        } else if ( nroCotizacion <= 0) {
+            er = CodigosErrorTienda.cotizacion_invalida;
+        } else if (    ((motorVehiculo  == null) || motorVehiculo.equals(""))
+                 &&  ((chasisVehiculo == null) || chasisVehiculo.equals(""))) {
+            er = CodigosErrorTienda.falta_motor_o_chasis;
+        } else if ( (planCobertura      == null) || planCobertura.equals("")) {
+            er = CodigosErrorTienda.plan_cobertura_invalido;
+        } else if ( (planPago           == null) || planPago.equals("")) {
+            er = CodigosErrorTienda.plan_pago_invalido;
+        } else if ( (modalidad          == null) || modalidad.equals("")) {
+            er = CodigosErrorTienda.modalidad_invalida;
+        } else if ( !consumoFinal.equals("S") && !consumoFinal.equals("N")) {
+            er = CodigosErrorTienda.consumidor_final_invalido;
+        }
         if ( er > -1 ) { throw new BSEExceptionTienda(er); }
         logger.info(logEncabezado + " - PARAMETROS - OK");
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -434,12 +451,13 @@ public class EIndiviMgrTienda implements IEIndiviTienda{
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Valida Nro. Cotizacion
         boolean cotizacionOk = eComunManager.validarExistenciaCotizacion( em, sucursal, nroCotizacion, ramo, producto );
-        if (!cotizacionOk)
+        if (!cotizacionOk) {
             throw new BSEExceptionTienda(CodigosErrorTienda.cotizacion_invalida);
+        }
         logger.info(logEncabezado + " - NRO. COTIZACION - OK");
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        // LOGUEO PARAMETROS de la Invocación PL
+        // LOGUEO PARAMETROS de la Invocaciï¿½n PL
         logGuiones(logEncabezado);
         logEmitirIndiviPl2( logEncabezado, "PACK_EMI_MIBSE.PRO_EMITIR_INDIVI",
                             tipoDocumento    , documento     ,
@@ -485,7 +503,7 @@ public class EIndiviMgrTienda implements IEIndiviTienda{
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // LOGUEO de RESULTADO obtenidos
-        //      -> R[0]  = P_POLIZA_EMITIDA              - type=Long.class
+        //      -> R[0]  = P_POLIZA_EMITIDA              - type=Integer.class
         //      -> R[1]  = P_PREMIO_COTIZACION           - type=Float.class
         //      -> R[2]  = P_PREMIO_COTIZACION_FACTURAR  - type=Float.class
         //      -> R[3]  = P_MARCA_VEHICULO              - type=String.class
@@ -505,7 +523,7 @@ public class EIndiviMgrTienda implements IEIndiviTienda{
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // En caso de ERROR, se retorna el error especificado por el PL
-        if (r[8] != null && ((Integer)r[8]).intValue() != 0) {
+        if ((r[8] != null) && (((Integer)r[8]).intValue() != 0)) {
             Integer codError  = (Integer)r[8];
             String  descError = (r[9]!=null)?((String)r[9]):"";
             //descError = descError.replace("\n", " ");
@@ -650,7 +668,7 @@ public class EIndiviMgrTienda implements IEIndiviTienda{
 
             ArrayList<CuotaPagoTienda> listaCuotas = new ArrayList<CuotaPagoTienda>();
             for(int z = 0; z < vecCuotas.length; z++){
-              if (vecCuotas[z] != null && !vecCuotas[z].trim().equals("")){
+              if ((vecCuotas[z] != null) && !vecCuotas[z].trim().equals("")){
                 CuotaPagoTienda cuota = new CuotaPagoTienda();
 
                 int inicio = vecCuotas[z].indexOf("<nrocuota>")+"<nrocuota>".length();
@@ -684,8 +702,8 @@ public class EIndiviMgrTienda implements IEIndiviTienda{
 
             List<CretTablasTienda> resultMarca = UtilTienda.castList(CretTablasTienda.class, queryMarca.getResultList());
 
-            if (resultMarca != null && resultMarca.size() > 0) {
-                CretTablasTienda tabla = (CretTablasTienda) resultMarca.get(0);
+            if ((resultMarca != null) && (resultMarca.size() > 0)) {
+                CretTablasTienda tabla = resultMarca.get(0);
                 marcaObj = new MarcaVehiculoTienda(tabla.getDato1(), tabla.getDescripcion());
             }
         }
@@ -769,11 +787,11 @@ public class EIndiviMgrTienda implements IEIndiviTienda{
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // GENERAR RESULTADO - AREAS de CIRCULACION registrados en BASE pero que además estén indicados por CONFIGURACION
+        // GENERAR RESULTADO - AREAS de CIRCULACION registrados en BASE pero que ademï¿½s estï¿½n indicados por CONFIGURACION
         ArrayList<ItemCodiguera> lista = new ArrayList<ItemCodiguera>();
-        if (result != null && result.size() > 0) {
+        if ((result != null) && (result.size() > 0)) {
             for (int i = 0; i < result.size(); i++) {
-                CretTablasTienda tabla = (CretTablasTienda) result.get(i);
+                CretTablasTienda tabla = result.get(i);
                 if ( map.containsKey(tabla.getDato1()) ) {
                     ItemCodiguera tipo = new ItemCodiguera(tabla.getDato1(), tabla.getDescripcion());
                     lista.add(tipo);
@@ -824,11 +842,11 @@ public class EIndiviMgrTienda implements IEIndiviTienda{
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // GENERAR RESULTADO - TIPOS de VEHICULOS registrados en BASE pero que además estén indicados por CONFIGURACION
+        // GENERAR RESULTADO - TIPOS de VEHICULOS registrados en BASE pero que ademï¿½s estï¿½n indicados por CONFIGURACION
         ArrayList<ItemCodiguera> lista = new ArrayList<ItemCodiguera>();
-        if (result != null && result.size() > 0) {
+        if ((result != null) && (result.size() > 0)) {
             for (int i = 0; i < result.size(); i++) {
-                CretTablasTienda tabla = (CretTablasTienda) result.get(i);
+                CretTablasTienda tabla = result.get(i);
                 if ( map.containsKey(tabla.getDato1()) ) {
                     ItemCodiguera tipo = new ItemCodiguera(tabla.getDato1(), tabla.getDescripcion());
                     lista.add(tipo);
@@ -929,7 +947,7 @@ public class EIndiviMgrTienda implements IEIndiviTienda{
         // GENERAR RESULTADO - MARCAS de VEHICULOS registrados en BASE excluyendo las ya ingresadas
         while ( it.hasNext() ) {
             Object[] r = it.next();
-            if ( ! map.containsKey((String)r[0]) ) { // Si no esta en el MAP, agrego la marca
+            if ( ! map.containsKey(r[0]) ) { // Si no esta en el MAP, agrego la marca
                 marca = new ItemCodiguera((String)r[0], (String)r[1]);
                 lista.add(marca);
             }
@@ -969,10 +987,15 @@ public class EIndiviMgrTienda implements IEIndiviTienda{
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // CONTROL de PARAMETROS - OBLIGATORIEDAD
         short er = -1;
-        if      (marcaVehiculo == null || marcaVehiculo.equals("")) er = CodigosErrorTienda.marca_vehiculo_invalida;
-        else if (anioVehiculo == null || anioVehiculo.equals(""))   er = CodigosErrorTienda.anio_vehiculo_invalido;
-        else if (tipoVehiculo == null || tipoVehiculo.equals(""))   er = CodigosErrorTienda.tipo_vehiculo_invalido;
-        else if (combustible == null || combustible.equals(""))     er = CodigosErrorTienda.combustible_invalido;
+        if      ((marcaVehiculo == null) || marcaVehiculo.equals("")) {
+            er = CodigosErrorTienda.marca_vehiculo_invalida;
+        } else if ((anioVehiculo == null) || anioVehiculo.equals("")) {
+            er = CodigosErrorTienda.anio_vehiculo_invalido;
+        } else if ((tipoVehiculo == null) || tipoVehiculo.equals("")) {
+            er = CodigosErrorTienda.tipo_vehiculo_invalido;
+        } else if ((combustible == null) || combustible.equals("")) {
+            er = CodigosErrorTienda.combustible_invalido;
+        }
         if ( er > -1 ) { throw new BSEExceptionTienda(er); }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1042,11 +1065,17 @@ public class EIndiviMgrTienda implements IEIndiviTienda{
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // CONTROL de PARAMETROS - OBLIGATORIEDAD
         short er = -1;
-        if      (marcaVehiculo == null || marcaVehiculo.equals(""))     er = CodigosErrorTienda.marca_vehiculo_invalida;
-        else if (anioVehiculo == null || anioVehiculo.equals(""))       er = CodigosErrorTienda.anio_vehiculo_invalido;
-        else if (tipoVehiculo == null || tipoVehiculo.equals(""))       er = CodigosErrorTienda.tipo_vehiculo_invalido;
-        else if (combustible == null || combustible.equals(""))         er = CodigosErrorTienda.combustible_invalido;
-        else if (familiaVehiculo == null || familiaVehiculo.equals("")) er = CodigosErrorTienda.familia_vehiculo_invalida;
+        if      ((marcaVehiculo == null) || marcaVehiculo.equals("")) {
+            er = CodigosErrorTienda.marca_vehiculo_invalida;
+        } else if ((anioVehiculo == null) || anioVehiculo.equals("")) {
+            er = CodigosErrorTienda.anio_vehiculo_invalido;
+        } else if ((tipoVehiculo == null) || tipoVehiculo.equals("")) {
+            er = CodigosErrorTienda.tipo_vehiculo_invalido;
+        } else if ((combustible == null) || combustible.equals("")) {
+            er = CodigosErrorTienda.combustible_invalido;
+        } else if ((familiaVehiculo == null) || familiaVehiculo.equals("")) {
+            er = CodigosErrorTienda.familia_vehiculo_invalida;
+        }
         if ( er > -1 ) { throw new BSEExceptionTienda(er); }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1152,9 +1181,9 @@ public class EIndiviMgrTienda implements IEIndiviTienda{
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // GENERAR RESULTADO
         ArrayList<ItemDeptoLocalidadArea> lista = new ArrayList<ItemDeptoLocalidadArea>();
-        if (result != null && result.size() > 0) {
+        if ((result != null) && (result.size() > 0)) {
             for (int i = 0; i < result.size(); i++) {
-                PatDeptoLocalidadZona tabla = (PatDeptoLocalidadZona) result.get(i);
+                PatDeptoLocalidadZona tabla = result.get(i);
 
                 ItemDeptoLocalidadArea item = new ItemDeptoLocalidadArea();
                 item.setCodigo        (tabla.getPk().getDeptoId().toString());                 // Codigo DEPARTAMENTO
@@ -1197,9 +1226,9 @@ public class EIndiviMgrTienda implements IEIndiviTienda{
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // GENERAR RESULTADO
         ArrayList<ItemDeptoLocalidadArea> lista = new ArrayList<ItemDeptoLocalidadArea>();
-        if (result != null && result.size() > 0) {
+        if ((result != null) && (result.size() > 0)) {
             for (int i = 0; i < result.size(); i++) {
-                PatDeptoLocalidadZona tabla = (PatDeptoLocalidadZona) result.get(i);
+                PatDeptoLocalidadZona tabla = result.get(i);
 
                 ItemDeptoLocalidadArea item = new ItemDeptoLocalidadArea();
                 item.setCodigo        (tabla.getPk().getLocalidadId().toString());              // Codigo LOCALIDAD

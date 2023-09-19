@@ -3,10 +3,12 @@ package com.bse.negocio.ebicis;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.bse.accesodatos.comun.CretTablasTienda;
 import com.bse.accesodatos.ebici.CotizacionBiciTienda;
@@ -21,8 +23,8 @@ import com.bse.accesodatos.esoa.ProductoTienda;
 import com.bse.accesodatos.esoa.RamoTienda;
 import com.bse.negocio.FabricaNegocioTienda;
 import com.bse.negocio.comun.BSEExceptionTienda;
-import com.bse.negocio.comun.CodigosTienda;
 import com.bse.negocio.comun.CodigosErrorTienda;
+import com.bse.negocio.comun.CodigosTienda;
 import com.bse.negocio.comun.IEComunTienda;
 import com.bse.negocio.comun.UtilTienda;
 import com.bse.servicios.utilitario.log.Logueo;
@@ -30,7 +32,7 @@ import com.bse.servicios.utilitario.log.Logueo;
 
 public class EBiciMgrTienda implements IEBiciTienda{
 
-    private static final Logger logger = Logger.getLogger(EBiciMgrTienda.class);
+    private static final Logger logger = LogManager.getLogger(EBiciMgrTienda.class);
 
     /**
      * CONSTRUCTOR
@@ -85,7 +87,7 @@ public class EBiciMgrTienda implements IEBiciTienda{
         String  productoBici  = CodigosTienda.getCodigos().getProductoEmisionBici(em);
         String  productor     = CodigosTienda.getCodigos().getProductorEmisionBici(em);
         Date    fechaDesde    = new Date();
-        Integer planPago      = new Integer(0);
+        Integer planPago      = Integer.valueOf(0);
 
         String  moneda        = CodigosTienda.getCodigos().getMonedaEmisionBici(em);
         String  tipoCalculo   = CodigosTienda.getCodigos().getTipoCalculoEmisionBici(em).trim();
@@ -105,7 +107,7 @@ public class EBiciMgrTienda implements IEBiciTienda{
         logger.info(logEncabezado + " - DATOS desde CONFIGURACION - OK");
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        // LOGUEO PARAMETROS de la Invocación PL
+        // LOGUEO PARAMETROS de la Invocaciï¿½n PL
         logGuiones(logEncabezado);
         logCotizarBiciPl2( logEncabezado, "PACK_EMI_MIBSE.PRO_COTIZAR_BICI",
                            tipoDocumento, documento      , sucursal      , ramoBici      , productoBici,
@@ -175,7 +177,7 @@ public class EBiciMgrTienda implements IEBiciTienda{
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // En caso de ERROR, se retorna el error especificado por el PL
-        if (r[6] != null && !((String)r[6]).equals("0")) {
+        if ((r[6] != null) && !((String)r[6]).equals("0")) {
             String codError  = (String)r[6];
             String descError = (r[7]!=null)?((String)r[7]):"";
             BSEExceptionTienda exc = new BSEExceptionTienda(CodigosErrorTienda.error_cotizacion_rector, descError);
@@ -208,8 +210,9 @@ public class EBiciMgrTienda implements IEBiciTienda{
         cotizacion.setSucursal(sucursal);
 
         cotizacion.setNroCotizacion(0);
-        if (r[0] != null)
-            cotizacion.setNroCotizacion(((Integer)r[0]).intValue());
+        if (r[0] != null) {
+            cotizacion.setNroCotizacion(((Long)r[0]).intValue());
+        }
 
         cotizacion.setTipoDocumento("");
         cotizacion.setNroDocumento("");
@@ -219,12 +222,14 @@ public class EBiciMgrTienda implements IEBiciTienda{
         cotizacion.setMoneda(monedaObj);
 
         cotizacion.setPremio(0);
-        if (r[1] != null)
+        if (r[1] != null) {
             cotizacion.setPremio(((Double)r[1]).doubleValue());
+        }
 
         cotizacion.setPremioFacturar(0);
-        if (r[2] != null)
+        if (r[2] != null) {
             cotizacion.setPremioFacturar(((Double)r[2]).doubleValue());
+        }
 
         cotizacion.setFechaDesde(fechaDesde);
         cotizacion.setFechaHasta((Date)r[3]);
@@ -233,8 +238,9 @@ public class EBiciMgrTienda implements IEBiciTienda{
         //String[] vecCuotas = cuotasStr.split(";");
 
         String planesCuotasStr = "";
-        if (r[5] != null)
+        if (r[5] != null) {
             planesCuotasStr = (String)r[5];
+        }
 
         // *1;1;4742;1:4742#*2;2;4842;1:2421#2:2421#*3;3;4875;1:1625#2:1625#3:1625#*4;4;4912;1:1228#2:1228#3:1228#4:1228#*5;5;4945;1:989#2:989#3:989#4:989#5:989#*6;6;4980;1:830#2:830#3:830#4:830#5:830#6:830#
 
@@ -249,8 +255,9 @@ public class EBiciMgrTienda implements IEBiciTienda{
 
             //logger.info("PLAN de " + i + " " + plan);
 
-            if (plan == null || plan.equals(""))
+            if ((plan == null) || plan.equals("")) {
                 continue;
+            }
 
             String[] partes = plan.split(";"); // 1;1;4742;1:4742#
 
@@ -353,17 +360,22 @@ public class EBiciMgrTienda implements IEBiciTienda{
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // CONTROL de PARAMETROS - OBLIGATORIEDAD
-        if (tipoDocumento == null || tipoDocumento.equals(""))
+        if ((tipoDocumento == null) || tipoDocumento.equals("")) {
             throw new BSEExceptionTienda(CodigosErrorTienda.tipo_documento_invalido);
-        if (documento == null || documento.equals(""))
+        }
+        if ((documento == null) || documento.equals("")) {
             throw new BSEExceptionTienda(CodigosErrorTienda.documento_invalido);
-        if (nroCotizacion == 0)
+        }
+        if (nroCotizacion == 0) {
             throw new BSEExceptionTienda(CodigosErrorTienda.cotizacion_invalida);
-        if (!consumoFinal.equals("S") && !consumoFinal.equals("N"))
+        }
+        if (!consumoFinal.equals("S") && !consumoFinal.equals("N")) {
             throw new BSEExceptionTienda(CodigosErrorTienda.consumidor_final_invalido);
-        if ( (marca == null || marca.equals("") || modelo == null || modelo.equals("") ||
-              serie == null || serie.equals("") || tipoBicicleta == null || tipoBicicleta.equals("")) )
+        }
+        if ( ((marca == null) || marca.equals("") || (modelo == null) || modelo.equals("") ||
+              (serie == null) || serie.equals("") || (tipoBicicleta == null) || tipoBicicleta.equals("")) ) {
             throw new BSEExceptionTienda(CodigosErrorTienda.faltan_datos_bicicleta);
+        }
         logger.info(logEncabezado + " - PARAMETROS - OK");
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -378,8 +390,9 @@ public class EBiciMgrTienda implements IEBiciTienda{
 
         long edadFacturaEnDias = (ahora.getTime() - fechaFactura.getTime()) / 1000 / 60 / 60 / 24;
         int anosFactura = Double.valueOf(edadFacturaEnDias / 365.25d).intValue();
-        if (anosFactura > 2 || edadFacturaEnDias < 0)
+        if ((anosFactura > 2) || (edadFacturaEnDias < 0)) {
             throw new BSEExceptionTienda(CodigosErrorTienda.fecha_factura_invalida);
+        }
         logger.info(logEncabezado + " - FECHA FACTURA (ANTIGUEDAD) - OK");
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -396,12 +409,13 @@ public class EBiciMgrTienda implements IEBiciTienda{
         // Valida Nro. Cotizacion
         boolean cotizacionOk = eComunManager.validarExistenciaCotizacion( em,
                                                                           sucursal, nroCotizacion, ramo, producto);
-        if (!cotizacionOk)
+        if (!cotizacionOk) {
             throw new BSEExceptionTienda(CodigosErrorTienda.cotizacion_invalida);
+        }
         logger.info(logEncabezado + " - NRO. COTIZACION - OK");
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        // LOGUEO PARAMETROS de la Invocación PL
+        // LOGUEO PARAMETROS de la Invocaciï¿½n PL
         logGuiones(logEncabezado);
         logEmitirBiciPl2( logEncabezado, "PACK_EMI_MIBSE.PRO_EMITIR_BICI",
                           tipoDocumento, documento, sucursal    , ramo                  , productor,
@@ -441,7 +455,7 @@ public class EBiciMgrTienda implements IEBiciTienda{
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // LOGUEO de RESULTADO obtenidos
-        //      -> R[0]  = P_POLIZA_EMITIDA              - type=Long.class
+        //      -> R[0]  = P_POLIZA_EMITIDA              - type=Integer.class
         //      -> R[1]  = P_PREMIO_COTIZACION           - type=Float.class
         //      -> R[2]  = P_PREMIO_COTIZACION_FACTURAR  - type=Float.class
         //      -> R[3]  = P_FECHA_DESDE                 - type=Date.class
@@ -542,7 +556,7 @@ public class EBiciMgrTienda implements IEBiciTienda{
 
         ArrayList<CuotaPagoTienda> listaCuotas = new ArrayList<CuotaPagoTienda>();
         for(int z = 0; z < vecCuotas.length; z++){
-            if (vecCuotas[z] != null && !vecCuotas[z].trim().equals("")){
+            if ((vecCuotas[z] != null) && !vecCuotas[z].trim().equals("")){
                 CuotaPagoTienda cuota = new CuotaPagoTienda();
 
                 int inicio = vecCuotas[z].indexOf("<nrocuota>")+"<nrocuota>".length();
@@ -600,14 +614,17 @@ public class EBiciMgrTienda implements IEBiciTienda{
         logClienteConDeudaParametros( logEncabezado + " - INICIO",
                                       tipoDocumento, nroDocumento, nroCotizacion, nroCertificado);
 
-        if (tipoDocumento == null || tipoDocumento.equals(""))
+        if ((tipoDocumento == null) || tipoDocumento.equals("")) {
             throw new BSEExceptionTienda(CodigosErrorTienda.tipo_documento_invalido);
-        if (nroDocumento == null || nroDocumento.equals(""))
+        }
+        if ((nroDocumento == null) || nroDocumento.equals("")) {
             throw new BSEExceptionTienda(CodigosErrorTienda.documento_invalido);
-        if (nroCotizacion == 0)
+        }
+        if (nroCotizacion == 0) {
             throw new BSEExceptionTienda(CodigosErrorTienda.cotizacion_invalida);
+        }
 
-        // LOGUEO PARAMETROS de la Invocación PL
+        // LOGUEO PARAMETROS de la Invocaciï¿½n PL
         logGuiones(logEncabezado);
         logClienteConDeudaPl( logEncabezado + " - PACK_EMI_MIBSE.PRO_CONTROLAR_CLIENTE_DEUDA - PARAMETROS",
                               tipoDocumento, nroDocumento, nroCotizacion, nroCertificado );
@@ -659,8 +676,9 @@ public class EBiciMgrTienda implements IEBiciTienda{
             return "S";
 
         }else{
-            if (!noTieneDeuda.equals("S"))
+            if (!noTieneDeuda.equals("S")) {
                 throw new BSEExceptionTienda(CodigosErrorTienda.error_emision_rector);
+            }
         }
 
         logger.info(logEncabezado + " - RESULT - TieneDeuda [N]");
@@ -691,9 +709,9 @@ public class EBiciMgrTienda implements IEBiciTienda{
 
         List<CretTablasTienda> result = UtilTienda.castList(CretTablasTienda.class, query.getResultList());
 
-        if (result != null && result.size() > 0) {
+        if ((result != null) && (result.size() > 0)) {
             for (int i = 0; i < result.size(); i++) {
-                CretTablasTienda tabla = (CretTablasTienda) result.get(i);
+                CretTablasTienda tabla = result.get(i);
                 TipoBiciTienda tb = new TipoBiciTienda(tabla.getDato1(), tabla.getDescripcion());
                 lista.add(tb);
             }

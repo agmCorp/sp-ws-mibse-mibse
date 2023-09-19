@@ -100,7 +100,7 @@ import org.eclipse.persistence.annotations.StoredProcedureParameter;
 
         @StoredProcedureParameter(queryParameter="P_CONSUMO_FINAL",name="P_CONSUMO_FINAL",direction=Direction.IN,type=String.class),
 
-        @StoredProcedureParameter(queryParameter="P_POLIZA_EMITIDA",name="P_POLIZA_EMITIDA",direction=Direction.OUT,type=Long.class),
+        @StoredProcedureParameter(queryParameter="P_POLIZA_EMITIDA",name="P_POLIZA_EMITIDA",direction=Direction.OUT,type=Integer.class),
         @StoredProcedureParameter(queryParameter="P_PREMIO_COTIZACION",name="P_PREMIO_COTIZACION",direction=Direction.OUT,type=Float.class),
         @StoredProcedureParameter(queryParameter="P_PREMIO_COTIZACION_FACTURAR",name="P_PREMIO_COTIZACION_FACTURAR",direction=Direction.OUT,type=Float.class),
         @StoredProcedureParameter(queryParameter="P_MARCA_VEHICULO",name="P_MARCA_VEHICULO",direction=Direction.OUT,type=String.class),
@@ -183,7 +183,7 @@ import org.eclipse.persistence.annotations.StoredProcedureParameter;
         @StoredProcedureParameter(queryParameter="P_MODALIDAD",name="P_MODALIDAD",direction=Direction.IN,type=String.class),
         @StoredProcedureParameter(queryParameter="P_USUARIO",name="P_USUARIO",direction=Direction.IN,type=String.class),
 
-        @StoredProcedureParameter(queryParameter="P_POLIZA_EMITIDA",name="P_POLIZA_EMITIDA",direction=Direction.OUT,type=Long.class),
+        @StoredProcedureParameter(queryParameter="P_POLIZA_EMITIDA",name="P_POLIZA_EMITIDA",direction=Direction.OUT,type=Integer.class),
         @StoredProcedureParameter(queryParameter="P_PREMIO_COTIZACION",name="P_PREMIO_COTIZACION",direction=Direction.OUT,type=Float.class),
         @StoredProcedureParameter(queryParameter="P_PREMIO_COTIZACION_FACTURAR",name="P_PREMIO_COTIZACION_FACTURAR",direction=Direction.OUT,type=Float.class),
         @StoredProcedureParameter(queryParameter="P_MARCA_VEHICULO",name="P_MARCA_VEHICULO",direction=Direction.OUT,type=String.class),
@@ -279,7 +279,7 @@ import org.eclipse.persistence.annotations.StoredProcedureParameter;
 
         @StoredProcedureParameter(queryParameter="P_CONSUMIDOR_FINAL",name="P_CONSUMIDOR_FINAL",direction=Direction.IN,type=Long.class),
         @StoredProcedureParameter(queryParameter="P_LISTA_PERSONAS",name="P_LISTA_PERSONAS",direction=Direction.IN,type=Long.class),
-        @StoredProcedureParameter(queryParameter="P_POLIZA_EMITIDA",name="P_POLIZA_EMITIDA",direction=Direction.OUT,type=Long.class),
+        @StoredProcedureParameter(queryParameter="P_POLIZA_EMITIDA",name="P_POLIZA_EMITIDA",direction=Direction.OUT,type=Integer.class),
         @StoredProcedureParameter(queryParameter="P_PREMIO_COTIZACION",name="P_PREMIO_COTIZACION",direction=Direction.OUT,type=Float.class),
         @StoredProcedureParameter(queryParameter="P_PREMIO_COTIZACION_FACTURAR",name="P_PREMIO_COTIZACION_FACTURAR",direction=Direction.OUT,type=Float.class),
         @StoredProcedureParameter(queryParameter="P_FECHA_DESDE",name="P_FECHA_DESDE",direction=Direction.OUT,type=Date.class),
@@ -355,7 +355,7 @@ import org.eclipse.persistence.annotations.StoredProcedureParameter;
         @StoredProcedureParameter(queryParameter="P_MATRICULA_BUQUE",name="P_MATRICULA_BUQUE",direction=Direction.IN,type=String.class),
         @StoredProcedureParameter(queryParameter="P_NOMBRE_BUQUE",name="P_NOMBRE_BUQUE",direction=Direction.IN,type=String.class),
         @StoredProcedureParameter(queryParameter="P_USUARIO_WEB",name="P_USUARIO_WEB",direction=Direction.IN,type=String.class),
-        @StoredProcedureParameter(queryParameter="P_POLIZA_EMITIDA",name="P_POLIZA_EMITIDA",direction=Direction.OUT,type=Long.class),
+        @StoredProcedureParameter(queryParameter="P_POLIZA_EMITIDA",name="P_POLIZA_EMITIDA",direction=Direction.OUT,type=Integer.class),
         @StoredProcedureParameter(queryParameter="P_PREMIO_COTIZACION",name="P_PREMIO_COTIZACION",direction=Direction.OUT,type=Float.class),
         @StoredProcedureParameter(queryParameter="P_PREMIO_COTIZACION_FACTURAR",name="P_PREMIO_COTIZACION_FACTURAR",direction=Direction.OUT,type=Float.class),
         @StoredProcedureParameter(queryParameter="P_FECHA_DESDE",name="P_FECHA_DESDE",direction=Direction.OUT,type=Date.class),
@@ -456,7 +456,7 @@ import org.eclipse.persistence.annotations.StoredProcedureParameter;
 
         @StoredProcedureParameter(queryParameter="P_CONSUMO_FINAL",name="P_CONSUMO_FINAL",direction=Direction.IN,type=String.class),
 
-        @StoredProcedureParameter(queryParameter="P_POLIZA_EMITIDA",name="P_POLIZA_EMITIDA",direction=Direction.OUT,type=Long.class),
+        @StoredProcedureParameter(queryParameter="P_POLIZA_EMITIDA",name="P_POLIZA_EMITIDA",direction=Direction.OUT,type=Integer.class),
         @StoredProcedureParameter(queryParameter="P_PREMIO_COTIZACION",name="P_PREMIO_COTIZACION",direction=Direction.OUT,type=Float.class),
         @StoredProcedureParameter(queryParameter="P_PREMIO_COTIZACION_FACTURAR",name="P_PREMIO_COTIZACION_FACTURAR",direction=Direction.OUT,type=Float.class),
         @StoredProcedureParameter(queryParameter="P_FECHA_DESDE",name="P_FECHA_DESDE",direction=Direction.OUT,type=Date.class),
@@ -546,7 +546,7 @@ import org.eclipse.persistence.annotations.StoredProcedureParameter;
         @StoredProcedureParameter(queryParameter="P_COTIZACION_EMITIDA",name="P_COTIZACION_EMITIDA",direction=Direction.IN,type=Long.class),
         @StoredProcedureParameter(queryParameter="P_CONSUMO_FINAL",name="P_CONSUMO_FINAL",direction=Direction.IN,type=String.class),
 
-        @StoredProcedureParameter(queryParameter="P_POLIZA_EMITIDA",name="P_POLIZA_EMITIDA",direction=Direction.OUT,type=Long.class),
+        @StoredProcedureParameter(queryParameter="P_POLIZA_EMITIDA",name="P_POLIZA_EMITIDA",direction=Direction.OUT,type=Integer.class),
         @StoredProcedureParameter(queryParameter="P_PREMIO_COTIZACION",name="P_PREMIO_COTIZACION",direction=Direction.OUT,type=Float.class),
         @StoredProcedureParameter(queryParameter="P_PREMIO_COTIZACION_FACTURAR",name="P_PREMIO_COTIZACION_FACTURAR",direction=Direction.OUT,type=Float.class),
         @StoredProcedureParameter(queryParameter="P_FECHA_DESDE",name="P_FECHA_DESDE",direction=Direction.OUT,type=Date.class),

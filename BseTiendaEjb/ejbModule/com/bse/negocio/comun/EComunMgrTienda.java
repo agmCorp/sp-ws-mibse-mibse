@@ -6,7 +6,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.bse.accesodatos.esoa.MonedaTienda;
 import com.bse.accesodatos.esoa.PlanCoberturaTienda;
@@ -18,7 +19,7 @@ import com.bse.servicios.utilitario.log.Logueo;
 
 public class EComunMgrTienda implements IEComunTienda {
 
-    private static final Logger logger = Logger.getLogger(EComunMgrTienda.class);
+    private static final Logger logger = LogManager.getLogger(EComunMgrTienda.class);
 
     /**
      * CONSTRUCTOR
@@ -28,7 +29,7 @@ public class EComunMgrTienda implements IEComunTienda {
 
 
     /**
-     * 
+     *
      * @return
      */
     public static IEComunTienda getEComunMgr() {
@@ -70,13 +71,17 @@ public class EComunMgrTienda implements IEComunTienda {
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // CONTROL de PARAMETROS - OBLIGATORIEDAD
         short er = -1;
-        if      (tipoDocumento == null || tipoDocumento.equals("")) er = CodigosErrorTienda.tipo_documento_invalido;
-        else if (nroDocumento == null || nroDocumento.equals(""))   er = CodigosErrorTienda.documento_invalido;
-        else if (nroCotizacion == 0)                                er = CodigosErrorTienda.cotizacion_invalida;
+        if      ((tipoDocumento == null) || tipoDocumento.equals("")) {
+            er = CodigosErrorTienda.tipo_documento_invalido;
+        } else if ((nroDocumento == null) || nroDocumento.equals("")) {
+            er = CodigosErrorTienda.documento_invalido;
+        } else if (nroCotizacion == 0) {
+            er = CodigosErrorTienda.cotizacion_invalida;
+        }
         if ( er > -1 ) { throw new BSEExceptionTienda(er); }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        // LOGUEO PARAMETROS de la Invocación PL
+        // LOGUEO PARAMETROS de la Invocaciï¿½n PL
         logGuiones(logEncabezado);
         logClienteConDeudaPl( logEncabezado, "PACK_EMI_MIBSE.PRO_CONTROLAR_CLIENTE_DEUDA",
                               tipoDocumento, nroDocumento, nroCotizacion, nroCertificado );
@@ -206,9 +211,9 @@ public class EComunMgrTienda implements IEComunTienda {
 
         List<PlanCoberturaTienda> result = UtilTienda.castList(PlanCoberturaTienda.class, query.getResultList());
 
-        if (result != null && result.size() > 0) {
+        if ((result != null) && (result.size() > 0)) {
             for (int i = 0; i < result.size(); i++) {
-                PlanCoberturaTienda pc = (PlanCoberturaTienda)result.get(i);
+                PlanCoberturaTienda pc = result.get(i);
                 lista.add(pc);
             }
         } else { logger.info(logEncabezado + " - BASE de DATOS no retorna PLANES de COBERTURAS"); }
@@ -265,6 +270,7 @@ public class EComunMgrTienda implements IEComunTienda {
     //
     // Desde - BICI (EJB)
     // Desde - EDEPORT (EJB)
+    @Override
     public PlanCoberturaTienda consultaPlanCoberturaRamo( EntityManager em,
                                                           int    ramo,
                                                           String plan ) throws Exception, BSEExceptionTienda{
@@ -279,8 +285,8 @@ public class EComunMgrTienda implements IEComunTienda {
 
         List<PlanCoberturaTienda> result = UtilTienda.castList(PlanCoberturaTienda.class, query.getResultList());
 
-        if (result != null && result.size() > 0) {
-            PlanCoberturaTienda pc = (PlanCoberturaTienda)result.get(0);
+        if ((result != null) && (result.size() > 0)) {
+            PlanCoberturaTienda pc = result.get(0);
 
             logger.info(logEncabezado + logParametros + " - RESULT -> [" + pc.toString() + "]");
             return pc;
@@ -290,7 +296,7 @@ public class EComunMgrTienda implements IEComunTienda {
         return null;
     }
 
-    
+
     /**
     *
     * @param em
@@ -324,8 +330,8 @@ public class EComunMgrTienda implements IEComunTienda {
 
         List<PlanCoberturaTienda> result = UtilTienda.castList(PlanCoberturaTienda.class, query.getResultList());
 
-        if (result != null && result.size() > 0) {
-            PlanCoberturaTienda pc = (PlanCoberturaTienda)result.get(0);
+        if ((result != null) && (result.size() > 0)) {
+            PlanCoberturaTienda pc = result.get(0);
 
             logger.info(logEncabezado + logParametros + " - RESULT -> [" + pc.toString() + "]");
             return pc;
@@ -361,9 +367,9 @@ public class EComunMgrTienda implements IEComunTienda {
 
         List<PlanPagoTienda> result = UtilTienda.castList(PlanPagoTienda.class, query.getResultList());
 
-        if (result != null && result.size() > 0) {
+        if ((result != null) && (result.size() > 0)) {
             for (int i = 0; i < result.size(); i++) {
-                PlanPagoTienda pc = (PlanPagoTienda)result.get(i);
+                PlanPagoTienda pc = result.get(i);
 
                 boolean autorizado = false;
                 for (int x = 0; x < planesAutorizadosVec.length; x++){
@@ -462,7 +468,7 @@ public class EComunMgrTienda implements IEComunTienda {
 
         @SuppressWarnings("unchecked")
         List<Object[]> resultCot = queryCot.getResultList();
-        if (resultCot != null && resultCot.size() > 0) { result = true; }
+        if ((resultCot != null) && (resultCot.size() > 0)) { result = true; }
 
         logger.info(logEncabezado + logParametros
                      + " - RESULT -> [" + ((result)?"OK":"COTIZACION NO VALIDA") + "]");

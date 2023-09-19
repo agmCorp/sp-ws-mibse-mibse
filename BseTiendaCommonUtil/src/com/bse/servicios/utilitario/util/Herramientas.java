@@ -8,15 +8,17 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import org.apache.log4j.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.bse.servicios.utilitario.log.Logueo;
 
 
 
 public class Herramientas {
-    
-    private static final Logger logger = Logger.getLogger(Herramientas.class);
+
+    private static final Logger logger = LogManager.getLogger(Herramientas.class);
 
     /**
      * Toma la fecha del sistema
@@ -37,7 +39,7 @@ public class Herramientas {
      * Toma la fecha del sistema
      * @param separador
      * @param horas
-     * @return Un string con la fecha actual, con el separador ingresado 
+     * @return Un string con la fecha actual, con el separador ingresado
      * y con la hora si el parametro horas est\u00e1 en true.
      */
     public String getFechaActual(String separador, Boolean horas) {
@@ -59,7 +61,7 @@ public class Herramientas {
     /**
      * Convierte un Clob en String
      * @param unClob
-     * @return Un string con el contenido del Clob ingresado, null si el Clob ingresado era ya un null 
+     * @return Un string con el contenido del Clob ingresado, null si el Clob ingresado era ya un null
      * o si se gener\u00f3 un error en la conversi\u00f3n.
      */
     public String convertirClob(Clob unClob) {
@@ -77,8 +79,9 @@ public class Herramientas {
             BufferedReader bufferRead;
             try {
                 bufferRead = new BufferedReader(unClob.getCharacterStream());
-                while ((strng = bufferRead.readLine()) != null)
+                while ((strng = bufferRead.readLine()) != null) {
                     str.append(strng.trim() + " ");
+                }
                 resultado = str.toString();
             } catch (SQLException e) {
                 resultado = null;
@@ -101,14 +104,14 @@ public class Herramientas {
         return resultado;
     }
 
-    
+
     public String establecerMascara(Double numero){
-        
+
         //1- Si la parte decimal no tiene la cantidad de numeros, relleno con 0
         //2- Si tiene mas, lo redondea solo.
         //3- El resto de la mascara es automatica en este metodo
         //4- Quizas otro metodo para retornar otras mascaras
-        
+
         /*
         DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
         formatSymbols.setDecimalSeparator('|');
@@ -119,7 +122,7 @@ public class Herramientas {
         df.setGroupingSize(4);
 
         String out = df.format(new BigDecimal(300000).doubleValue());*/
-        
+
         //DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
         //formatSymbols.setDecimalSeparator('|');
         //formatSymbols.setGroupingSeparator('.');
@@ -135,20 +138,20 @@ public class Herramientas {
 
         String out = df.format(new BigDecimal(3000000.15).doubleValue());
 
-        
-        
+
+
         return out;
     }
-    
+
     /**
-     * Comprueba que el string recibido sea numerico y pueda ser casteado utilizando expresiones regulares 
+     * Comprueba que el string recibido sea numerico y pueda ser casteado utilizando expresiones regulares
      * @param textoComparar
      * @return
      */
-    public boolean isNumeric(String textoComparar) {  
-        return textoComparar.matches("[-+]?\\d*\\.?\\d+");  
+    public boolean isNumeric(String textoComparar) {
+        return textoComparar.matches("[-+]?\\d*\\.?\\d+");
     }
-    
+
     /**
      * Comprueba que el valor recibido de un properties es numerico, comprueba que no sea null ni vacio
      * @param valorDefecto
@@ -157,17 +160,17 @@ public class Herramientas {
      */
     public Integer checkValorPropertiesNumerico(Integer valorDefecto, String valorComprobar){
         Integer codigo = new Integer(valorDefecto);
-        
-        if(valorComprobar != null){ 
-            if(this.isNumeric(valorComprobar)){
+
+        if(valorComprobar != null){
+            if(isNumeric(valorComprobar)){
                 codigo = new Integer(valorComprobar);
             }
         }
-        
+
         return codigo;
     }
-    
-    
+
+
     /**
      * Comprueba que el valor recibido de un properties no sea null ni vacio
      * @param valorDefecto
@@ -176,11 +179,11 @@ public class Herramientas {
      */
     public String checkValorPropertiesString(String valorDefecto, String valorComprobar){
         String descripcion = valorDefecto;
-        
-        if(valorComprobar != null && !valorComprobar.equals("")){
+
+        if((valorComprobar != null) && !valorComprobar.equals("")){
             descripcion = valorComprobar;
         }
-        
+
         return descripcion;
     }
 }

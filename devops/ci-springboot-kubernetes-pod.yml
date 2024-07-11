@@ -1,0 +1,33 @@
+apiVersion: "v1"
+kind: "Pod"
+spec:
+  containers:
+    - name: maven
+      image: maven:3.9.6-eclipse-temurin-21
+      command:
+        - cat
+      tty: true
+      volumeMounts:
+        - mountPath: /etc/pki/ca-trust/source/anchors
+          name: jenkins-trusted-ca-bundle
+      env:
+        - name: "GIT_SSL_CAINFO"
+          value: /etc/pki/ca-trust/source/anchors/ca-bundle.crt
+        - name: "HOME"
+          value: /home/jenkins/agent
+    - name: "jnlp"
+      image: "jenkins/inbound-agent:4.11-1-jdk11"
+      volumeMounts:
+        - mountPath: /etc/pki/ca-trust/source/anchors
+          name: jenkins-trusted-ca-bundle
+      env:
+        - name: "GIT_SSL_CAINFO"
+          value: /etc/pki/ca-trust/source/anchors/ca-bundle.crt
+        - name: "HOME"
+          value: /home/jenkins/agent
+  volumes:
+    - configMap:
+        defaultMode: 420
+        name: jenkins-trusted-ca-bundle
+        optional: true
+      name: jenkins-trusted-ca-bundle

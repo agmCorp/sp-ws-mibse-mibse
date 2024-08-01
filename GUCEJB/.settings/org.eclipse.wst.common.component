@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="GUCEJB">
+        <wb-resource deploy-path="/" source-path="/ejbModule" tag="defaultRootSource"/>
+        <dependent-module archiveName="GUCInterfaces.jar" deploy-path="/" handle="module:/resource/GUCInterfaces/GUCInterfaces">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="CommonUtil.jar" deploy-path="/" handle="module:/resource/CommonUtil/CommonUtil">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="GUCEJBClient.jar" deploy-path="/" handle="module:/resource/GUCEJBClient/GUCEJBClient">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <property name="java-output-path" value="/GUCEJB/build/classes"/>
+    </wb-module>
+</project-modules>

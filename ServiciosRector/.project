@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>ServiciosRector</name>
+	<comment></comment>
+	<projects>
+		<project>ServiciosRectorPersistencia</project>
+		<project>ServiciosRectorInterfaces</project>
+		<project>IRectorEJBClient</project>
+		<project>IRectorEJB</project>
+		<project>ServiciosRectorWS</project>
+		<project>LogicaPolizas</project>
+		<project>ServiciosRectorUtil</project>
+		<project>LogicaCotizaciones</project>
+		<project>SeguridadEJBClient</project>
+		<project>LogicaConsultaReportes</project>
+		<project>CommonUtil</project>
+		<project>LogicaConsultas</project>
+		<project>LogicaGenerico</project>
+		<project>LogicaMaestroPersonas</project>
+		<project>LogicaAuditoria</project>
+		<project>LogicaAdministracion</project>
+		<project>MaestroPersonasWS</project>
+		<project>LogicaCotizadorVYA</project>
+		<project>RTimeLogger</project>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.wst.common.project.facet.core.builder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.wst.validation.validationbuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.wst.common.project.facet.core.nature</nature>
+		<nature>org.eclipse.wst.common.modulecore.ModuleCoreNature</nature>
+	</natures>
+</projectDescription>

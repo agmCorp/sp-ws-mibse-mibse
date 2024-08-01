@@ -1,0 +1,8 @@
+ClearCase CopyAreaDB|4
+VOB_Arquitectura\Framework\common.performancelogger\src\common\performancelogger
+2
+4
+16:PerformanceLogger.java|1|133f48271e4|18ac|392139e3|8e86220b25774165bf14dabfcead2642|0
+1d:PerformanceLoggerContext.java|1|133f04a777e|1283|ac490415|1a3b75f6aae7424dba56618d4b0d8b80|0
+e:Formatter.java|1|133eb23e90d|154a|932dc2fc|ef2f21ee53664d5db25e4f1d15e7d9e8|0
+6:filter|2|0|0|0|51504acd37f04f99bcd6e4eed9c9548b|0

@@ -1,0 +1,19 @@
+<beans
+ xmlns="http://www.springframework.org/schema/beans"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:beans="http://www.springframework.org/schema/beans"
+ xmlns:jaxws="http://cxf.apache.org/jaxws"
+ xsi:schemaLocation="http://www.springframework.org/schema/beans
+ http://www.springframework.org/schema/beans/spring-beans.xsd
+ http://cxf.apache.org/jaxws
+ http://cxf.apache.org/schemas/jaxws.xsd">
+
+ <!-- one or more jaxws:endpoint POJO declarations -->
+  <jaxws:endpoint id="Ws" address="http://localhost:8080/MaestroPersonasWS"  
+   implementor="uy.com.bse.maestro.ws.WsMaestroPersonas">
+  <jaxws:invoker>
+    <bean class="org.jboss.wsf.stack.cxf.InvokerJSE"/>
+  </jaxws:invoker>
+ </jaxws:endpoint>
+
+</beans>

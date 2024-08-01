@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="IRectorEJB">
+        <wb-resource deploy-path="/" source-path="/ejbModule" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/" source-path="/.apt_generated"/>
+        <dependent-module archiveName="LogicaPolizas.jar" deploy-path="/" handle="module:/resource/LogicaPolizas/LogicaPolizas">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="LogicaCotizaciones.jar" deploy-path="/" handle="module:/resource/LogicaCotizaciones/LogicaCotizaciones">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="CommonUtil.jar" deploy-path="/" handle="module:/resource/CommonUtil/CommonUtil">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ServiciosRectorInterfaces.jar" deploy-path="/" handle="module:/resource/ServiciosRectorInterfaces/ServiciosRectorInterfaces">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="IRectorEJBClient.jar" deploy-path="/" handle="module:/resource/IRectorEJBClient/IRectorEJBClient">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="LogicaConsultaReportes.jar" deploy-path="/" handle="module:/resource/LogicaConsultaReportes/LogicaConsultaReportes">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="LogicaConsultas.jar" deploy-path="/" handle="module:/resource/LogicaConsultas/LogicaConsultas">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="LogicaAuditoria.jar" deploy-path="/" handle="module:/resource/LogicaAuditoria/LogicaAuditoria">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="LogicaGenerico.jar" deploy-path="/" handle="module:/resource/LogicaGenerico/LogicaGenerico">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="LogicaMaestroPersonas.jar" deploy-path="/" handle="module:/resource/LogicaMaestroPersonas/LogicaMaestroPersonas">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <property name="java-output-path" value="/IRectorEJB/build/classes"/>
+        <property name="ClientProject" value="IRectorEJBClient"/>
+        <property name="ClientJARURI" value="IRectorEJBClient.jar"/>
+    </wb-module>
+</project-modules>

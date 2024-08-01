@@ -1,0 +1,6 @@
+log4j.appender.RTimeLoggerAppender=org.apache.log4j.FileAppender
+log4j.logger.uy.ibm.responseTimeLogger.RTimeLogger = INFO, RTimeLoggerAppender
+log4j.appender.RTimeLoggerAppender.File = /tmp/trxResponseTimes.log
+log4j.appender.RTimeLoggerAppender.Append = true
+log4j.appender.RTimeLoggerAppender.layout = org.apache.log4j.PatternLayout
+log4j.appender.RTimeLoggerAppender.layout.ConversionPattern=%m%n

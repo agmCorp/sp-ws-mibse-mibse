@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="GUC">
+        <wb-resource deploy-path="/" source-path="/EarContent" tag="defaultRootSource"/>
+        <dependent-module archiveName="CommonUtil.jar" deploy-path="/lib" handle="module:/resource/CommonUtil/CommonUtil">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="GUCInterfaces.jar" deploy-path="/lib" handle="module:/resource/GUCInterfaces/GUCInterfaces">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ServiciosGUCWS.war" deploy-path="/" handle="module:/resource/ServiciosGUCWS/ServiciosGUCWS">
+            <dependent-object/>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="GUCEJB.jar" deploy-path="/" handle="module:/resource/GUCEJB/GUCEJB">
+            <dependent-object/>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="GUCEJBClient.jar" deploy-path="/lib" handle="module:/resource/GUCEJBClient/GUCEJBClient">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+    </wb-module>
+</project-modules>

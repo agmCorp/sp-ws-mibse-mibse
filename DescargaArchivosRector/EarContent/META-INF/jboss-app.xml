@@ -1,0 +1,8 @@
+<jboss-app>
+<loader-repository>
+DescargaArchivosRector:loader=DescargaArchivosRector.ear
+<loader-repository-config>
+java2ParentDelegation=false
+</loader-repository-config>
+</loader-repository>
+</jboss-app>

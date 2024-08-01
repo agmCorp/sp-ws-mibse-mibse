@@ -1,0 +1,8 @@
+<jboss-app>
+<loader-repository>
+GUC:loader=GUC.ear
+<loader-repository-config>
+java2ParentDelegation=true
+</loader-repository-config>
+</loader-repository>
+</jboss-app>

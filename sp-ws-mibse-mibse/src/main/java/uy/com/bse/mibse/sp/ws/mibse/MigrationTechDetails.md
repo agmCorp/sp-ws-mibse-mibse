@@ -119,24 +119,51 @@ copy/paste de código.
    En lugar de usar un archivo de propiedades para mapear parámetros a solvers, la propuesta es usar una configuración 
 de Spring con un @Configuration que expone los beans.
 
-Ejemplo:
+Dado que AbstractSolver y XMLAbstractSolver son clases abstractas que heredan de LogicaSolver, la configuración de 
+mapeos en Spring se puede hacer de la siguiente manera:
 
 ```java
 @Configuration
 public class SolverConfig {
-
    @Bean
-   public Map<String, AbstractSolver> solverMap(List<AbstractSolver> solvers) {
-      Map<String, AbstractSolver> map = new HashMap<>();
+   public Map<String, LogicaSolver> solverMap(List<LogicaSolver> solvers) {
+      Map<String, LogicaSolver> map = new HashMap<>();
       for (AbstractSolver solver : solvers) {
-         map.put(solver.getClass().getName(), solver);
+         map.put(solver.getParameter, solver);
       }
       return map;
    }
 }
-
 ```   
+Necesitamos modificar la clase LogicaSolver para que exponga el método getParameter() que devuelve el parámetro de 
+entrada y será implementada por la clase Solver concreta que es encargada de conocer el parámetro de entrada.
 
+
+### 2. Implementación de Solvers
+
+   Cada Solver implementa la interfaz LogicaSolver y define el parámetro de entrada que debe resolver. 
+   En este ejemplo, el parámetro de entrada es "paramA". Cada Solver debe implementar el método solve() que 
+   realizará la lógica de negocio correspondiente.
+
+```java
+package uy.com.bse;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class SolverA implements LogicaSolver {
+   @Override
+   public String getParameter() {
+      return "paramA"; // Parámetro asociado
+   }
+
+   @Override
+   public ResultGenerico solve(ParamGenerico param) {
+      // Lógica de solución para SolverA
+      return new ResultGenerico(); // Retorna el resultado
+   }
+}
+```
 ### 2. Invocación del Servicio en Spring Boot
 
    Refactorizar LogicaMiBSE para Spring Boot para que use el mapa de solvers para resolver dinámicamente el solver adecuado.
@@ -144,6 +171,57 @@ public class SolverConfig {
    dinámicamente el solver adecuado.
 
 Ejemplo:
+```java
+package uy.com.bse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.Map;
+
+@Component
+public final class LogicaMiBSE {
+
+   @Autowired
+   private Map<String, LogicaSolver> solverMap; // Inyección del mapa de solvers
+
+   public static ResultGenerico solve(ParamGenerico param) {
+      ResultGenerico result = null;
+      if (param != null) {
+         String paramClass = param.getClass().getName();
+
+         RTimeLogger.registerStart(paramClass);
+         RTimeLogger.addCustomData("user", param.getUsuario());
+         try {
+            LogicaSolver solver = getMapperNewInstance(paramClass);
+            result = solver.solve(param); // Llamar al método solve del solver correspondiente
+         } catch (RuntimeException re) {
+            myLogger.error("No se pudo resolver param: " + paramClass + ", para usuario: " + param.getUsuario());
+            myLogger.error(re.getMessage());
+            RTimeLogger.addCustomData("solveError", re.getMessage());
+            throw re;
+         } finally {
+            RTimeLogger.registerStop(paramClass);
+         }
+      }
+      return result;
+   }
+
+   private LogicaSolver getMapperNewInstance(String paramClass) {
+      LogicaSolver solver = solverMap.get(paramClass); // Obtener el solver del mapa
+      if (solver == null) {
+         String msgError = "No pude encontrar mapper para param: " + paramClass;
+         myLogger.error(msgError);
+         // Manejo de error
+      }
+      return solver;
+   }
+}
+```
+
+Finalmente, se implementa el servicio en MiNuevoServicio, que implementa la interfaz MiNuevoServicioLocal, que es la 
+interfaz de acceso a los servicios de la aplicación. La clase MiNuevoServicioLocal toma el rol de service layer, que es 
+la capa de servicios de la aplicación. Para la aplicación MiBSE, la service layer es implementada por la clase MiBse
 
 ```java
 public class MiNuevoServicio implements MiNuevoServicioLocal {
@@ -151,7 +229,7 @@ public class MiNuevoServicio implements MiNuevoServicioLocal {
     private static Logger log = LogManager.getLogger(MiNuevoServicio.class);
 
     @Autowired
-    private Map<String, AbstractSolver> solverMap;
+    private LogicaMiBSE logicaMiBSE;
 
     @Override    
     public ResultNuevoServicio ejecutarNuevoServicio(ParamNuevoServicio param) {
@@ -162,3 +240,10 @@ public class MiNuevoServicio implements MiNuevoServicioLocal {
     }
 }
 ```
+
+Resumen
+Interfaz LogicaSolver: Define un método para obtener el parámetro asociado.
+Implementación de Solvers: Cada solver implementa la interfaz y define su parámetro.
+Configuración de Mapeo: En SolverConfig, se crea un Map que asocia cada parámetro con su solver.
+Uso en LogicaMiBSE: Se inyecta el mapa y se utiliza para obtener el solver correspondiente según el parámetro.
+Con este enfoque, puedes gestionar fácilmente el mapeo entre parámetros y solvers en tu aplicación Spring Boot.

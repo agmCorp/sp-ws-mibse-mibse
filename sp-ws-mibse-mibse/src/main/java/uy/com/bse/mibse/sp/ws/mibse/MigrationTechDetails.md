@@ -17,14 +17,14 @@ A continuación se detallan los pasos a seguir para implementar un nuevo servici
    específicos para el nuevo servicio. Estos deben extender las clases base proporcionadas: ParamGenerico y 
    ResultGenerico.
 
-    ```java
+```java
    public class ParamNuevoServicio extends ParamGenerico {
     // Definir campos específicos para el servicio
     }
    public class ResultNuevoServicio extends ResultGenerico {
    // Definir campos específicos para el resultado del servicio
     }
-    ```
+```
 
 ### 2. **Implementar el Solver:**
    Luego, se crea una nueva clase que extiende AbstractSolver o XMLAbstractSolver, dependiendo de si necesitas 

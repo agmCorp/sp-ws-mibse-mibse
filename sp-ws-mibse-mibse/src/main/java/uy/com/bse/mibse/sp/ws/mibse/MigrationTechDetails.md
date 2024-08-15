@@ -241,9 +241,8 @@ public class MiNuevoServicio implements MiNuevoServicioLocal {
 }
 ```
 
-Resumen
-Interfaz LogicaSolver: Define un método para obtener el parámetro asociado.
-Implementación de Solvers: Cada solver implementa la interfaz y define su parámetro.
-Configuración de Mapeo: En SolverConfig, se crea un Map que asocia cada parámetro con su solver.
-Uso en LogicaMiBSE: Se inyecta el mapa y se utiliza para obtener el solver correspondiente según el parámetro.
-Con este enfoque, puedes gestionar fácilmente el mapeo entre parámetros y solvers en tu aplicación Spring Boot.
+### Resumen
+**Interfaz LogicaSolver:** Define un método para obtener el parámetro asociado.
+**Implementación de Solvers:** Cada solver implementa la interfaz y define su parámetro.
+**Configuración de Mapeo:** En SolverConfig, se crea un Map que asocia cada parámetro con su solver.
+**Uso en LogicaMiBSE:** Se inyecta el mapa y se utiliza para obtener el solver correspondiente según el parámetro.

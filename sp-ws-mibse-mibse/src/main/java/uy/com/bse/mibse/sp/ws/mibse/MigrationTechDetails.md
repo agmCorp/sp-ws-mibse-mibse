@@ -13,7 +13,7 @@ nuevamente la lógica de glue code para cada nuevo servicio.
 A continuación se detallan los pasos a seguir para implementar un nuevo servicio:
 
 ### 1. **Definir los Parámetros y Resultados:**
-   Lo primero es definir las clases que encapsulan los parámetros (ParamNuevoServicio) y los resultados (ResultGenerico) 
+   Lo primero es definir las clases que encapsulan los parámetros (ParamNuevoServicio) y los resultados (ResultNuevoServicio) 
    específicos para el nuevo servicio. Estos deben extender las clases base proporcionadas: ParamGenerico y 
    ResultGenerico.
 

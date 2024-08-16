@@ -165,7 +165,7 @@ import org.springframework.stereotype.Component;
 public class SolverA extends AbstractSolver { // Extender AbstractSolver o XMLAbstractSolver
    @Override
    public String getParameter() {
-      return "paramA"; // Parámetro asociado
+      return ParamA.getClass.getName(); // Nombre de parámetro asociado
    }
 
    @Override

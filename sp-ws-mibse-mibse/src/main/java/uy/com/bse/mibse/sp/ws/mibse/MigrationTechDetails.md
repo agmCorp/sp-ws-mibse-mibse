@@ -132,7 +132,8 @@ de los mapeos en Spring se puede realizar de la siguiente manera:
 public class SolverConfig {
    @Bean
    @Autowired
-   public Map<String, LogicaSolver> solverMap(List<LogicaSolver> solvers) {
+   //TODO revisar si funciona con List en lugar de ArrayList
+   public Map<String, LogicaSolver> solverMap(ArrayList<LogicaSolver> solvers) {
       Map<String, LogicaSolver> map = new HashMap<>();
       for (AbstractSolver solver : solvers) {
          map.put(solver.getParameter, solver);

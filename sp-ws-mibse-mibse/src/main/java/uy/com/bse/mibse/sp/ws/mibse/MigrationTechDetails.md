@@ -131,6 +131,7 @@ de los mapeos en Spring se puede realizar de la siguiente manera:
 @Configuration
 public class SolverConfig {
    @Bean
+   @Autowired
    public Map<String, LogicaSolver> solverMap(List<LogicaSolver> solvers) {
       Map<String, LogicaSolver> map = new HashMap<>();
       for (AbstractSolver solver : solvers) {

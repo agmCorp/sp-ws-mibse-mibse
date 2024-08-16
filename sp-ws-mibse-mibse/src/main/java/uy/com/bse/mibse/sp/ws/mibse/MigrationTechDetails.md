@@ -116,11 +116,12 @@ copy/paste de código.
 
 ### 1. Configuración de Mapeos en Spring
 
-   En lugar de usar un archivo de propiedades para mapear parámetros a solvers, la propuesta es usar una configuración 
-de Spring con un @Configuration que expone los beans.
+En lugar de utilizar un archivo de propiedades combinado con mecanismos de reflexión en Java para mapear parámetros a los 
+solvers, se propone una configuración basada en Spring. Esto se logrará mediante una clase anotada con @Configuration que 
+expone los beans correspondientes.
 
-Dado que AbstractSolver y XMLAbstractSolver son clases abstractas que heredan de LogicaSolver, la configuración de 
-mapeos en Spring se puede hacer de la siguiente manera:
+Dado que AbstractSolver y XMLAbstractSolver son clases abstractas que heredan de LogicaSolver, la configuración de los 
+mapeos en Spring se puede realizar de la siguiente manera:
 
 ```java
 @Configuration
@@ -135,9 +136,9 @@ public class SolverConfig {
    }
 }
 ```   
-Necesitamos modificar la clase LogicaSolver para que exponga el método getParameter() que devuelve el parámetro de 
-entrada y será implementada por la clase Solver concreta que es encargada de conocer el parámetro de entrada.
 
+Es necesario modificar la clase LogicaSolver para que exponga el método getParameter(), el cual devolverá el parámetro 
+de entrada. Este método será implementado por la clase concreta de Solver, que es la encargada de manejar y conocer el parámetro de entrada específico.
 
 ### 2. Implementación de Solvers
 

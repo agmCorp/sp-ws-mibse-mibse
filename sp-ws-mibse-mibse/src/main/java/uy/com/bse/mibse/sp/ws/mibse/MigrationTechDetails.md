@@ -141,9 +141,84 @@ entrada y será implementada por la clase Solver concreta que es encargada de co
 
 ### 2. Implementación de Solvers
 
-   Cada Solver implementa la interfaz LogicaSolver y define el parámetro de entrada que debe resolver. 
-   En este ejemplo, el parámetro de entrada es "paramA". Cada Solver debe implementar el método solve() que 
-   realizará la lógica de negocio correspondiente.
+La implementación de los Solvers sigue un enfoque jerarquico, donde cada Solver hereda de AbstractSolver o XMLAbstractSolver, 
+dependiendo de si se necesita procesar XML o no. La jerarquía de clases se muestra a continuación:
+
+```plantuml
++-------------------+
+|  <<interface>>    |
+|   LogicaSolver    |
+|-------------------|
+| + solve(param:    |
+|   ParamGenerico): |
+|   ResultGenerico  |
++-------------------+
+          ^
+          |
+          |
++---------------------------+
+|      AbstractSolver        |
+|----------------------------|
+| - LOG: Logger              |
+|----------------------------|
+| + solve(param:             |
+|   ParamGenerico):          |
+|   ResultGenerico           |
+|----------------------------|
+| # chequeoPreCondiciones(   |
+|   param: ParamGenerico):   |
+|   ResultGenerico           |
+|----------------------------|
+| # getMyResultInstance():   |
+|   ResultGenerico           |
+|----------------------------|
+| # procesoLogica(param:     |
+|   ParamGenerico):          |
+|   ResultGenerico           |
+|----------------------------|
+| # procesoPostCondiciones(  |
+|   param: ParamGenerico,    |
+|   result: ResultGenerico): |
+|   void                     |
+|----------------------------|
+| # checkNull(resultado:     |
+|   ResultGenerico):         |
+|   ResultGenerico           |
++----------------------------+
+          ^
+          |
+          |
++--------------------------------+
+|        XMLAbstractSolver        |
+|---------------------------------|
+| - LOGGER: Logger                |
+|---------------------------------|
+| + procesoLogica(param:          |
+|   ParamGenerico):               |
+|   ResultGenerico                |
+|---------------------------------|
+| - procesarErrores(xmlResult:    |
+|   ResultXmlPL):                 |
+|   ResultGenerico                |
+|---------------------------------|
+| - procesoResultadoConErrorYXml( |
+|   resultED: ResultGenerico,     |
+|   xmlResult: ResultXmlPL):      |
+|   ResultGenerico                |
+|---------------------------------|
+| # getXmlResult(param:           |
+|   ParamGenerico):               |
+|   ResultXmlPL                   |
+|---------------------------------|
+| # parseValues(xmlResult:        |
+|   ResultXmlPL):                 |
+|   ResultGenerico                |
++---------------------------------+
+```
+
+Cada Solver concreto implementa la interfaz LogicaSolver y define el parámetro de entrada que debe resolver. 
+En este ejemplo, el parámetro de entrada es "paramA". Cada Solver debe implementar el método solve() que 
+realizará la lógica de negocio correspondiente al nuevo servicio.
 
 ```java
 package uy.com.bse;

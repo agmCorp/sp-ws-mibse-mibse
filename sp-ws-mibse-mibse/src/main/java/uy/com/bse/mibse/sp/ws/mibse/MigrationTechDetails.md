@@ -13,9 +13,8 @@ nuevamente la lógica de glue code para cada nuevo servicio.
 A continuación se detallan los pasos a seguir para implementar un nuevo servicio:
 
 ### 1. **Definir los Parámetros y Resultados:**
-   Lo primero es definir las clases que encapsulan los parámetros (ParamNuevoServicio) y los resultados (ResultNuevoServicio) 
-   específicos para el nuevo servicio. Estos deben extender las clases base proporcionadas: ParamGenerico y 
-   ResultGenerico.
+Lo primero es definir las clases que encapsulan los parámetros (ParamNuevoServicio) y los resultados (ResultNuevoServicio) 
+específicos para el nuevo servicio. Estos deben extender las clases base proporcionadas: ParamGenerico y ResultGenerico.
 
 ```java
    public class ParamNuevoServicio extends ParamGenerico {
@@ -27,8 +26,9 @@ A continuación se detallan los pasos a seguir para implementar un nuevo servici
 ```
 
 ### 2. **Implementar el Solver:**
-   Luego, se crea una nueva clase que extiende AbstractSolver o XMLAbstractSolver, dependiendo de si necesitas 
-   procesar XML o no. Aquí es donde reside la lógica de negocio del servicio:
+Luego, se crea una nueva clase que extiende AbstractSolver o XMLAbstractSolver, dependiendo de si necesitas 
+procesar XML o no. Aquí es donde reside la lógica de negocio del servicio:
+
 ```java
    public class NuevoServicioSolver extends AbstractSolver {
 
@@ -57,16 +57,20 @@ com.miempresa.ParamNuevoServicio=com.miempresa.NuevoServicioSolver
 ```
 
 ### 3. **Implementar el Service:**
+
 Una vez que se ha implementado el nuevo servicio en la correspondiente clase Solver y registrado el mapeo correspondiente 
 a partir del parámetro de entrada, se debe de implementar la adaptación de lo genérico a lo particular. Para ello, se debe
 de implementar un método que reciba como parámetro el parámetro de entrada y devuelva el resultado correspondiente. Este
 método debe ser público y su lógica es muy simple, ya que se resuelve su implementación de forma genérica mediante:
+
 ```java
 ResultGenerico result = LogicaMiBSE.solve(param);
 ```
 
 Podemos ver que el método solve de LogicaMiBSE es el encargado de resolver quién es el pedido, invocando el Solver adecuado
-basado en los parámetros recibidos:
+basado en los parámetros recibidos. La clase LogicaMiBSE es la encargada de resolver quién es el pedido, invocando el 
+Solver adecuado basado en los parámetros recibidos, este mapping se realiza en LogicaMiBSE mediante el parseo del archivo 
+logicaMiBSEMappers.properties utilizando técnias de reflexión en Java.
 
 ```java
 public class MiNuevoServicio implements MiNuevoServicioLocal {
@@ -120,8 +124,8 @@ En lugar de utilizar un archivo de propiedades combinado con mecanismos de refle
 solvers, se propone una configuración basada en Spring. Esto se logrará mediante una clase anotada con @Configuration que 
 expone los beans correspondientes.
 
-Dado que AbstractSolver y XMLAbstractSolver son clases abstractas que heredan de LogicaSolver, la configuración de los 
-mapeos en Spring se puede realizar de la siguiente manera:
+Dado que AbstractSolver y XMLAbstractSolver son clases abstractas que heredan de LogicaSolver (Ver ANEXO), la configuración
+de los mapeos en Spring se puede realizar de la siguiente manera:
 
 ```java
 @Configuration
@@ -142,84 +146,13 @@ de entrada. Este método será implementado por la clase concreta de Solver, que
 
 ### 2. Implementación de Solvers
 
-La implementación de los Solvers sigue un enfoque jerarquico, donde cada Solver hereda de AbstractSolver o XMLAbstractSolver, 
-dependiendo de si se necesita procesar XML o no. La jerarquía de clases se muestra a continuación:
-
-```plantuml
-+-------------------+
-|  <<interface>>    |
-|   LogicaSolver    |
-|-------------------|
-| + solve(param:    |
-|   ParamGenerico): |
-|   ResultGenerico  |
-+-------------------+
-          ^
-          |
-          |
-+---------------------------+
-|      AbstractSolver        |
-|----------------------------|
-| - LOG: Logger              |
-|----------------------------|
-| + solve(param:             |
-|   ParamGenerico):          |
-|   ResultGenerico           |
-|----------------------------|
-| # chequeoPreCondiciones(   |
-|   param: ParamGenerico):   |
-|   ResultGenerico           |
-|----------------------------|
-| # getMyResultInstance():   |
-|   ResultGenerico           |
-|----------------------------|
-| # procesoLogica(param:     |
-|   ParamGenerico):          |
-|   ResultGenerico           |
-|----------------------------|
-| # procesoPostCondiciones(  |
-|   param: ParamGenerico,    |
-|   result: ResultGenerico): |
-|   void                     |
-|----------------------------|
-| # checkNull(resultado:     |
-|   ResultGenerico):         |
-|   ResultGenerico           |
-+----------------------------+
-          ^
-          |
-          |
-+--------------------------------+
-|        XMLAbstractSolver        |
-|---------------------------------|
-| - LOGGER: Logger                |
-|---------------------------------|
-| + procesoLogica(param:          |
-|   ParamGenerico):               |
-|   ResultGenerico                |
-|---------------------------------|
-| - procesarErrores(xmlResult:    |
-|   ResultXmlPL):                 |
-|   ResultGenerico                |
-|---------------------------------|
-| - procesoResultadoConErrorYXml( |
-|   resultED: ResultGenerico,     |
-|   xmlResult: ResultXmlPL):      |
-|   ResultGenerico                |
-|---------------------------------|
-| # getXmlResult(param:           |
-|   ParamGenerico):               |
-|   ResultXmlPL                   |
-|---------------------------------|
-| # parseValues(xmlResult:        |
-|   ResultXmlPL):                 |
-|   ResultGenerico                |
-+---------------------------------+
-```
-
 Cada Solver concreto implementa la interfaz LogicaSolver y define el parámetro de entrada que debe resolver. 
 En este ejemplo, el parámetro de entrada es "paramA". Cada Solver debe implementar el método solve() que 
 realizará la lógica de negocio correspondiente al nuevo servicio.
+
+En el nuevo contexto de migración, se agrega la operación getParameter() al SolverA, que devuelve el parámetro de entrada 
+"paramA". Este método será implementado por la clase concreta de Solver, que es la encargada de manejar y conocer el 
+parámetro de entrada específico.
 
 ```java
 package uy.com.bse;
@@ -227,7 +160,7 @@ package uy.com.bse;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SolverA implements LogicaSolver {
+public class SolverA extends AbstractSolver { // Extender AbstractSolver o XMLAbstractSolver
    @Override
    public String getParameter() {
       return "paramA"; // Parámetro asociado
@@ -242,9 +175,9 @@ public class SolverA implements LogicaSolver {
 ```
 ### 2. Invocación del Servicio en Spring Boot
 
-   Refactorizar LogicaMiBSE para Spring Boot para que use el mapa de solvers para resolver dinámicamente el solver adecuado.
-   Esto podemos implementarlo mediante inyección del mapa de solvers en LogicaMiBSE y utilizando este mapa para resolver 
-   dinámicamente el solver adecuado.
+Refactorizar LogicaMiBSE para Spring Boot para que use el mapa de solvers para resolver dinámicamente el solver adecuado.
+Esto podemos implementarlo mediante inyección del mapa de solvers en LogicaMiBSE y utilizando este mapa para resolver 
+dinámicamente el solver adecuado.
 
 Ejemplo:
 ```java
@@ -322,3 +255,81 @@ public class MiNuevoServicio implements MiNuevoServicioLocal {
 **Implementación de Solvers:** Cada solver implementa la interfaz y define su parámetro.
 **Configuración de Mapeo:** En SolverConfig, se crea un Map que asocia cada parámetro con su solver.
 **Uso en LogicaMiBSE:** Se inyecta el mapa y se utiliza para obtener el solver correspondiente según el parámetro.
+
+
+### ANEXO: Implementación de Solvers
+
+La implementación de los Solvers sigue un enfoque jerarquico, donde cada Solver hereda de AbstractSolver o XMLAbstractSolver,
+dependiendo de si se necesita procesar XML o no. La jerarquía de clases se muestra a continuación:
+
+```plantuml
++-------------------+
+|  <<interface>>    |
+|   LogicaSolver    |
+|-------------------|
+| + solve(param:    |
+|   ParamGenerico): |
+|   ResultGenerico  |
++-------------------+
+          ^
+          |
+          |
++---------------------------+
+|      AbstractSolver        |
+|----------------------------|
+| - LOG: Logger              |
+|----------------------------|
+| + solve(param:             |
+|   ParamGenerico):          |
+|   ResultGenerico           |
+|----------------------------|
+| # chequeoPreCondiciones(   |
+|   param: ParamGenerico):   |
+|   ResultGenerico           |
+|----------------------------|
+| # getMyResultInstance():   |
+|   ResultGenerico           |
+|----------------------------|
+| # procesoLogica(param:     |
+|   ParamGenerico):          |
+|   ResultGenerico           |
+|----------------------------|
+| # procesoPostCondiciones(  |
+|   param: ParamGenerico,    |
+|   result: ResultGenerico): |
+|   void                     |
+|----------------------------|
+| # checkNull(resultado:     |
+|   ResultGenerico):         |
+|   ResultGenerico           |
++----------------------------+
+          ^
+          |
+          |
++--------------------------------+
+|        XMLAbstractSolver        |
+|---------------------------------|
+| - LOGGER: Logger                |
+|---------------------------------|
+| + procesoLogica(param:          |
+|   ParamGenerico):               |
+|   ResultGenerico                |
+|---------------------------------|
+| - procesarErrores(xmlResult:    |
+|   ResultXmlPL):                 |
+|   ResultGenerico                |
+|---------------------------------|
+| - procesoResultadoConErrorYXml( |
+|   resultED: ResultGenerico,     |
+|   xmlResult: ResultXmlPL):      |
+|   ResultGenerico                |
+|---------------------------------|
+| # getXmlResult(param:           |
+|   ParamGenerico):               |
+|   ResultXmlPL                   |
+|---------------------------------|
+| # parseValues(xmlResult:        |
+|   ResultXmlPL):                 |
+|   ResultGenerico                |
++---------------------------------+
+```

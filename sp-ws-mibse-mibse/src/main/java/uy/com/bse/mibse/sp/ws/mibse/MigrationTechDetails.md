@@ -258,6 +258,104 @@ public class MiNuevoServicio implements MiNuevoServicioLocal {
 **Configuración de Mapeo:** En SolverConfig, se crea un Map que asocia cada parámetro con su solver.
 **Uso en LogicaMiBSE:** Se inyecta el mapa y se utiliza para obtener el solver correspondiente según el parámetro.
 
+### Otros Desafíos en la Migración
+
+El sistema de Solvers es un componente de gran impacto, debido a que los servicios se implementan utilizando sus servicios.
+Pero por otro lado también existen algunos desafíos particulares que salen de lo general.
+
+#### Desafío 1: Colas para notificaciones de pago
+
+//TODO
+Idea1: Utilizar funciones Async de Spring para implementar colas de notificaciones de pago.
+
+```java
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+import java.util.concurrent.CompletableFuture;
+@Service
+public class AsyncService {
+
+    @Async
+    public CompletableFuture<Void> processPurchase(Purchase purchase) {
+        // Lógica para generar documentos y enviar correos electrónicos
+        generateDocuments(purchase);
+        sendEmail(purchase);
+        return CompletableFuture.completedFuture(null);
+    }
+
+    private void generateDocuments(Purchase purchase) {
+        // Implementar la lógica para generar documentos
+    }
+
+    private void sendEmail(Purchase purchase) {
+        // Implementar la lógica para enviar correos electrónicos
+    }
+}
+```
+```java
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+ 
+@Service
+public class PurchaseService {
+ 
+    @Autowired
+    private AsyncService asyncService;
+ 
+    public void handlePurchase(Purchase purchase) {
+        // Lógica para manejar la compra
+        // Ejecutar la operación de procesamiento de manera asíncrona
+        asyncService.processPurchase(purchase);
+    }
+}
+```
+
+Idea2: Tener un servicio de broker/colas en OpenShift que se encargue de gestionar las colas de mensajes y ser un sistema 
+de broker de mensajes entre los servicios.
+
+#### Desafío 2: Persistencia de Stream de subida de archivos
+//TODO terminar
+
+```java
+public ResultSubirArchivo subirArchivo(ParamSubirArchivo param) {
+    //filesystem local al jboss que corre esta app (dmz?)
+    final String PATH = "/app/updownfile/corredores/tienda-bicibse/subir_archivos/";
+    ResultSubirArchivo resultado = new ResultSubirArchivo();
+
+    Logueo logueo = new Logueo();
+    logueo.setEncabezado(Values.ENCABEZADOPERSIST);
+    logueo.setClase(ServiciosMiBsePersist.class);
+    logueo.setMetodo("subirArchivo");
+    
+    logueo.setParametro("Usuario", param.getUsuario());
+    logueo.setParametro("Clave", param.getClave());
+    logueo.setParametro("NombreArchivo", param.getNombreArchivo());
+    logueo.setParametro("Archivo null?", param.getArchivo() == null);
+    
+    InputStream is = null;
+    OutputStream os = null;
+    try {
+        is = param.getArchivo().getInputStream();
+        os = new FileOutputStream(new File(PATH + param.getNombreArchivo()));
+        IOUtils.copy(is, os);
+    } catch(Exception e) {
+        catchException(resultado, logueo, e);
+    } finally {
+        IOUtils.closeQuietly(os);
+        IOUtils.closeQuietly(is);
+    }
+    
+    return resultado;
+}
+```
+
+#### Desafío 3: Interceptores
+
+//TODO
+
+#### Desafío 4: Autenticación (interacción con sistema de IBM)
+
+//TODO
 
 ### ANEXO: Implementación de Solvers
 
@@ -276,7 +374,7 @@ dependiendo de si se necesita procesar XML o no. La jerarquía de clases se mues
           ^
           |
           |
-+---------------------------+
++----------------------------+
 |      AbstractSolver        |
 |----------------------------|
 | - LOG: Logger              |
@@ -308,7 +406,7 @@ dependiendo de si se necesita procesar XML o no. La jerarquía de clases se mues
           ^
           |
           |
-+--------------------------------+
++---------------------------------+
 |        XMLAbstractSolver        |
 |---------------------------------|
 | - LOGGER: Logger                |

@@ -1,4 +1,4 @@
-## Descripción de arquitectura genérica utilizada en MiBSE:
+# Descripción de arquitectura genérica utilizada en MiBSE:
 
 El backend de la aplicación MiBSE está basada en una arquitectura genérica que permite la implementación 
 rápida de nuevos Servicios Web, dónde la lógica de negocio de estos servicios se encuentra en Procedimientos 
@@ -12,7 +12,7 @@ nuevamente la lógica de glue code para cada nuevo servicio.
 
 A continuación se detallan los pasos a seguir para implementar un nuevo servicio:
 
-### 1. **Definir los Parámetros y Resultados:**
+## 1. **Definir los Parámetros y Resultados:**
 Lo primero es definir las clases que encapsulan los parámetros (ParamNuevoServicio) y los resultados (ResultNuevoServicio) 
 específicos para el nuevo servicio. Estos deben extender las clases base proporcionadas: ParamGenerico y ResultGenerico.
 
@@ -25,7 +25,7 @@ específicos para el nuevo servicio. Estos deben extender las clases base propor
     }
 ```
 
-### 2. **Implementar el Solver:**
+## 2. **Implementar el Solver:**
 Luego, se crea una nueva clase que extiende AbstractSolver o XMLAbstractSolver, dependiendo de si necesitas 
 procesar XML o no. Aquí es donde reside la lógica de negocio del servicio:
 
@@ -56,7 +56,7 @@ En el archivo de configuración logicaMiBSEMappers.properties, se añade un mape
 com.miempresa.ParamNuevoServicio=com.miempresa.NuevoServicioSolver
 ```
 
-### 3. **Implementar el Service:**
+## 3. **Implementar el Service:**
 
 Una vez que se ha implementado el nuevo servicio en la correspondiente clase Solver y registrado el mapeo correspondiente 
 a partir del parámetro de entrada, se debe de implementar la adaptación de lo genérico a lo particular. Para ello, se debe
@@ -93,13 +93,13 @@ La clase MiNuevoServicioLocal toma el rol de service layer, que es la capa de se
 Para la aplicación MiBSE, la service layer es implementada por la clase MiBse (MiBSE.java), que implementa la interfaz 
 MiBseLocal que juega el rol de interfaz de acceso a los servicios de la aplicación.
 
-### 4. Exposición como Web Service
+## 4. Exposición como Web Service
 
 Finalmente, se expone este servicio como un Web Service. No hay detalles específicos para esto, se implementan como es 
 usual en el resto de las aplicaciones de Java anotando la clase con @WebService y definiendo las configuraciones necesarias.
 
 
-### 5. Resumen del Flujo
+## 5. Resumen del Flujo
 
 1. Parámetros (ParamNuevoServicio): Encapsula los datos de entrada.
 2. LogicaMiBSE.solve: Mapea y ejecuta el Solver correspondiente.
@@ -112,13 +112,13 @@ Este patrón proporciona una forma escalable y reutilizable de agregar nuevos se
 reescribir mucho código, aprovechando el polimorfismo para mantener la flexibilidad.
 
 ----
-## Migración de Arquitectura Genérica a Spring Boot 3:
+# Migración de Arquitectura Genérica a Spring Boot 3:
 
 Dado que código que se encarga de conectar los web services con los procedimientos almacenados en la base (glue code), 
 es genérico, el impácto en la migración es menor que en otros casos en el que el glue code es generado mediante 
 copy/paste de código.
 
-### 1. Configuración de Mapeos en Spring
+## 1. Configuración de Mapeos en Spring
 
 En lugar de utilizar un archivo de propiedades combinado con mecanismos de reflexión en Java para mapear parámetros a los 
 solvers, se propone una configuración basada en Spring. Esto se logrará mediante una clase anotada con @Configuration que 
@@ -146,7 +146,7 @@ public class SolverConfig {
 Es necesario modificar la clase LogicaSolver para que exponga el método getParameter(), el cual devolverá el parámetro 
 de entrada. Este método será implementado por la clase concreta de Solver, que es la encargada de manejar y conocer el parámetro de entrada específico.
 
-### 2. Implementación de Solvers
+## 2. Implementación de Solvers
 
 Cada Solver concreto implementa la interfaz LogicaSolver y define el parámetro de entrada que debe resolver. 
 En este ejemplo, el parámetro de entrada es "paramA". Cada Solver debe implementar el método solve() que 
@@ -175,7 +175,7 @@ public class SolverA extends AbstractSolver { // Extender AbstractSolver o XMLAb
    }
 }
 ```
-### 2. Invocación del Servicio en Spring Boot
+## 2. Invocación del Servicio en Spring Boot
 
 Refactorizar LogicaMiBSE para Spring Boot para que use el mapa de solvers para resolver dinámicamente el solver adecuado.
 Esto podemos implementarlo mediante inyección del mapa de solvers en LogicaMiBSE y utilizando este mapa para resolver 
@@ -252,7 +252,7 @@ public class MiNuevoServicio implements MiNuevoServicioLocal {
 }
 ```
 
-### Resumen
+## Resumen
 **Interfaz LogicaSolver:** Define un método para obtener el parámetro asociado.
 **Implementación de Solvers:** Cada solver implementa la interfaz y define su parámetro.
 **Configuración de Mapeo:** En SolverConfig, se crea un Map que asocia cada parámetro con su solver.
@@ -313,7 +313,7 @@ public class PurchaseService {
 Idea2: Tener un servicio de broker/colas en OpenShift que se encargue de gestionar las colas de mensajes y ser un sistema 
 de broker de mensajes entre los servicios.
 
-#### Desafío 2: Persistencia de Stream de subida de archivos
+### Desafío 2: Persistencia de Stream de subida de archivos
 //TODO terminar
 
 ```java
@@ -349,15 +349,15 @@ public ResultSubirArchivo subirArchivo(ParamSubirArchivo param) {
 }
 ```
 
-#### Desafío 3: Interceptores
+### Desafío 3: Interceptores
 
 //TODO
 
-#### Desafío 4: Autenticación (interacción con sistema de IBM)
+### Desafío 4: Autenticación (interacción con sistema de IBM)
 
 //TODO
 
-### ANEXO: Implementación de Solvers
+## ANEXO: Implementación de Solvers
 
 La implementación de los Solvers sigue un enfoque jerarquico, donde cada Solver hereda de AbstractSolver o XMLAbstractSolver,
 dependiendo de si se necesita procesar XML o no. La jerarquía de clases se muestra a continuación:
@@ -433,3 +433,44 @@ dependiendo de si se necesita procesar XML o no. La jerarquía de clases se mues
 |   ResultGenerico                |
 +---------------------------------+
 ```
+
+## Servicios de la Interfaz IWsServiciosMiBse
+
+Esta es una lista de los servicios disponibles en la interfaz `IWsServiciosMiBse`:
+
+- `obtenerComunicacionesCliente`
+- `obtenerPolizasCliente`
+- `actualizarFacturacionPoliza`
+- `obtenerDatosCliente`
+- `obtenerNumeroCliente`
+- `actualizarComunicacionesCliente`
+- `actualizarDatosCliente`
+- `actualizarFacturacionPolizaTodo`
+- `validarCodigoAdhesion`
+- `registrarCliente`
+- `listaProfesiones`
+- `listaTipoDocumentos`
+- `obtenerSeudoMailCliente`
+- `olvidoClave`
+- `obtenerDatosValidadosCliente`
+- `informarPagoBancario`
+- `informarPagoRedes`
+- `existeCliente`
+- `obtenerMaximoEndoso`
+- `validacionSOA`
+- `validacionCartaVerde`
+- `logActividadMibseWsExt`
+- `borrarMailCliente`
+- `modificarMailCliente`
+- `altaMailCliente`
+- `obtenerMailsEnvioFacturaCliente`
+- `validarCertificadoLibreDeudaADT`
+- `obtenerMapaMsgSiniestro`
+- `subirArchivo`
+- `proCarta`
+- `correspondeCartaPoliza`
+- `proCarta2`
+- `obtenerPolizasFacturasPagasCliente`
+- `adherirFacturaDigital`
+
+**Total de servicios:** 34

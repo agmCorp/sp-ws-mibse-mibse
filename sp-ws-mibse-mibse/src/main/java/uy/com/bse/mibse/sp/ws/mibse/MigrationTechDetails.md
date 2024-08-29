@@ -474,3 +474,20 @@ Esta es una lista de los servicios disponibles en la interfaz `IWsServiciosMiBse
 - `adherirFacturaDigital`
 
 **Total de servicios:** 34
+
+
+Otras tareas necesarias para la migración son:
+
+migrar a maven
+
+
+--------------------------------
+
+
+IDEAS:
+package utilitarios renombrarlo a algo que tenga que ver con el mecanismo core del framework
+
+tiene sentido tener las validaciones como solvers?
+
+COSAS A DOCUMENTAR:
+JdbcTemplate jdbcTemplate: This is a Spring utility that simplifies the process of interacting with a relational database using SQL queries. It handles common tasks like creating connections, executing statements, and processing results.

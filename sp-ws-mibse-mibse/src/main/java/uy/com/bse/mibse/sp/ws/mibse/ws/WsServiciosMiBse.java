@@ -19,7 +19,6 @@ import uy.com.bse.mibse.sp.ws.mibse.model.dto.ParamObtenerComunicacionesCliente;
 @Component
 public class WsServiciosMiBse implements IWsServiciosMiBse {
 
-	@Autowired
 	private final MiBSEService miBSEService;
 
     @Autowired

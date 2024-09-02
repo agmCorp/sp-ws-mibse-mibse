@@ -32,3 +32,4 @@ public class Values {
 	public static final String CONFIGURATION_EXCEPTION = "configurationException";
 	
 }
+

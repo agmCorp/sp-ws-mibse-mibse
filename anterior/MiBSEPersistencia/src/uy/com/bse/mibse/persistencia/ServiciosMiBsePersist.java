@@ -558,11 +558,11 @@ public class ServiciosMiBsePersist extends Persistencia {
 		return resultado;
 	}
 
-	public ResultXmlPL obtenerComunicacionesCliente(ParamObtenerComunicacionesCliente param) {
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 
+	public ResultXmlPL obtenerComunicacionesCliente(ParamObtenerComunicacionesCliente param) {
 		ResultXmlPL resultado = new ResultXmlPL();
-		CallableStatement cstmt = null;
-		Connection conn = null;
 		Logueo logueo = new Logueo();
 		logueo.setEncabezado(Values.ENCABEZADOPERSIST);
 		logueo.setClase(ServiciosMiBsePersist.class);
@@ -572,30 +572,31 @@ public class ServiciosMiBsePersist extends Persistencia {
 		logueo.setParametro("Clave", param.getClave());
 
 		try {
-			conn = this.crearConexion();
 			String nombrePL = obtenerValor("proc_obtenerDatosComunicacionesPersona");
 			logueo.setNombrePl(nombrePL);
 
-			cstmt = conn.prepareCall("{call " + nombrePL + "(?,?,?,?,?)}");
-			cstmt.setString(1, param.getUsuario());
+			SimpleJdbcCall simpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
+					.withProcedureName(nombrePL)
+					.declareParameters(
+							new SqlParameter("p_usuario", Types.VARCHAR),
+							new SqlOutParameter("p_codError", Types.INTEGER),
+							new SqlOutParameter("p_descError", Types.VARCHAR),
+							new SqlOutParameter("p_sqlError", Types.VARCHAR),
+							new SqlOutParameter("p_datosComunicaciones", Types.CLOB)
+					);
 
-			cstmt.registerOutParameter(2, Types.INTEGER);
-			cstmt.registerOutParameter(3, Types.VARCHAR);
-			cstmt.registerOutParameter(4, Types.VARCHAR);
-			cstmt.registerOutParameter(5, Types.CLOB);
-			cstmt.execute();
+			SqlParameterSource in = new MapSqlParameterSource()
+					.addValue("p_usuario", param.getUsuario());
 
-			int codError = cstmt.getInt(2);
-			String descError = cstmt.getString(3);
-			String sqlError = cstmt.getString(4);
-			Clob clob = cstmt.getClob(5);
+			Map<String, Object> out = simpleJdbcCall.execute(in);
+
+			int codError = (int) out.get("p_codError");
+			String descError = (String) out.get("p_descError");
+			String sqlError = (String) out.get("p_sqlError");
+			Clob clob = (Clob) out.get("p_datosComunicaciones");
 			procesarResultados(resultado, logueo, codError, descError, sqlError, clob);
-		} catch (SQLException e) {
-			catchSQLException(resultado, logueo, e);
-		} catch (Exception ex) {
-			catchException(resultado, logueo, ex);
-		} finally {
-			liberarRecursos(conn, cstmt);
+		} catch (Exception e) {
+			catchException(resultado, logueo, e);
 		}
 		return resultado;
 	}
@@ -608,30 +609,47 @@ public class ServiciosMiBsePersist extends Persistencia {
 		logueo.setParametro("Usuario", param.getUsuario());
 		logueo.setParametro("Clave", param.getClave());
 
-		Connection conn = null;
-		PreparedStatement pst = null;
-		ResultSet result = null;
 		ResultCodiguera resultado = new ResultCodiguera();
 
 		try {
-			conn = crearConexion();
-			String sql = "SELECT CAPW_CD_PROFESION COD_PROFESION, CAPW_DE_PROFESION DESC_PROFESION FROM CART_PROFESIONES";
-			logueo.setParametro("Consulta", sql);
-			pst = conn.prepareStatement(sql);
+			SimpleJdbcCall simpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
+					.withProcedureName("proc_listaProfesiones")
+					.declareParameters(
+							new SqlParameter("p_usuario", Types.VARCHAR),
+							new SqlOutParameter("p_codError", Types.INTEGER),
+							new SqlOutParameter("p_descError", Types.VARCHAR),
+							new SqlOutParameter("p_sqlError", Types.VARCHAR),
+							new SqlOutParameter("p_datosProfesiones", Types.CLOB)
+					);
 
-			result = pst.executeQuery();
+			SqlParameterSource in = new MapSqlParameterSource()
+					.addValue("p_usuario", param.getUsuario());
 
-			while (result.next()) {
-				Codiguera dato = new Codiguera();
-				dato.setCodigo(result.getString("COD_PROFESION"));
-				dato.setDescripcion(result.getString("DESC_PROFESION"));
-				resultado.setUno(dato);
+			Map<String, Object> out = simpleJdbcCall.execute(in);
+
+			int codError = (int) out.get("p_codError");
+			String descError = (String) out.get("p_descError");
+			String sqlError = (String) out.get("p_sqlError");
+			Clob clob = (Clob) out.get("p_datosProfesiones");
+
+			if (codError == 0) {
+				BufferedReader reader = new BufferedReader(new InputStreamReader(clob.getAsciiStream()));
+				String line;
+				while ((line = reader.readLine()) != null) {
+					Codiguera dato = new Codiguera();
+					String[] parts = line.split(",");
+					dato.setCodigo(parts[0]);
+					dato.setDescripcion(parts[1]);
+					resultado.setUno(dato);
+				}
+			} else {
+				catchException(resultado, logueo, new Exception("Error al obtener lista de profesiones: " + descError));
 			}
 
-		} catch (SQLException e) {
-			catchSQLException(resultado, logueo, e);
 		} catch (Exception ex) {
 			catchException(resultado, logueo, ex);
+		}
+		return resultado;
 		} finally {
 			liberarRecursos(conn, pst, result);
 		}
@@ -654,7 +672,7 @@ public class ServiciosMiBsePersist extends Persistencia {
 		try {
 			conn = crearConexion();
 
-			String sql = "SELECT CATU_TP_DOCUMENTO TP_DOCUMENTO, CATU_DE_DOCUMENTO DESC_DOCUMENTO FROM CART_TIPOS_DOCUMENTOS WHERE CATU_TP_DOCUMENTO IN ('CI', 'CIA', 'CIB', 'PAS') UNION SELECT 'RUT', 'RUT PERSONA JURÍDICA' FROM DUAL";
+			String sql = "SELECT CATU_TP_DOCUMENTO TP_DOCUMENTO, CATU_DE_DOCUMENTO DESC_DOCUMENTO FROM CART_TIPOS_DOCUMENTOS WHERE CATU_TP_DOCUMENTO IN ('CI', 'CIA', 'CIB', 'PAS') UNION SELECT 'RUT', 'RUT PERSONA JURï¿½DICA' FROM DUAL";
 
 			logueo.setParametro("Consulta", sql);
 			pst = conn.prepareStatement(sql);
@@ -843,7 +861,7 @@ public class ServiciosMiBsePersist extends Persistencia {
 	}
 
 	public ResultClientePago obtenerClientePagoSOA(ParamInformarPagoTienda param) {
-		final Integer ENDOSO = 0; // El endoso es siempre 0 luego de emitir la cotización
+		final Integer ENDOSO = 0; // El endoso es siempre 0 luego de emitir la cotizaciï¿½n
 		final Integer DATO_MATRICULA = 141001;
 		final Integer DATO_CHASIS = 141004;
 		Connection conn = null;
@@ -889,7 +907,7 @@ public class ServiciosMiBsePersist extends Persistencia {
 	}
 
 	public ResultClientePago obtenerClientePagoViajero(ParamInformarPagoTienda param) {
-		final Integer ENDOSO = 0; // El endoso es siempre 0 luego de emitir la cotización
+		final Integer ENDOSO = 0; // El endoso es siempre 0 luego de emitir la cotizaciï¿½n
 		Connection conn = null;
 		ResultClientePago resultado = new ResultClientePago();
 		
@@ -925,7 +943,7 @@ public class ServiciosMiBsePersist extends Persistencia {
 	}
 	
 	public ResultClientePago obtenerClientePagoEDeportivas(ParamInformarPagoTienda param) {
-		final Integer ENDOSO = 0; // El endoso es siempre 0 luego de emitir la cotización
+		final Integer ENDOSO = 0; // El endoso es siempre 0 luego de emitir la cotizaciï¿½n
 		final Integer DATO_MATRICULA = 151053;
 		final Integer DATO_NOMBRE = 151052;
 		Connection conn = null;
@@ -965,7 +983,7 @@ public class ServiciosMiBsePersist extends Persistencia {
 	}
 
 	public ResultClientePago obtenerClientePagoBici(ParamInformarPagoTienda param) {
-		final Integer ENDOSO = 0; // El endoso es siempre 0 luego de emitir la cotización
+		final Integer ENDOSO = 0; // El endoso es siempre 0 luego de emitir la cotizaciï¿½n
 		final Integer DATO_MARCA = 171018;
 		final Integer DATO_NOMBRE = 151052;
 		Connection conn = null;
@@ -1005,7 +1023,7 @@ public class ServiciosMiBsePersist extends Persistencia {
 	}
 
 	public ResultClientePago obtenerClientePagoIndivi(ParamInformarPagoTienda param) {
-		final Integer ENDOSO = 0; // El endoso es siempre 0 luego de emitir la cotización
+		final Integer ENDOSO = 0; // El endoso es siempre 0 luego de emitir la cotizaciï¿½n
 		final Integer DATO_MOTOR = 141003;
 		final Integer DATO_CHASIS = 141004;
 		Connection conn = null;
@@ -1045,7 +1063,7 @@ public class ServiciosMiBsePersist extends Persistencia {
 	}
 	
 	public ResultClientePago obtenerClientePagoOPersonal(ParamInformarPagoTienda param) {
-		final Integer ENDOSO = 0; // El endoso es siempre 0 luego de emitir la cotización
+		final Integer ENDOSO = 0; // El endoso es siempre 0 luego de emitir la cotizaciï¿½n
 		final Integer DATO_MARCA = 171011;
 		final Integer DATO_SERIE = 171012;
 		final Integer DATO_NOMBRE = 151052;
@@ -2100,7 +2118,7 @@ public class ServiciosMiBsePersist extends Persistencia {
 		return resultado;
 	}
 	
-	// Idem ProCarta pero con 3 parámetros extra: certificado, endoso y cdCarta.
+	// Idem ProCarta pero con 3 parï¿½metros extra: certificado, endoso y cdCarta.
 	public ResultProCarta proCarta2(ParamProCarta2 param) {
 		ResultProCarta resultado = new ResultProCarta();
 		CallableStatement cstmt = null;

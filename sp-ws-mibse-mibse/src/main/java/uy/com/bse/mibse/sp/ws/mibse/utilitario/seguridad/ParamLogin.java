@@ -1,7 +1,9 @@
 package uy.com.bse.mibse.sp.ws.mibse.utilitario.seguridad;
 
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ParamGenerico;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ParamLogin extends ParamGenerico {
 	/**
 	 * 

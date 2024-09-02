@@ -10,8 +10,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Component;
+
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.log.Logueo;
 
+@Component
 public class Herramientas {
 	
 	private static Logger log = LogManager.getLogger(Herramientas.class);
@@ -50,6 +53,7 @@ public class Herramientas {
 
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
 		date = sdf.format(cal.getTime());
+
 
 		return date;
 	}

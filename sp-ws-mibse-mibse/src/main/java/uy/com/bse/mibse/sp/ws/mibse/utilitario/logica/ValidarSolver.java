@@ -3,10 +3,13 @@ package uy.com.bse.mibse.sp.ws.mibse.utilitario.logica;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.logica.AbstractSolver;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.seguridad.ResultValidar;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ResultGenerico;
+
+import org.springframework.stereotype.Component;
+
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ParamGenerico;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.seguridad.ParamValidar;
 
-
+@Component
 public final class ValidarSolver extends AbstractSolver {
 
 	@Override

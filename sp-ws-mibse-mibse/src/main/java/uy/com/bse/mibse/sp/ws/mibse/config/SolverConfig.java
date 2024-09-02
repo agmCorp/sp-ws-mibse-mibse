@@ -14,13 +14,12 @@ import java.util.Map;
 public class SolverConfig {
 
     @Bean
-    @Autowired
     public Map<String, LogicaSolver> solverMap(List<LogicaSolver> solvers) {
         Map<String, LogicaSolver> map = new HashMap<>();
         for (LogicaSolver solver : solvers) {
-            if (solver instanceof LogicaSolver) {
-                LogicaSolver abstractSolver = (LogicaSolver) solver;
-                map.put(abstractSolver.getParameter(), solver);
+            if (solver != null) {
+                LogicaSolver concreteSolver = (LogicaSolver) solver;
+                map.put(concreteSolver.getParameter(), solver);
             }
         }
         return map;

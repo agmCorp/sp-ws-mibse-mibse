@@ -4,6 +4,8 @@ import uy.com.bse.mibse.sp.ws.mibse.service.MiBSEService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ServiciosError;
 import uy.com.bse.mibse.sp.ws.mibse.model.dto.ResultObtenerComunicacionesCliente;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.log.Logueo;
@@ -14,9 +16,10 @@ import uy.com.bse.mibse.sp.ws.mibse.model.dto.ParamObtenerComunicacionesCliente;
 //import uy.com.bse.mibse.sp.ws.mibse.utilitario.persistencia.Persistencia;
 
 
-
+@Component
 public class WsServiciosMiBse implements IWsServiciosMiBse {
 
+	@Autowired
 	private final MiBSEService miBSEService;
 
     @Autowired

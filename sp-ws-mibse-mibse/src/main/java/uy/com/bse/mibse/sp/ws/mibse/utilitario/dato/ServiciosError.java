@@ -1,8 +1,6 @@
-package uy.com.bse.mibse.sp.ws.mibse.dato;
-
+package uy.com.bse.mibse.sp.ws.mibse.utilitario.dato;
 
 import java.io.Serializable;
-
 public class ServiciosError implements Serializable{
 	
 	private static final long serialVersionUID = -4935719888947152824L;

@@ -2,6 +2,9 @@ package uy.com.bse.mibse.sp.ws.mibse.utilitario.log;
 
 import java.util.ArrayList;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class Logueo {
 
 	public static final String ENCABEZADOPRES = "Capa presentacion";

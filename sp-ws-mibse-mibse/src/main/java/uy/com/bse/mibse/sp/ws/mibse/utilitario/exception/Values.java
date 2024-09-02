@@ -1,4 +1,4 @@
-package uy.com.bse.mibse.sp.ws.mibse.utilitarios.exception;
+package uy.com.bse.mibse.sp.ws.mibse.utilitario.exception;
 
 public class Values {
 	public static final int CODDEFECTO = 1;

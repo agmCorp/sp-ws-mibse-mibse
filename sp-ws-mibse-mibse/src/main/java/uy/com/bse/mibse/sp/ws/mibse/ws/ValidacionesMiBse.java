@@ -1,6 +1,8 @@
 package uy.com.bse.mibse.sp.ws.mibse.ws;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ServiciosError;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.servicios.ValidacionesAbstract;
 import uy.com.bse.mibse.sp.ws.mibse.model.dto.ParamObtenerComunicacionesCliente;
@@ -9,7 +11,7 @@ import uy.com.bse.mibse.sp.ws.mibse.utilitario.seguridad.ParamValidar;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.seguridad.ResultValidar;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ParamGenerico;
 
-
+@Component
 public class ValidacionesMiBse extends ValidacionesAbstract {
 
 	@Autowired

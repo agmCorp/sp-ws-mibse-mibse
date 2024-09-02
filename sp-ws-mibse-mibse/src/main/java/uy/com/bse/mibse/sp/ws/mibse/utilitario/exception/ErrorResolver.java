@@ -1,9 +1,9 @@
-package uy.com.bse.mibse.sp.ws.mibse.utilitarios.exception;
+package uy.com.bse.mibse.sp.ws.mibse.utilitario.exception;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import uy.com.bse.mibse.sp.ws.mibse.utilitarios.dato.ServiciosError;
+import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ServiciosError;
 
 public final class ErrorResolver {
 	private final static Map<String, ServiciosError> errores = new HashMap<String, ServiciosError>();

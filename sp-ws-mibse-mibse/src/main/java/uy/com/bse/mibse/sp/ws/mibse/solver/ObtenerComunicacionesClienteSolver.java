@@ -5,6 +5,7 @@ import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ResultXmlPL;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ParamGenerico;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import uy.com.bse.mibse.sp.ws.mibse.model.dto.ParamObtenerComunicacionesCliente;
 import uy.com.bse.mibse.sp.ws.mibse.model.dto.ResultObtenerComunicacionesCliente;
@@ -13,8 +14,14 @@ import uy.com.bse.mibse.sp.ws.mibse.repository.ServicioMiBsePersist;
 
 public class ObtenerComunicacionesClienteSolver extends XMLAbstractSolver {
 
-	@Autowired
-	ServicioMiBsePersist servicioMiBsePersist;
+	private final ServicioMiBsePersist servicioMiBsePersist = new ServicioMiBsePersist(); // O una instancia apropiada
+
+	private final ParseoMiBse parseoMiBse;
+
+    @Autowired
+    public ObtenerComunicacionesClienteSolver(ParseoMiBse parseoMiBse) {
+        this.parseoMiBse = parseoMiBse;
+    }
 
 	@Override
 	protected ResultGenerico getMyResultInstance() {
@@ -28,15 +35,15 @@ public class ObtenerComunicacionesClienteSolver extends XMLAbstractSolver {
 
 	@Override
 	protected ResultGenerico parseValues(ResultXmlPL xmlResult) {
-		ParseoMiBse unParseo = new ParseoMiBse(xmlResult.getXml());
-		if (unParseo.generarDoc().booleanValue()) {
-			return unParseo.parsearObtenerComunicacionesCliente();
-		}
-		return null;
+		parseoMiBse.setTextoParsear(xmlResult.getXml());
+        if (parseoMiBse.generarDoc().booleanValue()) {
+            return parseoMiBse.parsearObtenerComunicacionesCliente();
+        }
+        return null;
 	}
 
 	@Override
     public String getParameter() {
-		return "ParamObtenerComunicacionesCliente"; //TODO revisar
+		return "ParamObtenerComunicacionesCliente"; //TODO revisar, propuesta alva: usar el getClass para no escribir y que sea propenso a error
 	}
 }

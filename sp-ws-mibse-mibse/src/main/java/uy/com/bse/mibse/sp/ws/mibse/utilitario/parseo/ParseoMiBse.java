@@ -5,20 +5,24 @@ import org.w3c.dom.NodeList;
 import uy.com.bse.mibse.sp.ws.mibse.model.dto.ResultObtenerComunicacionesCliente;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.log.Logueo;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.parseo.ParseoXmlGenerico;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.exception.Values;
 import uy.com.bse.mibse.sp.ws.mibse.model.dto.DatosComunicacion;
 
+@Component
 public class ParseoMiBse extends ParseoXmlGenerico {
 
     private static final Logger logger = LoggerFactory.getLogger(ParseoMiBse.class);
 
-	public ParseoMiBse(String textoParsear) {
-		super(textoParsear);
+	@Autowired
+	public ParseoMiBse(ParserXmlValueUtil valueParser){
+		super(valueParser);
 	}
-
-
+	
 	public ResultObtenerComunicacionesCliente parsearObtenerComunicacionesCliente() {
 		ResultObtenerComunicacionesCliente resultado = new ResultObtenerComunicacionesCliente();
 		Logueo logueo = new Logueo();
@@ -55,6 +59,11 @@ public class ParseoMiBse extends ParseoXmlGenerico {
 		comunicacion.setValorComunicacion(getParsedValueFromElement(item, "valor"));
 		comunicacion.setFechaActualizacion(getParsedValueFromElement(item, "fe-actualizacion"));
 		return comunicacion;
+	}
+
+
+	public void setTextoParsear(String xml) {
+		super.textoParsear = xml;
 	}
 	
 }

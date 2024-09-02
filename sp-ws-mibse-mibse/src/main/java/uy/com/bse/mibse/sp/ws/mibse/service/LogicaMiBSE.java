@@ -1,10 +1,10 @@
 package uy.com.bse.mibse.sp.ws.mibse.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ParamGenerico;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ResultGenerico;
-import uy.com.bse.mibse.sp.ws.mibse.utilitario.log.RTimeLogger;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.logica.LogicaSolver;
 
 import java.util.Map;
@@ -14,6 +14,8 @@ public final class LogicaMiBSE {
 
    @Autowired
    private Map<String, LogicaSolver> solverMap; // Inyección del mapa de solvers
+
+   private static final Logger logger = LoggerFactory.getLogger(LogicaMiBSE.class);
 
    public ResultGenerico solve(ParamGenerico param) {
       ResultGenerico result = null;

@@ -22,10 +22,12 @@ import org.apache.catalina.valves.ErrorReportValve;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.exception.Values;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.log.Logueo;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.util.Herramientas;
-import uy.com.bse.mibse.sp.ws.mibse.utilitario.util.MailBuilder;
+//import uy.com.bse.mibse.sp.ws.mibse.utilitario.util.MailBuilder;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.exception.ErrorResolver;
+import org.springframework.stereotype.Component;
 
-public abstract class Persistencia {
+@Component
+public class Persistencia {
 
 	protected static Logger log = LogManager.getLogger(Persistencia.class);
 
@@ -134,14 +136,14 @@ public abstract class Persistencia {
 	}
 
 	private void enviarMail(Logueo logueo) {
-		try {
+		/*try {
 			MailBuilder.create().sentToDefaultConfigureMail(obtenerValorMail("mail.soporte.persistencia"), obtenerValorMail("ccmail.soporte.persistencia"), logueo.getMensaje(),
 					"CommonUTIL Error en Persistencia BSE Ambiente: " + InetAddress.getLocalHost().getHostName());
 		} catch (UnknownHostException e) {
 			log.debug("No se encontro el nombre de Host", e);
-		}
+		}*/
 	}
-
+/*
 	private String obtenerValorMail(String clave) {
 		Logueo logueo = new Logueo();
 		logueo.setEncabezado("Correo");
@@ -170,6 +172,6 @@ public abstract class Persistencia {
 		}
 
 		return retorno;
-	}
+	}*/
 
 }

@@ -3,9 +3,12 @@ package uy.com.bse.mibse.sp.ws.mibse.utilitario.servicios;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Component;
+
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ServiciosError;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.exception.ErrorResolver;
 
+@Component
 public abstract class ValidacionesAbstract {
 	
 	private static final Logger LOG = LogManager.getLogger(ValidacionesAbstract.class);

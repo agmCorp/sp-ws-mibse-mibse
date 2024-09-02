@@ -1,25 +1,27 @@
 package uy.com.bse.mibse.sp.ws.mibse.utilitario.parseo;
 
-import java.io.IOException;
-import java.io.StringReader;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.exception.Values;
+import uy.com.bse.mibse.sp.ws.mibse.utilitario.exception.ErrorResolver;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.log.Logueo;
+import java.io.IOException;
+import java.io.StringReader;
 
+@Component
 public class ParserXmlValueUtil {
 
-	protected static Logger log = LogManager.getLogger(ParserXmlValueUtil.class);
+    protected static final Logger log = LoggerFactory.getLogger(ParserXmlValueUtil.class);
 
 	public Document getDocumentFromString(String textoParsear) {
 		Logueo logueo = new Logueo();
@@ -31,28 +33,18 @@ public class ParserXmlValueUtil {
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			InputSource is = new InputSource(new StringReader(textoParsear));
-			DocumentBuilder builder = null;
-
-			builder = factory.newDocumentBuilder();
+			DocumentBuilder builder = factory.newDocumentBuilder();
 			doc = builder.parse(is);
 
-		} catch (ParserConfigurationException e) {
-			logueo.setException("ParserConfigurationException");
-			logueo.setError(e.getMessage());
-			log.error(logueo.getMensaje());
-		} catch (SAXException e) {
-			logueo.setException("SAXException");
-			logueo.setError(e.getMessage());
-			log.error(logueo.getMensaje());
-		} catch (IOException e) {
-			logueo.setException("IOException");
-			logueo.setError(e.getMessage());
-			log.error(logueo.getMensaje());
-		} catch (Exception e) {
-			logueo.setException("Exception");
-			logueo.setError(e.getMessage());
-			log.error(logueo.getMensaje());
-		}
+		} catch (ParserConfigurationException | SAXException | IOException e) {
+            logueo.setException(e.getClass().getSimpleName());
+            logueo.setError(e.getMessage());
+            log.error(logueo.getMensaje(), e);
+        } catch (Exception e) {
+            logueo.setException("Exception");
+            logueo.setError(e.getMessage());
+            log.error(logueo.getMensaje(), e);
+        }
 		return doc;
 	}
 

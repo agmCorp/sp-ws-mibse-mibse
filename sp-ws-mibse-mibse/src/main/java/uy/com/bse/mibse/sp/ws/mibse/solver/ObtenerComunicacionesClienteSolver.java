@@ -12,14 +12,16 @@ import uy.com.bse.mibse.sp.ws.mibse.model.dto.ResultObtenerComunicacionesCliente
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.parseo.ParseoMiBse;
 import uy.com.bse.mibse.sp.ws.mibse.repository.ServicioMiBsePersist;
 
+@Component
 public class ObtenerComunicacionesClienteSolver extends XMLAbstractSolver {
 
-	private final ServicioMiBsePersist servicioMiBsePersist = new ServicioMiBsePersist(); // O una instancia apropiada
+	private final ServicioMiBsePersist servicioMiBsePersist; // O una instancia apropiada
 
 	private final ParseoMiBse parseoMiBse;
 
     @Autowired
-    public ObtenerComunicacionesClienteSolver(ParseoMiBse parseoMiBse) {
+    public ObtenerComunicacionesClienteSolver(ServicioMiBsePersist servicioMiBsePersist, ParseoMiBse parseoMiBse) {
+        this.servicioMiBsePersist = servicioMiBsePersist;
         this.parseoMiBse = parseoMiBse;
     }
 
@@ -42,8 +44,4 @@ public class ObtenerComunicacionesClienteSolver extends XMLAbstractSolver {
         return null;
 	}
 
-	@Override
-    public String getParameter() {
-		return "ParamObtenerComunicacionesCliente"; //TODO revisar, propuesta alva: usar el getClass para no escribir y que sea propenso a error
-	}
 }

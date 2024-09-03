@@ -7,6 +7,7 @@ import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ParamGenerico;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ResultGenerico;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.logica.LogicaSolver;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -18,15 +19,16 @@ public final class LogicaMiBSE {
    private static final Logger logger = LoggerFactory.getLogger(LogicaMiBSE.class);
 
    public ResultGenerico solve(ParamGenerico param) {
-      ResultGenerico result = null;
+      ResultGenerico res = null;
       if (param != null) {
-         String paramClass = param.getClass().getName();
-
-        logger.info("Start processing: {}", paramClass);
+        String paramClass = param.getClass().getName();
+        String cleanedClassName = paramClass.substring(paramClass.lastIndexOf('.') + 1).replace("Param", "").concat("Solver");
+        String classId = cleanedClassName.toUpperCase().trim();
+        logger.info("Start processing: {} with class id: {} ", cleanedClassName, classId);
         logger.info("User: {}", param.getUsuario());
          try {
-            LogicaSolver solver = getMapperNewInstance(paramClass);
-            result = solver.solve(param); // Llamar al método solve del solver correspondiente
+             LogicaSolver solver = getMapperNewInstance(classId);
+             res = solver.solve(param); // Llamar al método solve del solver correspondiente
          } catch (RuntimeException re) {
             logger.error("No se pudo resolver param: {} para usuario: {}", paramClass, param.getUsuario(), re);
             logger.error(re.getMessage());
@@ -35,11 +37,20 @@ public final class LogicaMiBSE {
             logger.info("Stop processing: {}", paramClass);
          }
       }
-      return result;
+      return res;
    }
 
+    private Map<String, LogicaSolver> getSolverMapUpper() {
+        Map<String, LogicaSolver> solverMapUpper = new HashMap<>();
+        for (Map.Entry<String, LogicaSolver> entry : solverMap.entrySet()) {
+            String upperCaseKey = entry.getKey().toUpperCase();  // Convertir la clave a mayúsculas
+            solverMapUpper.put(upperCaseKey, entry.getValue());
+        }
+        return solverMapUpper;
+    }
+
    private LogicaSolver getMapperNewInstance(String paramClass) {
-      LogicaSolver solver = solverMap.get(paramClass); // Obtener el solver del mapa
+      LogicaSolver solver = getSolverMapUpper().get(paramClass); // Obtener el solver del mapa
       if (solver == null) {
          String msgError = "No pude encontrar mapper para param: " + paramClass;
          logger.error(msgError);

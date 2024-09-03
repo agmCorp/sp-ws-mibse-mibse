@@ -24,12 +24,4 @@ public final class ValidarSolver extends AbstractSolver {
 		return null;
 	}
 
-	// TODO aaguirre revisar
-	@Override
-	public String getParameter() {
-		return "ValidarSolver";
-	}
-
-		
-	
 }

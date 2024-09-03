@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ResultXmlPL;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ResultGenerico;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ServiciosError;
@@ -29,11 +30,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class Persistencia {
 
+	private final Herramientas herramientas;
+	private final Logueo logueo;
+
+	@Autowired
+	public Persistencia(Herramientas herramientas, Logueo logueo) {
+		this.herramientas = herramientas;
+		this.logueo = logueo;
+	}
+
 	protected static Logger log = LogManager.getLogger(Persistencia.class);
 
 	public void procesarResultados(ResultXmlPL resultado, Logueo logueo, int codError, String descError, String sqlError, Clob clob) {
 		if (codError == 0) {
-			Herramientas herramientas = new Herramientas();
 			resultado.setXml(herramientas.convertirClob(clob));
 		} else {
 			ServiciosError error = new ServiciosError();
@@ -45,7 +54,6 @@ public class Persistencia {
 			//Tratarlo como error + xml se necesitan los datos y el error
 			if (codError<0) {
 				log.info("Procesando error y xml: (codigo error negativo):" + codError);
-				Herramientas herramientas = new Herramientas();
 				resultado.setXml(herramientas.convertirClob(clob));
 			}
 		}
@@ -145,7 +153,7 @@ public class Persistencia {
 	}
 /*
 	private String obtenerValorMail(String clave) {
-		Logueo logueo = new Logueo();
+
 		logueo.setEncabezado("Correo");
 		logueo.setClase(MailBuilder.class);
 		logueo.setMetodo("obtenerValorMail");

@@ -25,10 +25,5 @@ public final class LoginSolver extends AbstractSolver {
 		return checkNull(DataProviderUtil.getDataProvider().login((ParamLogin) param));
 	}*/
 
-	@Override
-	// TODO aaguirre revisar
-	public String getParameter() {
-		return "";
-	}
 
 }

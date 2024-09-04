@@ -93,6 +93,9 @@ La clase MiNuevoServicioLocal toma el rol de service layer, que es la capa de se
 Para la aplicación MiBSE, la service layer es implementada por la clase MiBse (MiBSE.java), que implementa la interfaz 
 MiBseLocal que juega el rol de interfaz de acceso a los servicios de la aplicación.
 
+
+TODO: explicar el mapeo con el nombre del procedimiento en la base mediante archivo logicaMiBSEMappers.properties
+
 ## 4. Exposición como Web Service
 
 Finalmente, se expone este servicio como un Web Service. No hay detalles específicos para esto, se implementan como es 
@@ -210,10 +213,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SolverA extends AbstractSolver { // Extender AbstractSolver o XMLAbstractSolver
-   @Override
-   public String getParameter() {
-      return ParamA.getClass.getName(); // Nombre de parámetro asociado
-   }
 
    @Override
    public ResultGenerico solve(ParamGenerico param) {
@@ -298,6 +297,8 @@ public class MiNuevoServicio implements MiNuevoServicioLocal {
     }
 }
 ```
+
+TODO: explicar el nuevo mapeo, usando las configuration properties de spring en la clase DatabaseMiBseProperties
 
 ## Resumen
 **Interfaz LogicaSolver:** Define un método para obtener el parámetro asociado.

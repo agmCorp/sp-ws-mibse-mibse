@@ -22,4 +22,7 @@ public interface IWsServiciosMiBse {
 
     @WebMethod
     public ResultObtenerDatosCliente obtenerDatosCliente(@WebParam(name = "param") ParamObtenerDatosCliente param);
+
+    @WebMethod
+    ResultObtenerNumeroCliente obtenerNumeroCliente(@WebParam(name = "param") ParamObtenerNumeroCliente param);
 }

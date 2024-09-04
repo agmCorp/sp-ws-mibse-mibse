@@ -118,6 +118,35 @@ public class WsServiciosMiBse implements IWsServiciosMiBse {
 		return datos;
 	}
 
+	@Override
+	public ResultObtenerNumeroCliente obtenerNumeroCliente(ParamObtenerNumeroCliente param) {
+		String claveError = null;
+		logueo.setEncabezado(Values.ENCABEZADOWS);
+		logueo.setClase(WsServiciosMiBse.class);
+		logueo.setMetodo("obtenerNumeroCliente");
+		logueo.setParametro(Values.USUARIO, param.getUsuario());
+		logueo.setParametro(Values.CLAVE, param.getClave());
+		ResultObtenerNumeroCliente datos = new ResultObtenerNumeroCliente();
+		LOG.info(logueo.getSoloParametros());
+		try {
+			ValidacionesMiBse validar = new ValidacionesMiBse();
+			///=ServiciosError error = validar.validarObtenerNumeroCliente(param);
+			ServiciosError error = null;
+
+			if (error == null) {
+				datos = miBSEService.obtenerNumeroCliente(param);
+			} else {
+				datos.setError(error);
+				datos.setHayError(Boolean.TRUE);
+			}
+		} catch (Exception e) {
+			claveError = catchException(logueo, e);
+		} finally {
+			finallyBlock(claveError, datos);
+		}
+		return datos;
+	}
+
 	private String catchException(Logueo logueo, Exception e) {
 		String claveError = Values.CLWEBSERVEXCP;
 		logueo.setException(Values.EXCEPTION);

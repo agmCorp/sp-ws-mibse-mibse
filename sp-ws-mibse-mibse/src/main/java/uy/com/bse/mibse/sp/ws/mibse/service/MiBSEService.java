@@ -35,4 +35,11 @@ public class MiBSEService {
 		log.debug("obtenerDatosCliente end");
 		return (ResultObtenerDatosCliente) result;
 	}
+
+	public ResultObtenerNumeroCliente obtenerNumeroCliente(ParamObtenerNumeroCliente param) {
+		log.debug("obtenerNumeroCliente start: " + param);
+		ResultGenerico result = LogicaMiBSE.solve(param);
+		log.debug("obtenerNumeroCliente end");
+		return (ResultObtenerNumeroCliente) result;
+	}
 }

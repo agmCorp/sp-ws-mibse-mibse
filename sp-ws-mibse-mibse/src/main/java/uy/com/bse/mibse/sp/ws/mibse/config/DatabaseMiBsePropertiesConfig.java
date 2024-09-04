@@ -1,16 +1,16 @@
 package uy.com.bse.mibse.sp.ws.mibse.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
-@Component
+@Configuration
 @ConfigurationProperties(prefix = "mibse")
-public class DatabaseMiBseProperties {
+public class DatabaseMiBsePropertiesConfig {
 
     private String obtenerDatosCliente;
     private String obtenerPolizas;
     private String obtenerDatosComunicacionesPersona;
-
+    private String obtenerNumeroCliente;
     private String funObtenerNumeroCliente;
     private String funValidarCodigoAdhesion;
     private String procActualizarFacturacionPoliza;
@@ -245,6 +245,15 @@ public class DatabaseMiBseProperties {
         this.procAdherirFacturaDigital = procAdherirFacturaDigital;
     }
 
+
+    public String getObtenerNumeroCliente() {
+        return obtenerNumeroCliente;
+    }
+
+    public void setObtenerNumeroCliente(String obtenerNumeroCliente) {
+        this.obtenerNumeroCliente = obtenerNumeroCliente;
+    }
+
     // Métodos para obtener el CatalogName y ProcedureName
 
     public String getCatalogName(String property) {
@@ -258,8 +267,8 @@ public class DatabaseMiBseProperties {
         if (property != null && property.contains(".")) {
             return property.substring(property.lastIndexOf('.') + 1);
         }
-        return null;
+        return property; // Si no contiene ".", retorna la propiedad completa como nombre del procedimiento
     }
 
-
 }
+

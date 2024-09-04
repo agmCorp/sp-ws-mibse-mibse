@@ -61,7 +61,7 @@ public class Persistencia {
 		logResultados(resultado, logueo, codError, descError, sqlError);
 	}
 
-	protected void logResultados(ResultXmlPL resultado, Logueo logueo, int codError, String descError, String sqlError) {
+	public void logResultados(ResultXmlPL resultado, Logueo logueo, int codError, String descError, String sqlError) {
 		logueo.setParametro("Codigo salida", codError);
 		logueo.setParametro("Descripcion salida", descError);
 		logueo.setParametro("Sql salida", sqlError);
@@ -71,7 +71,7 @@ public class Persistencia {
 		log.info(logueo.getSoloParametros());
 	}
 
-	protected void logResultados(Logueo logueo, int codError, String descError, String sqlError) {
+	public void logResultados(Logueo logueo, int codError, String descError, String sqlError) {
 		logueo.setParametro("Codigo salida", codError);
 		logueo.setParametro("Descripcion salida", descError);
 		logueo.setParametro("Sql salida", sqlError);

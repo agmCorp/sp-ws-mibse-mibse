@@ -3,11 +3,10 @@ package uy.com.bse.mibse.sp.ws.mibse.repository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import uy.com.bse.mibse.sp.ws.mibse.config.DatabaseMiBseProperties;
-import uy.com.bse.mibse.sp.ws.mibse.model.dto.ParamObtenerComunicacionesCliente;
-import uy.com.bse.mibse.sp.ws.mibse.model.dto.ParamObtenerDatosCliente;
-import uy.com.bse.mibse.sp.ws.mibse.model.dto.ParamObtenerPolizasCliente;
+import uy.com.bse.mibse.sp.ws.mibse.config.DatabaseMiBsePropertiesConfig;
+import uy.com.bse.mibse.sp.ws.mibse.model.dto.*;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ResultXmlPL;
+import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ServiciosError;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.exception.Values;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.log.Logueo;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.persistencia.Persistencia;
@@ -32,13 +31,16 @@ public class ServicioMiBsePersist {
 	@Autowired
 	private Logueo logueo;
 	@Autowired
-	DatabaseMiBseProperties databaseMiBseProperties;
+	private DatabaseMiBsePropertiesConfig databaseMiBseProperties;
+
     private static final Logger logger = LoggerFactory.getLogger(ServicioMiBsePersist.class);
-	private SimpleJdbcCall persistenciaCall;
+	private SimpleJdbcCall persistenciaCallXmlResponse;
+	private SimpleJdbcCall persistenciaCallNumericResponse;
+
 
 	@PostConstruct
 	public void init() {
-		persistenciaCall = new SimpleJdbcCall(jdbcTemplate)
+		persistenciaCallXmlResponse = new SimpleJdbcCall(jdbcTemplate)
 				.withoutProcedureColumnMetaDataAccess()
 				.declareParameters(
 						new SqlParameter("p_usuario", Types.VARCHAR),
@@ -47,6 +49,16 @@ public class ServicioMiBsePersist {
 						new SqlOutParameter("p_sqlError", Types.VARCHAR),
 						new SqlOutParameter("p_datosComunicaciones", Types.CLOB)
 				);
+		persistenciaCallNumericResponse = new SimpleJdbcCall(jdbcTemplate)
+				.withoutProcedureColumnMetaDataAccess()
+				.declareParameters(
+						new SqlOutParameter("return", Types.VARCHAR),
+						new SqlParameter("p_usuario", Types.VARCHAR),
+						new SqlOutParameter("p_codError", Types.INTEGER),
+						new SqlOutParameter("p_descError", Types.VARCHAR),
+						new SqlOutParameter("p_sqlError", Types.VARCHAR)
+				)
+				.withReturnValue();
 	}
 
 	public ResultXmlPL obtenerComunicacionesCliente(ParamObtenerComunicacionesCliente param) {
@@ -98,15 +110,63 @@ public class ServicioMiBsePersist {
 		return ejecutarProcedimiento(nombrePL, inParams, "p_datosComunicaciones",logueo);
 	}
 
+	public ResultObtenerNumeroCliente obtenerNumeroCliente(ParamObtenerNumeroCliente param) {
+		ResultObtenerNumeroCliente resultado = new ResultObtenerNumeroCliente();
+		logueo.setEncabezado(Values.ENCABEZADOPERSIST);
+		logueo.setClase(ServicioMiBsePersist.class);
+		logueo.setMetodo("obtenerNumeroCliente");
+
+		logueo.setParametro("Usuario", param.getUsuario());
+		logueo.setParametro("Clave", param.getClave());
+
+		String nombrePL = databaseMiBseProperties.getObtenerNumeroCliente();
+
+		persistenciaCallNumericResponse.setCatalogName(databaseMiBseProperties.getCatalogName(nombrePL));
+		persistenciaCallNumericResponse.setProcedureName(databaseMiBseProperties.getProcedureName(nombrePL));
+		logueo.setNombrePl(nombrePL);
+
+		Map<String, Object> inParams = new HashMap<>();
+		inParams.put("p_usuario", param.getUsuario());
+
+		// TODO: revisar si se puede pasar a función para reutilizar
+		try {
+			Map<String, Object> out = persistenciaCallNumericResponse.execute(inParams);
+
+			Integer codError = (Integer) out.get("p_codError"); // Cambiar a Integer para manejar nulls
+			String descError = (String) out.get("p_descError");
+			String sqlError = (String) out.get("p_sqlError");
+
+			if (codError == null || codError == 0) {
+				String res = (String) out.get("return");
+				resultado.setNumCliente(res);
+				resultado.setHayError(Boolean.FALSE);
+				codError = 0;
+			} else {
+				ServiciosError error = new ServiciosError();
+				error.setCodigo(codError);
+				error.setDescripcion(descError);
+
+				resultado.setError(error);
+				resultado.setHayError(Boolean.TRUE);
+			}
+			persistencia.logResultados(logueo, codError, descError, sqlError);
+		} catch (Exception e) {
+			persistencia.catchException(resultado, logueo, e);
+		}
+
+		return resultado;
+	}
+
+
 	private ResultXmlPL ejecutarProcedimiento(String nombrePL, Map<String, Object> inParams, String nombreResultado,
 											  Logueo logueo) {
 		ResultXmlPL resultado = new ResultXmlPL();
 		try {
-			persistenciaCall.setCatalogName(databaseMiBseProperties.getCatalogName(nombrePL));
-			persistenciaCall.setProcedureName(databaseMiBseProperties.getProcedureName(nombrePL));
+			persistenciaCallXmlResponse.setCatalogName(databaseMiBseProperties.getCatalogName(nombrePL));
+			persistenciaCallXmlResponse.setProcedureName(databaseMiBseProperties.getProcedureName(nombrePL));
 			logueo.setNombrePl(nombrePL);
 
-			Map<String, Object> out = persistenciaCall.execute(inParams);
+			Map<String, Object> out = persistenciaCallXmlResponse.execute(inParams);
 
 			int codError = (int) out.get("p_codError");
 			String descError = (String) out.get("p_descError");

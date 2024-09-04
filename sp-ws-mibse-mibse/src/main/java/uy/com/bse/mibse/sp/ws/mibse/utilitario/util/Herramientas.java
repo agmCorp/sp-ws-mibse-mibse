@@ -39,7 +39,7 @@ public class Herramientas {
 	 * @param separador
 	 * @param horas
 	 * @return Un string con la fecha actual, con el separador ingresado 
-	 * y con la hora si el parametro horas est\u00e1 en true.
+	 * y con la hora si el parametro horas está en true.
 	 */
 	public String getFechaActual(String separador, Boolean horas) {
 		String date = null;
@@ -62,7 +62,7 @@ public class Herramientas {
 	 * Convierte un Clob en String
 	 * @param unClob
 	 * @return Un string con el contenido del Clob ingresado, null si el Clob ingresado era ya un null 
-	 * o si se gener\u00f3 un error en la conversi\u00f3n.
+	 * o si se generó un error en la conversión.
 	 */
 	public String convertirClob(Clob unClob) {
 		Logueo logueo = new Logueo();
@@ -142,7 +142,7 @@ public class Herramientas {
 	}
 	
 	/**
-	 * Comprueba que el string recibido sea numerico y pueda ser casteado utilizando expresiones regulares 
+	 * Comprueba que el string recibido sea numérico y pueda ser casteado utilizando expresiones regulares
 	 * @param textoComparar
 	 * @return
 	 */
@@ -154,7 +154,7 @@ public class Herramientas {
 	 * Comprueba que el valor recibido de un properties es numerico, comprueba que no sea null ni vacio
 	 * @param valorDefecto
 	 * @param valorComprobar
-	 * @return El valor por defecto que es el primer parametro recibido
+	 * @return El valor por defecto que es el primer parámetro recibido
 	 */
 	public Integer checkValorPropertiesNumerico(Integer valorDefecto, String valorComprobar){
 		Integer codigo = new Integer(valorDefecto);
@@ -170,10 +170,10 @@ public class Herramientas {
 	
 	
 	/**
-	 * Comprueba que el valor recibido de un properties no sea null ni vacio
+	 * Comprueba que el valor recibido de un properties no sea null ni vacío
 	 * @param valorDefecto
 	 * @param valorComprobar
-	 * @return El valor por defecto que es el primer parametro recibido
+	 * @return El valor por defecto que es el primer parámetro recibido
 	 */
 	public String checkValorPropertiesString(String valorDefecto, String valorComprobar){
 		String descripcion = valorDefecto;

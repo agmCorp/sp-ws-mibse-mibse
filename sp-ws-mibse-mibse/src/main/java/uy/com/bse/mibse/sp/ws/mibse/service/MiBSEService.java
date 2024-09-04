@@ -13,7 +13,6 @@ public class MiBSEService {
     LogicaMiBSE LogicaMiBSE;
     private static final Logger log = LoggerFactory.getLogger(MiBSEService.class);
 
-
     public ResultObtenerComunicacionesCliente obtenerComunicacionesCliente(ParamObtenerComunicacionesCliente param) {
 		log.debug("obtenerComunicacionesCliente start: " + param);
 		ResultGenerico result = LogicaMiBSE.solve(param);
@@ -36,5 +35,4 @@ public class MiBSEService {
 		log.debug("obtenerDatosCliente end");
 		return (ResultObtenerDatosCliente) result;
 	}
-    
 }

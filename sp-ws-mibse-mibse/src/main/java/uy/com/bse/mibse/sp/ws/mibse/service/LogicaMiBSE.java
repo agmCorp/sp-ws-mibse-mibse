@@ -22,7 +22,8 @@ public final class LogicaMiBSE {
       ResultGenerico res = null;
       if (param != null) {
         String paramClass = param.getClass().getName();
-        String cleanedClassName = paramClass.substring(paramClass.lastIndexOf('.') + 1).replace("Param", "").concat("Solver");
+        String cleanedClassName = paramClass.substring(paramClass.lastIndexOf('.') + 1)
+                .replace("Param", "").concat("Solver");
         String classId = cleanedClassName.toUpperCase().trim();
         logger.info("Start processing: {} with class id: {} ", cleanedClassName, classId);
         logger.info("User: {}", param.getUsuario());
@@ -40,6 +41,7 @@ public final class LogicaMiBSE {
       return res;
    }
 
+    // TODO revisar este método
     private Map<String, LogicaSolver> getSolverMapUpper() {
         Map<String, LogicaSolver> solverMapUpper = new HashMap<>();
         for (Map.Entry<String, LogicaSolver> entry : solverMap.entrySet()) {

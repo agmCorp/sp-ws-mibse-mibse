@@ -1,4 +1,4 @@
-package uy.com.bse.mibse.sp.ws.mibse.solver;
+package uy.com.bse.mibse.sp.ws.mibse.service.solver;
 
 import uy.com.bse.mibse.sp.ws.mibse.repository.ServicioMiBsePersist;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.logica.XMLAbstractSolver;

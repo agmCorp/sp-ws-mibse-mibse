@@ -3,7 +3,6 @@ package uy.com.bse.mibse.sp.ws.mibse.ws;
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
 import jakarta.jws.WebService;
-import jakarta.jws.soap.SOAPBinding;
 import uy.com.bse.mibse.sp.ws.mibse.model.dto.*;
 
 @WebService(

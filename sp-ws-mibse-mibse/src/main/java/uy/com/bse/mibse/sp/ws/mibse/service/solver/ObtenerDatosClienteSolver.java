@@ -1,4 +1,4 @@
-package uy.com.bse.mibse.sp.ws.mibse.solver;
+package uy.com.bse.mibse.sp.ws.mibse.service.solver;
 
 import uy.com.bse.mibse.sp.ws.mibse.repository.ServicioMiBsePersist;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.logica.XMLAbstractSolver;
@@ -10,8 +10,6 @@ import org.springframework.stereotype.Component;
 import uy.com.bse.mibse.sp.ws.mibse.model.dto.ResultObtenerDatosCliente;
 import uy.com.bse.mibse.sp.ws.mibse.model.dto.ParamObtenerDatosCliente;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.parseo.ParseoMiBse;
-import uy.com.bse.mibse.sp.ws.mibse.model.dto.ResultObtenerDatosCliente;
-import uy.com.bse.mibse.sp.ws.mibse.repository.ServicioMiBsePersist;
 
 @Component
 public class ObtenerDatosClienteSolver extends XMLAbstractSolver {

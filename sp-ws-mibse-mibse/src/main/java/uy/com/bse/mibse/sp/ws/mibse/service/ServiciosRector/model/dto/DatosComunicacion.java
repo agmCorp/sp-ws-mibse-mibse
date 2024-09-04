@@ -1,6 +1,7 @@
 package uy.com.bse.mibse.sp.ws.mibse.service.ServiciosRector.model.dto;
 
 //TODO usar lombok
+// TODO revisar quién usa este DTO
 
 public class DatosComunicacion {
 	private Integer codComunicacion;

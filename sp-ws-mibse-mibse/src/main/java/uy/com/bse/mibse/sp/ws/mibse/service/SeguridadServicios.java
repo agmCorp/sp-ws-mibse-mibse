@@ -12,6 +12,7 @@ import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ResultGenerico;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.logica.LoginSolver;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.logica.ValidarSolver;
 
+//TODO revisar quién invoca este servicio
 @Service
 public class SeguridadServicios {
 
@@ -32,7 +33,6 @@ public class SeguridadServicios {
 		ResultGenerico result = loginSolver.solve(param);
 		log.debug("login end: ");
 		return (ResultLogin) result;
-
 	}
 
 	public ResultValidar validar(ParamValidar param) {
@@ -41,6 +41,5 @@ public class SeguridadServicios {
 		log.debug("validar end: ");
 		return (ResultValidar) result;
 	}
-	
 
 }

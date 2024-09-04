@@ -118,6 +118,15 @@ Dado que código que se encarga de conectar los web services con los procedimien
 es genérico, el impácto en la migración es menor que en otros casos en el que el glue code es generado mediante 
 copy/paste de código.
 
+Por otro lado, la migración ofrece la ventaja de eliminar la necesidad de mantener manualmente el mapeo entre los 
+parámetros y los solvers (o servicios), ya que ahora este proceso es gestionado por Spring. Al aprovechar las 
+configuraciones de beans y la inyección de dependencias, Spring puede automáticamente resolver y mapear los componentes 
+necesarios, simplificando la arquitectura y reduciendo la posibilidad de errores manuales en el mapeo.
+
+Esto no solo mejora la mantenibilidad del sistema, sino que también hace que la incorporación de nuevos servicios 
+sea más ágil y menos propensa a errores, permitiendo un enfoque más limpio y modular para la gestión de la 
+lógica de negocio.
+
 ## 1. Configuración de Mapeos en Spring
 
 En lugar de utilizar un archivo de propiedades combinado con mecanismos de reflexión en Java para mapear parámetros a los 

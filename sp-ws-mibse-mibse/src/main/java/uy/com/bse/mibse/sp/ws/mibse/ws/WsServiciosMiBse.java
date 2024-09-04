@@ -18,10 +18,12 @@ import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ResultGenerico;
 public class WsServiciosMiBse implements IWsServiciosMiBse {
 
 	private final MiBSEService miBSEService;
+	private final Logueo logueo;
 
     @Autowired
-    public WsServiciosMiBse(MiBSEService miBSEService) {
+    public WsServiciosMiBse(MiBSEService miBSEService, Logueo logueo) {
         this.miBSEService = miBSEService;
+		this.logueo = logueo;
     }
 
 	private static Logger LOG = LogManager.getLogger(WsServiciosMiBse.class);
@@ -29,7 +31,6 @@ public class WsServiciosMiBse implements IWsServiciosMiBse {
 	@Override
 	public ResultObtenerComunicacionesCliente obtenerComunicacionesCliente(ParamObtenerComunicacionesCliente param) {
 		String claveError = null;
-		Logueo logueo = new Logueo();
 		logueo.setEncabezado(Values.ENCABEZADOWS);
 		logueo.setClase(WsServiciosMiBse.class);
 		logueo.setMetodo("obtenerComunicacionesCliente");
@@ -61,7 +62,6 @@ public class WsServiciosMiBse implements IWsServiciosMiBse {
 	@Override
 	public ResultObtenerPolizasCliente obtenerPolizasCliente(ParamObtenerPolizasCliente param) {
 		String claveError = null;
-		Logueo logueo = new Logueo();
 		logueo.setEncabezado(Values.ENCABEZADOWS);
 		logueo.setClase(WsServiciosMiBse.class);
 		logueo.setMetodo("obtenerComunicacionesCliente");
@@ -92,7 +92,6 @@ public class WsServiciosMiBse implements IWsServiciosMiBse {
 	@Override
 	public ResultObtenerDatosCliente obtenerDatosCliente(ParamObtenerDatosCliente param) {
 		String claveError = null;
-		Logueo logueo = new Logueo();
 		logueo.setEncabezado(Values.ENCABEZADOWS);
 		logueo.setClase(WsServiciosMiBse.class);
 		logueo.setMetodo("obtenerDatosCliente");

@@ -5,17 +5,15 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConfigurationProperties(prefix = "mibse")
-public class MiBseProperties {
+public class DatabaseMiBseProperties {
 
     private String obtenerDatosCliente;
-    private String procObtenerDatosCliente;
     private String obtenerPolizas;
-    private String procObtenerPolizas;
+    private String obtenerDatosComunicacionesPersona;
+
     private String funObtenerNumeroCliente;
     private String funValidarCodigoAdhesion;
     private String procActualizarFacturacionPoliza;
-    private String obtenerDatosComunicacionesPersona;
-    private String procObtenerDatosComunicacionesPersona;
     private String procActualizarDatosCliente;
     private String procActualizarDatosComunicaionesPersona;
     private String funObtenerMail;
@@ -44,14 +42,6 @@ public class MiBseProperties {
 
     public void setObtenerDatosCliente(String obtenerDatosCliente) {
         this.obtenerDatosCliente = obtenerDatosCliente;
-    }
-
-    public String getProcObtenerDatosCliente() {
-        return procObtenerDatosCliente;
-    }
-
-    public void setProcObtenerDatosCliente(String procObtenerDatosCliente) {
-        this.procObtenerDatosCliente = procObtenerDatosCliente;
     }
 
     public String getObtenerPolizas() {
@@ -84,14 +74,6 @@ public class MiBseProperties {
 
     public void setProcActualizarFacturacionPoliza(String procActualizarFacturacionPoliza) {
         this.procActualizarFacturacionPoliza = procActualizarFacturacionPoliza;
-    }
-
-    public String getProcObtenerDatosComunicacionesPersona() {
-        return procObtenerDatosComunicacionesPersona;
-    }
-
-    public void setProcObtenerDatosComunicacionesPersona(String procObtenerDatosComunicacionesPersona) {
-        this.procObtenerDatosComunicacionesPersona = procObtenerDatosComunicacionesPersona;
     }
 
     public String getObtenerDatosComunicacionesPersona() {

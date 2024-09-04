@@ -3,7 +3,7 @@ package uy.com.bse.mibse.sp.ws.mibse.repository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import uy.com.bse.mibse.sp.ws.mibse.config.MiBseProperties;
+import uy.com.bse.mibse.sp.ws.mibse.config.DatabaseMiBseProperties;
 import uy.com.bse.mibse.sp.ws.mibse.model.dto.ParamObtenerComunicacionesCliente;
 import uy.com.bse.mibse.sp.ws.mibse.model.dto.ParamObtenerDatosCliente;
 import uy.com.bse.mibse.sp.ws.mibse.model.dto.ParamObtenerPolizasCliente;
@@ -32,15 +32,13 @@ public class ServicioMiBsePersist {
 	@Autowired
 	private Logueo logueo;
 	@Autowired
-	MiBseProperties miBseProperties;
+	DatabaseMiBseProperties databaseMiBseProperties;
     private static final Logger logger = LoggerFactory.getLogger(ServicioMiBsePersist.class);
 	private SimpleJdbcCall persistenciaCall;
 
 	@PostConstruct
 	public void init() {
 		persistenciaCall = new SimpleJdbcCall(jdbcTemplate)
-				.withCatalogName("PAC_WEB_MIBSE") //manipular el nombrePL TODO deshardcodear
-				.withProcedureName("PRO_OBT_DATOS_CLIENTE") //manipular el nombrePL TODO deshardcodear
 				.withoutProcedureColumnMetaDataAccess()
 				.declareParameters(
 						new SqlParameter("p_usuario", Types.VARCHAR),
@@ -60,7 +58,7 @@ public class ServicioMiBsePersist {
 		logueo.setParametro("Usuario", param.getUsuario());
 		logueo.setParametro("Clave", param.getClave());
 
-		String nombrePL = miBseProperties.getObtenerDatosComunicacionesPersona();
+		String nombrePL = databaseMiBseProperties.getObtenerDatosComunicacionesPersona();
 
 		Map<String, Object> inParams = new HashMap<>();
 		inParams.put("p_usuario", param.getUsuario());
@@ -76,7 +74,7 @@ public class ServicioMiBsePersist {
 		logueo.setParametro("Usuario", param.getUsuario());
 		logueo.setParametro("Clave", param.getClave());
 
-		String nombrePL = miBseProperties.getObtenerPolizas();
+		String nombrePL = databaseMiBseProperties.getObtenerPolizas();
 
 		Map<String, Object> inParams = new HashMap<>();
 		inParams.put("p_usuario", param.getUsuario());
@@ -92,7 +90,7 @@ public class ServicioMiBsePersist {
 		logueo.setParametro("Usuario", param.getUsuario());
 		logueo.setParametro("Clave", param.getClave());
 
-		String nombrePL = miBseProperties.getObtenerDatosCliente();
+		String nombrePL = databaseMiBseProperties.getObtenerDatosCliente();
 
 		Map<String, Object> inParams = new HashMap<>();
 		inParams.put("p_usuario", param.getUsuario());
@@ -100,11 +98,12 @@ public class ServicioMiBsePersist {
 		return ejecutarProcedimiento(nombrePL, inParams, "p_datosComunicaciones",logueo);
 	}
 
-	private ResultXmlPL ejecutarProcedimiento(String nombrePL, Map<String, Object> inParams, String nombreResultado, Logueo logueo) {
+	private ResultXmlPL ejecutarProcedimiento(String nombrePL, Map<String, Object> inParams, String nombreResultado,
+											  Logueo logueo) {
 		ResultXmlPL resultado = new ResultXmlPL();
 		try {
-			persistenciaCall.setCatalogName(miBseProperties.getCatalogName(nombrePL));
-			persistenciaCall.setProcedureName(miBseProperties.getProcedureName(nombrePL));
+			persistenciaCall.setCatalogName(databaseMiBseProperties.getCatalogName(nombrePL));
+			persistenciaCall.setProcedureName(databaseMiBseProperties.getProcedureName(nombrePL));
 			logueo.setNombrePl(nombrePL);
 
 			Map<String, Object> out = persistenciaCall.execute(inParams);

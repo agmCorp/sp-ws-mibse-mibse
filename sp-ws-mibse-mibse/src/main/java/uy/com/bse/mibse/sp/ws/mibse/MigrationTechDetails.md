@@ -128,10 +128,20 @@ sea más ágil y menos propensa a errores, permitiendo un enfoque más limpio y 
 lógica de negocio.
 
 ## 1. Configuración de Mapeos en Spring
+Para garantizar que un nuevo servicio funcione correctamente en la arquitectura migrada, el único aspecto que debe tener 
+en cuenta el desarrollador es especificar el nombre del parámetro de entrada siguiendo un patrón específico. 
+Este nombre de parámetro debe comenzar con el prefijo "Param" seguido del nombre del servicio.
 
-En lugar de utilizar un archivo de propiedades combinado con mecanismos de reflexión en Java para mapear parámetros a los 
-solvers, se propone una configuración basada en Spring. Esto se logrará mediante una clase anotada con @Configuration que 
-expone los beans correspondientes.
+Por ejemplo, si el servicio que estás implementando se llama "ObtenerPolizasCliente", el parámetro de entrada 
+correspondiente debería nombrarse como ParamObtenerPolizasCliente. Gracias a esta convención, el sistema resolverá 
+automáticamente el solver adecuado para el servicio. En este caso, se esperaría que el solver se llame ObtenerPolizasClienteSolver.
+
+Este enfoque elimina la necesidad de configuraciones adicionales, ya que el mapeo entre parámetros y solvers se realiza 
+de manera dinámica, facilitando la implementación y manteniendo la consistencia en el código.
+
+Para su implementación, en lugar de utilizar un archivo de propiedades combinado con mecanismos de reflexión en Java para 
+mapear parámetros a los solvers, se propone una configuración basada en Spring. Esto se logrará mediante una clase anotada 
+con @Configuration que expone los beans correspondientes.
 
 Dado que AbstractSolver y XMLAbstractSolver son clases abstractas que heredan de LogicaSolver (Ver ANEXO), la configuración
 de los mapeos en Spring se puede realizar de la siguiente manera:
@@ -139,21 +149,49 @@ de los mapeos en Spring se puede realizar de la siguiente manera:
 ```java
 @Configuration
 public class SolverConfig {
-   @Bean
-   @Autowired
-   //TODO revisar si funciona con List en lugar de ArrayList
-   public Map<String, LogicaSolver> solverMap(ArrayList<LogicaSolver> solvers) {
-      Map<String, LogicaSolver> map = new HashMap<>();
-      for (AbstractSolver solver : solvers) {
-         map.put(solver.getParameter, solver);
-      }
-      return map;
-   }
-}
-```   
+    private static final Logger logger = LoggerFactory.getLogger(SolverConfig.class);
 
-Es necesario modificar la clase LogicaSolver para que exponga el método getParameter(), el cual devolverá el parámetro 
-de entrada. Este método será implementado por la clase concreta de Solver, que es la encargada de manejar y conocer el parámetro de entrada específico.
+    /**
+     * Método que crea un `Map` de tipo `<String, LogicaSolver>` donde la clave es 
+     * un identificador único basado en el nombre de la clase del solver y el valor es 
+     * la instancia del solver. Este `Map` se utiliza para resolver dinámicamente el 
+     * solver correspondiente según el nombre del parámetro recibido.
+     *
+     * @param solvers Lista de instancias de `LogicaSolver` disponibles en el contexto de Spring.
+     * @return Un `Map` donde la clave es el nombre de la clase del solver en mayúsculas 
+     *         y el valor es la instancia del solver.
+     */
+    @Bean
+    public Map<String, LogicaSolver> solverMap(List<LogicaSolver> solvers) {
+        // Crear un nuevo HashMap para almacenar los mapeos de solvers.
+        Map<String, LogicaSolver> map = new HashMap<>();
+
+        // Iterar sobre cada solver en la lista proporcionada.
+        for (LogicaSolver solver : solvers) {
+            if (solver != null) {
+                // Obtener el nombre completo de la clase del solver (incluyendo el paquete).
+                String fullClassName = solver.getClass().getName();
+
+                // Extraer el nombre simple de la clase (sin el paquete).
+                String simpleClassName = fullClassName.substring(fullClassName.lastIndexOf('.') + 1);
+
+                // Convertir el nombre de la clase a mayúsculas y eliminar espacios adicionales.
+                String classId = simpleClassName.toUpperCase().trim();
+
+                // Registrar el solver en el mapa usando el nombre de la clase como clave.
+                map.put(classId, solver);
+
+                // Registrar en el log que el solver ha sido registrado con éxito.
+                logger.info("Registered solver: {}", classId);
+            }
+        }
+
+        // Retornar el mapa con los solvers registrados.
+        return map;
+    }
+}
+
+```   
 
 ## 2. Implementación de Solvers
 

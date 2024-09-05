@@ -3,6 +3,7 @@ package uy.com.bse.mibse.sp.ws.mibse.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uy.com.bse.mibse.sp.ws.mibse.model.dto.*;
+import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ResultCodiguera;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ResultGenerico;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,5 +42,12 @@ public class MiBSEService {
 		ResultGenerico result = LogicaMiBSE.solve(param);
 		log.debug("obtenerNumeroCliente end");
 		return (ResultObtenerNumeroCliente) result;
+	}
+
+	public ResultCodiguera listaProfesiones(ParamListaProfesiones param) {
+		log.debug("listaProfesiones start: " + param);
+		ResultGenerico result = LogicaMiBSE.solve(param);
+		log.debug("listaProfesiones end");
+		return (ResultCodiguera) result;
 	}
 }

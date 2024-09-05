@@ -5,8 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import uy.com.bse.mibse.sp.ws.mibse.config.DatabaseMiBsePropertiesConfig;
 import uy.com.bse.mibse.sp.ws.mibse.model.dto.*;
-import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ResultXmlPL;
-import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ServiciosError;
+import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.*;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.exception.Values;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.log.Logueo;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.persistencia.Persistencia;
@@ -19,6 +18,7 @@ import org.slf4j.Logger;
 import java.sql.Types;
 import java.sql.Clob;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -157,6 +157,37 @@ public class ServicioMiBsePersist {
 		return resultado;
 	}
 
+	public ResultCodiguera listaProfesiones(ParamListaProfesiones param) {
+		logueo.setEncabezado(Values.ENCABEZADOPERSIST);
+		logueo.setClase(ServicioMiBsePersist.class);
+		logueo.setMetodo("listaProfesiones");
+		logueo.setParametro("Usuario", param.getUsuario());
+		logueo.setParametro("Clave", param.getClave());
+
+		ResultCodiguera resultado = new ResultCodiguera();
+
+		String sql = "SELECT CAPW_CD_PROFESION COD_PROFESION, CAPW_DE_PROFESION DESC_PROFESION FROM CART_PROFESIONES";
+		logueo.setParametro("Consulta", sql);
+
+		try {
+			List<Codiguera> profesiones = jdbcTemplate.query(sql, (rs, rowNum) -> {
+				Codiguera profesion = new Codiguera();
+				profesion.setCodigo(rs.getString("COD_PROFESION"));
+				profesion.setDescripcion(rs.getString("DESC_PROFESION"));
+				return profesion;
+			});
+
+			if (!profesiones.isEmpty()) {
+				resultado.setItems(profesiones);
+			}
+
+		} catch (Exception e) {
+			persistencia.catchException(resultado, logueo, e);
+		}
+
+		return resultado;
+	}
+
 
 	private ResultXmlPL ejecutarProcedimiento(String nombrePL, Map<String, Object> inParams, String nombreResultado,
 											  Logueo logueo) {
@@ -179,6 +210,7 @@ public class ServicioMiBsePersist {
 		}
 		return resultado;
 	}
+
 
 
 }

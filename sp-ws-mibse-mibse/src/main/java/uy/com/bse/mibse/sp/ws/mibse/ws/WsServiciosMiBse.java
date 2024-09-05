@@ -150,7 +150,21 @@ public class WsServiciosMiBse implements IWsServiciosMiBse {
 
 	@Override
 	public ResultCodiguera listaProfesiones(ParamListaProfesiones param) {
-		return null;
+		String claveError = null;
+		logueo.setEncabezado(Values.ENCABEZADOWS);
+		logueo.setClase(WsServiciosMiBse.class);
+		logueo.setMetodo("listaProfesiones");
+
+		ResultCodiguera datos = new ResultCodiguera();
+		LOG.info(logueo.getSoloParametros());
+		try {
+			datos = miBSEService.listaProfesiones(param);
+		} catch (Exception e) {
+			claveError = catchException(logueo, e);
+		} finally {
+			finallyBlock(claveError, datos);
+		}
+		return datos;
 	}
 
 	private String catchException(Logueo logueo, Exception e) {

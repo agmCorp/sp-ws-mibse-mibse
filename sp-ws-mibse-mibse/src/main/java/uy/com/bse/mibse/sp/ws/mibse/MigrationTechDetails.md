@@ -542,3 +542,5 @@ Esta es una lista de los servicios disponibles en la interfaz `IWsServiciosMiBse
 **Total de servicios:** 34
 
 
+TODO: 
+documentar el mapeo con el procedure almacenado en Oracle

@@ -244,8 +244,8 @@ public final class LogicaMiBSE {
 }
 ```
 
-Finalmente, se implementa el servicio en MiNuevoServicio. La clase MiNuevoServicioLocal toma el rol de service layer,
-que es la capa de servicios de la aplicación. Para la aplicación MiBSE, la service layer es implementada por la clase MiBSEService
+Finalmente, se implementa el servicio en MiNuevoServicio, que auspicia de capa de servicios de la aplicación. 
+Para la aplicación MiBSE, la service layer es implementada por la clase MiBSEService
 
 ```java
 public class MiNuevoServicio{
@@ -270,7 +270,7 @@ public class MiNuevoServicio{
 
 Cada Solver concreto implementa la interfaz LogicaSolver y define el parámetro de entrada que debe resolver. 
 
-El nuevo mapeo de parámetros a solvers en el contexto del nuevo diseño del motor de ejecución de Solvers requiere que el
+El nuevo mapeo de parámetros a solvers, en el contexto del nuevo diseño del motor de ejecución de Solvers, requiere que el
 nombre del parámetro de entrada tenga esta forma: Param + NombreServicio. Por ejemplo, si el nuevo servicio que se está 
 implementando se llama "ObtenerPolizasCliente", el parámetro de entrada correspondiente debería nombrarse como 
 ParamObtenerPolizasCliente. Por otro lado, para derivar el nombre del solver asociado, este debe haberse nombrado con la 
@@ -311,7 +311,8 @@ public class ObtenerPolizasClienteSolver extends XMLAbstractSolver {
     }
 }
 ```
-Esta convención de nombres ya era utilizada en la versión de miBSE antes de la migración.
+Esta convención de nombres ya era utilizada en la versión de miBSE antes de la migración, con el código actual se aprovecha
+esta convención para evitar mantener el mapeo en el archivo logicaMiBSEMappers.properties.
 
 ## Otros Desafíos en la Migración
 
@@ -421,6 +422,7 @@ tiempo de ejecución de las transacciones.
 Hay que evaluar con el equipo de Web, si sigue siendo necesario el uso de RTimeLogger en el sistema de MiBSE, y si es así, 
 integrarlo con la migración que está realizando.
 
+### Desafío 6:  generación de reportes
 ## ANEXO1: Implementación de Solvers
 
 La implementación de los Solvers sigue un enfoque jerarquico, donde cada Solver hereda de AbstractSolver o XMLAbstractSolver,

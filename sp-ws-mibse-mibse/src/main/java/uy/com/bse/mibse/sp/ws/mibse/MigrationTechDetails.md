@@ -10,7 +10,7 @@ servicio. Dado que las clases que resuelven el servicio implementan una interfaz
 llamada al procedimiento almacenado correspondiente se resuelve de forma genérica, sin necesidad de implementar 
 nuevamente la lógica de glue code para cada nuevo servicio.
 
-A continuación se detallan los pasos a seguir para implementar un nuevo servicio:
+A continuación se detallan los pasos a seguir para implementar un nuevo servicio en la versión de MiBSE antes de la migración:
 
 ## 1. **Definir los Parámetros y Resultados:**
 Lo primero es definir las clases que encapsulan los parámetros (ParamNuevoServicio) y los resultados (ResultNuevoServicio) 

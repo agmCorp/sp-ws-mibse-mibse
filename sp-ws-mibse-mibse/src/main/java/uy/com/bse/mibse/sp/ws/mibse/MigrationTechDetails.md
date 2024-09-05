@@ -311,8 +311,8 @@ public class ObtenerPolizasClienteSolver extends XMLAbstractSolver {
     }
 }
 ```
-Esta convención de nombres ya era utilizada en la versión de miBSE antes de la migración, con el código actual se aprovecha
-esta convención para evitar mantener el mapeo en el archivo logicaMiBSEMappers.properties.
+**Esta convención de nombres ya era utilizada en la versión de miBSE antes de la migración, con el código actual se aprovecha
+esta convención para evitar mantener el mapeo en el archivo logicaMiBSEMappers.properties.**
 
 ## Otros Desafíos en la Migración
 

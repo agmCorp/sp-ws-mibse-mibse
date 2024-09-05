@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ResultCodiguera;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ServiciosError;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.log.Logueo;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.exception.Values;
@@ -145,6 +146,11 @@ public class WsServiciosMiBse implements IWsServiciosMiBse {
 			finallyBlock(claveError, datos);
 		}
 		return datos;
+	}
+
+	@Override
+	public ResultCodiguera listaProfesiones(ParamListaProfesiones param) {
+		return null;
 	}
 
 	private String catchException(Logueo logueo, Exception e) {

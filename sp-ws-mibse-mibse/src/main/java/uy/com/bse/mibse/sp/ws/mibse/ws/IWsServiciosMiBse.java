@@ -4,6 +4,7 @@ import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
 import jakarta.jws.WebService;
 import uy.com.bse.mibse.sp.ws.mibse.model.dto.*;
+import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ResultCodiguera;
 
 @WebService(
         endpointInterface = "uy.com.bse.mibse.sp.ws.mibse.IWsServiciosMiBse",
@@ -25,4 +26,7 @@ public interface IWsServiciosMiBse {
 
     @WebMethod
     ResultObtenerNumeroCliente obtenerNumeroCliente(@WebParam(name = "param") ParamObtenerNumeroCliente param);
+
+    @WebMethod
+    ResultCodiguera listaProfesiones(@WebParam(name = "param") ParamListaProfesiones param);
 }

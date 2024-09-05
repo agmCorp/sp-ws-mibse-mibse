@@ -94,31 +94,18 @@ Para la aplicación MiBSE, la service layer es implementada por la clase MiBse (
 MiBseLocal que juega el rol de interfaz de acceso a los servicios de la aplicación.
 
 
-TODO: explicar el mapeo con el nombre del procedimiento en la base mediante archivo logicaMiBSEMappers.properties
-
 ## 4. Exposición como Web Service
 
 Finalmente, se expone este servicio como un Web Service. No hay detalles específicos para esto, se implementan como es 
 usual en el resto de las aplicaciones de Java anotando la clase con @WebService y definiendo las configuraciones necesarias.
 
 
-## 5. Resumen del Flujo
-
-1. Parámetros (ParamNuevoServicio): Encapsula los datos de entrada.
-2. LogicaMiBSE.solve: Mapea y ejecuta el Solver correspondiente.
-3. NuevoServicioSolver: Implementa la lógica de negocio.
-4. Resultado (ResultNuevoServicio):  Se devuelve al cliente.
-5. MiNuevoServicio: Implementa la interfaz de acceso a los servicios de la aplicación.
-6. Exposición como Web Service: Se expone este servicio como un Web Service.
-
-Este patrón proporciona una forma escalable y reutilizable de agregar nuevos servicios al sistema sin necesidad de 
-reescribir mucho código, aprovechando el polimorfismo para mantener la flexibilidad.
 
 ----
 # Migración de Arquitectura Genérica a Spring Boot 3:
 
 Dado que código que se encarga de conectar los Web Services con los Procedimientos Almacenados en la base (glue code), 
-es genérico, el impácto en la migración es menor que en otros casos en el que el glue code es generado mediante 
+esta diseñado de forma genérica, el impácto en la migración es menor que en otros casos en el que el glue code es generado mediante 
 copy/paste de código.
 
 Por otro lado, la migración tecnológica ofrece la ventaja de permitir eliminar la necesidad de mantener manualmente el 
@@ -202,7 +189,7 @@ public class SolverConfig {
 
 ```   
 
-### 2. Despacho en la ejecución de los solvers:
+### 2. Cambios en lógica de despacho en la ejecución de los solvers:
 
 Se refactorizó el componente LogicaMiBSE para que use el mapa de solvers para resolver dinámicamente el solver adecuado.
 Esto podemos implementarlo mediante inyección del mapa de solvers generado en la Configuración de Spring, en LogicaMiBSE
@@ -324,6 +311,7 @@ public class ObtenerPolizasClienteSolver extends XMLAbstractSolver {
     }
 }
 ```
+Esta convención de nombres ya era utilizada en la versión de miBSE antes de la migración.
 
 ## Otros Desafíos en la Migración
 

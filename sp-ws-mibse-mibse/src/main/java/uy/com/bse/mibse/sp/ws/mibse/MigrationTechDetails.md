@@ -117,20 +117,26 @@ reescribir mucho código, aprovechando el polimorfismo para mantener la flexibil
 ----
 # Migración de Arquitectura Genérica a Spring Boot 3:
 
-Dado que código que se encarga de conectar los web services con los procedimientos almacenados en la base (glue code), 
+Dado que código que se encarga de conectar los Web Services con los Procedimientos Almacenados en la base (glue code), 
 es genérico, el impácto en la migración es menor que en otros casos en el que el glue code es generado mediante 
 copy/paste de código.
 
-Por otro lado, la migración ofrece la ventaja de eliminar la necesidad de mantener manualmente el mapeo entre los 
-parámetros y los solvers (o servicios), ya que ahora este proceso es gestionado por Spring. Al aprovechar las 
-configuraciones de beans y la inyección de dependencias, Spring puede automáticamente resolver y mapear los componentes 
-necesarios, simplificando la arquitectura y reduciendo la posibilidad de errores manuales en el mapeo.
+Por otro lado, la migración tecnológica ofrece la ventaja de permitir eliminar la necesidad de mantener manualmente el 
+mapeo entre los parámetros y los solvers (o servicios), ya que ahora este proceso puede ser gestionado por Spring, al 
+aprovechar las configuraciones de beans y la inyección de dependencias (con los cambios introducidos en la migración) 
+Spring puede automáticamente resolver y mapear los componentes necesarios, simplificando la arquitectura y reduciendo la
+posibilidad de errores manuales en el mapeo.
 
 Esto no solo mejora la mantenibilidad del sistema, sino que también hace que la incorporación de nuevos servicios 
 sea más ágil y menos propensa a errores, permitiendo un enfoque más limpio y modular para la gestión de la 
 lógica de negocio.
 
-## 1. Configuración de Mapeos en Spring
+## Migración del motor de ejecución de solvers
+
+A continuación se detallan los pasos seguidos para migrar el motor de ejecución de solvers.
+
+### 1. Configuración de Mapeos parámetros-solvers en Spring
+
 Para garantizar que un nuevo servicio funcione correctamente en la arquitectura migrada, el único aspecto que debe tener 
 en cuenta el desarrollador es especificar el nombre del parámetro de entrada siguiendo un patrón específico. 
 Este nombre de parámetro debe comenzar con el prefijo "Param" seguido del nombre del servicio.
@@ -196,36 +202,11 @@ public class SolverConfig {
 
 ```   
 
-## 2. Implementación de Solvers
+### 2. Despacho en la ejecución de los solvers:
 
-Cada Solver concreto implementa la interfaz LogicaSolver y define el parámetro de entrada que debe resolver. 
-En este ejemplo, el parámetro de entrada es "paramA". Cada Solver debe implementar el método solve() que 
-realizará la lógica de negocio correspondiente al nuevo servicio.
-
-En el nuevo contexto de migración, se agrega la operación getParameter() al SolverA, que devuelve el parámetro de entrada 
-"paramA". Este método será implementado por la clase concreta de Solver, que es la encargada de manejar y conocer el 
-parámetro de entrada específico.
-
-```java
-package uy.com.bse;
-
-import org.springframework.stereotype.Component;
-
-@Component
-public class SolverA extends AbstractSolver { // Extender AbstractSolver o XMLAbstractSolver
-
-   @Override
-   public ResultGenerico solve(ParamGenerico param) {
-      // Lógica de solución para SolverA
-      return new ResultGenerico(); // Retorna el resultado
-   }
-}
-```
-## 2. Invocación del Servicio en Spring Boot
-
-Refactorizar LogicaMiBSE para Spring Boot para que use el mapa de solvers para resolver dinámicamente el solver adecuado.
-Esto podemos implementarlo mediante inyección del mapa de solvers en LogicaMiBSE y utilizando este mapa para resolver 
-dinámicamente el solver adecuado.
+Se refactorizó el componente LogicaMiBSE para que use el mapa de solvers para resolver dinámicamente el solver adecuado.
+Esto podemos implementarlo mediante inyección del mapa de solvers generado en la Configuración de Spring, en LogicaMiBSE
+y utilizando este mapa para resolver dinámicamente el solver adecuado.
 
 Ejemplo:
 ```java
@@ -276,12 +257,11 @@ public final class LogicaMiBSE {
 }
 ```
 
-Finalmente, se implementa el servicio en MiNuevoServicio, que implementa la interfaz MiNuevoServicioLocal, que es la 
-interfaz de acceso a los servicios de la aplicación. La clase MiNuevoServicioLocal toma el rol de service layer, que es 
-la capa de servicios de la aplicación. Para la aplicación MiBSE, la service layer es implementada por la clase MiBse
+Finalmente, se implementa el servicio en MiNuevoServicio. La clase MiNuevoServicioLocal toma el rol de service layer,
+que es la capa de servicios de la aplicación. Para la aplicación MiBSE, la service layer es implementada por la clase MiBSEService
 
 ```java
-public class MiNuevoServicio implements MiNuevoServicioLocal {
+public class MiNuevoServicio{
 
     private static Logger log = LogManager.getLogger(MiNuevoServicio.class);
 
@@ -298,20 +278,60 @@ public class MiNuevoServicio implements MiNuevoServicioLocal {
 }
 ```
 
-TODO: explicar el nuevo mapeo, usando las configuration properties de spring en la clase DatabaseMiBseProperties
 
-## Resumen
-**Interfaz LogicaSolver:** Define un método para obtener el parámetro asociado.
-**Implementación de Solvers:** Cada solver implementa la interfaz y define su parámetro.
-**Configuración de Mapeo:** En SolverConfig, se crea un Map que asocia cada parámetro con su solver.
-**Uso en LogicaMiBSE:** Se inyecta el mapa y se utiliza para obtener el solver correspondiente según el parámetro.
+## 2. Implementación de servicios en el contexto del nuevo diseño del motor de ejecución de Solvers:
 
-### Otros Desafíos en la Migración
+Cada Solver concreto implementa la interfaz LogicaSolver y define el parámetro de entrada que debe resolver. 
+
+El nuevo mapeo de parámetros a solvers en el contexto del nuevo diseño del motor de ejecución de Solvers requiere que el
+nombre del parámetro de entrada tenga esta forma: Param + NombreServicio. Por ejemplo, si el nuevo servicio que se está 
+implementando se llama "ObtenerPolizasCliente", el parámetro de entrada correspondiente debería nombrarse como 
+ParamObtenerPolizasCliente. Por otro lado, para derivar el nombre del solver asociado, este debe haberse nombrado con la 
+forma NombreServicio + Solver. Por ejemplo, si el nuevo servicio que se está implementando se llama "ObtenerPolizasCliente", 
+el solver correspondiente debería nombrarse como ObtenerPolizasClienteSolver.
+
+```java
+@Component
+public class ObtenerPolizasClienteSolver extends XMLAbstractSolver {
+
+    private final ServicioMiBsePersist servicioMiBsePersist; // O una instancia apropiada
+
+    private final ParseoMiBse parseoMiBse;
+
+    @Autowired
+    public ObtenerPolizasClienteSolver(ServicioMiBsePersist servicioMiBsePersist, ParseoMiBse parseoMiBse) {
+        this.servicioMiBsePersist = servicioMiBsePersist;
+        this.parseoMiBse = parseoMiBse;
+    }
+
+    @Override
+    protected ResultGenerico getMyResultInstance() {
+        return new ResultObtenerPolizasCliente();
+    }
+
+    @Override
+    protected ResultXmlPL getXmlResult(ParamGenerico param) {
+        return servicioMiBsePersist.obtenerPolizasCliente( (ParamObtenerPolizasCliente) param);
+    }
+
+    @Override
+    protected ResultGenerico parseValues(ResultXmlPL xmlResult) {
+        parseoMiBse.setTextoParsear(xmlResult.getXml());
+        if (parseoMiBse.generarDoc().booleanValue()) {
+            return parseoMiBse.parsearObtenerPolizasCliente();
+        }
+        return null;
+    }
+}
+```
+
+## Otros Desafíos en la Migración
 
 El sistema de Solvers es un componente de gran impacto, debido a que los servicios se implementan utilizando sus servicios.
-Pero por otro lado también existen algunos desafíos particulares que salen de lo general.
+Pero, por otro lado, también existen algunos desafíos particulares que salen de lo general en la migración y que merecen
+ser evaluados:
 
-#### Desafío 1: Colas para notificaciones de pago
+### Desafío 1: Colas para notificaciones de pago
 
 //TODO
 Idea1: Utilizar funciones Async de Spring para implementar colas de notificaciones de pago.
@@ -401,88 +421,96 @@ public ResultSubirArchivo subirArchivo(ParamSubirArchivo param) {
 
 //TODO
 
-### Desafío 4: Autenticación (interacción con sistema de IBM)
+### Desafío 4: Autenticación G.U.C. (interacción con sistema de IBM)
 
-//TODO
+Sistema de IBM que se encarga de autenticar usuarios. Ya se encuentra migrado hay que integrarlo con el sistema de MiBSE.
 
-## ANEXO: Implementación de Solvers
+### Desafío 5: RTimeLogger (interacción con sistema de IBM)
+
+Sistema de IBM que se encarga de consultar datos a nivel de la transacción de la base de datos, y que permite obtener el
+tiempo de ejecución de las transacciones.
+
+Hay que evaluar con el equipo de Web, si sigue siendo necesario el uso de RTimeLogger en el sistema de MiBSE, y si es así, 
+integrarlo con la migración que está realizando.
+
+## ANEXO1: Implementación de Solvers
 
 La implementación de los Solvers sigue un enfoque jerarquico, donde cada Solver hereda de AbstractSolver o XMLAbstractSolver,
 dependiendo de si se necesita procesar XML o no. La jerarquía de clases se muestra a continuación:
 
 ```plantuml
-+-------------------+
-|  <<interface>>    |
-|   LogicaSolver    |
-|-------------------|
-| + solve(param:    |
-|   ParamGenerico): |
-|   ResultGenerico  |
-+-------------------+
-          ^
-          |
-          |
-+----------------------------+
-|      AbstractSolver        |
-|----------------------------|
-| - LOG: Logger              |
-|----------------------------|
-| + solve(param:             |
-|   ParamGenerico):          |
-|   ResultGenerico           |
-|----------------------------|
-| # chequeoPreCondiciones(   |
-|   param: ParamGenerico):   |
-|   ResultGenerico           |
-|----------------------------|
-| # getMyResultInstance():   |
-|   ResultGenerico           |
-|----------------------------|
-| # procesoLogica(param:     |
-|   ParamGenerico):          |
-|   ResultGenerico           |
-|----------------------------|
-| # procesoPostCondiciones(  |
-|   param: ParamGenerico,    |
-|   result: ResultGenerico): |
-|   void                     |
-|----------------------------|
-| # checkNull(resultado:     |
-|   ResultGenerico):         |
-|   ResultGenerico           |
-+----------------------------+
-          ^
-          |
-          |
-+---------------------------------+
-|        XMLAbstractSolver        |
-|---------------------------------|
-| - LOGGER: Logger                |
-|---------------------------------|
-| + procesoLogica(param:          |
-|   ParamGenerico):               |
-|   ResultGenerico                |
-|---------------------------------|
-| - procesarErrores(xmlResult:    |
-|   ResultXmlPL):                 |
-|   ResultGenerico                |
-|---------------------------------|
-| - procesoResultadoConErrorYXml( |
-|   resultED: ResultGenerico,     |
-|   xmlResult: ResultXmlPL):      |
-|   ResultGenerico                |
-|---------------------------------|
-| # getXmlResult(param:           |
-|   ParamGenerico):               |
-|   ResultXmlPL                   |
-|---------------------------------|
-| # parseValues(xmlResult:        |
-|   ResultXmlPL):                 |
-|   ResultGenerico                |
-+---------------------------------+
+                                    +-------------------+
+                                    |  <<interface>>    |
+                                    |   LogicaSolver    |
+                                    |-------------------|
+                                    | + solve(param:    |
+                                    |   ParamGenerico): |
+                                    |   ResultGenerico  |
+                                    +-------------------+
+                                              ^
+                                              |
+                                              |
+                                    +----------------------------+
+                                    |      AbstractSolver        |
+                                    |----------------------------|
+                                    | - LOG: Logger              |
+                                    |----------------------------|
+                                    | + solve(param:             |
+                                    |   ParamGenerico):          |
+                                    |   ResultGenerico           |
+                                    |----------------------------|
+                                    | # chequeoPreCondiciones(   |
+                                    |   param: ParamGenerico):   |
+                                    |   ResultGenerico           |
+                                    |----------------------------|
+                                    | # getMyResultInstance():   |
+                                    |   ResultGenerico           |
+                                    |----------------------------|
+                                    | # procesoLogica(param:     |
+                                    |   ParamGenerico):          |
+                                    |   ResultGenerico           |
+                                    |----------------------------|
+                                    | # procesoPostCondiciones(  |
+                                    |   param: ParamGenerico,    |
+                                    |   result: ResultGenerico): |
+                                    |   void                     |
+                                    |----------------------------|
+                                    | # checkNull(resultado:     |
+                                    |   ResultGenerico):         |
+                                    |   ResultGenerico           |
+                                    +----------------------------+
+                                              ^
+                                              |
+                                              |
+                                    +---------------------------------+
+                                    |        XMLAbstractSolver        |
+                                    |---------------------------------|
+                                    | - LOGGER: Logger                |
+                                    |---------------------------------|
+                                    | + procesoLogica(param:          |
+                                    |   ParamGenerico):               |
+                                    |   ResultGenerico                |
+                                    |---------------------------------|
+                                    | - procesarErrores(xmlResult:    |
+                                    |   ResultXmlPL):                 |
+                                    |   ResultGenerico                |
+                                    |---------------------------------|
+                                    | - procesoResultadoConErrorYXml( |
+                                    |   resultED: ResultGenerico,     |
+                                    |   xmlResult: ResultXmlPL):      |
+                                    |   ResultGenerico                |
+                                    |---------------------------------|
+                                    | # getXmlResult(param:           |
+                                    |   ParamGenerico):               |
+                                    |   ResultXmlPL                   |
+                                    |---------------------------------|
+                                    | # parseValues(xmlResult:        |
+                                    |   ResultXmlPL):                 |
+                                    |   ResultGenerico                |
+                                    +---------------------------------+
 ```
 
-## Servicios de la Interfaz IWsServiciosMiBse
+## ANEXO2: Servicios de la Interfaz IWsServiciosMiBse
 
 Esta es una lista de los servicios disponibles en la interfaz `IWsServiciosMiBse`:
 
@@ -524,18 +552,3 @@ Esta es una lista de los servicios disponibles en la interfaz `IWsServiciosMiBse
 **Total de servicios:** 34
 
 
-Otras tareas necesarias para la migración son:
-
-migrar a maven
-
-
---------------------------------
-
-
-IDEAS:
-package utilitarios renombrarlo a algo que tenga que ver con el mecanismo core del framework
-
-tiene sentido tener las validaciones como solvers?
-
-COSAS A DOCUMENTAR:
-JdbcTemplate jdbcTemplate: This is a Spring utility that simplifies the process of interacting with a relational database using SQL queries. It handles common tasks like creating connections, executing statements, and processing results.

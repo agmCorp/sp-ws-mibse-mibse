@@ -1,14 +1,15 @@
 package uy.com.bse.mibse.sp.ws.mibse.service.solver;
 
-import uy.com.bse.mibse.sp.ws.mibse.repository.ServicioMiBsePersist;
-import uy.com.bse.mibse.sp.ws.mibse.utilitario.logica.XMLAbstractSolver;
-import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ResultGenerico;
-import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ResultXmlPL;
-import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ParamGenerico;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uy.com.bse.mibse.sp.ws.mibse.model.dto.ResultObtenerPolizasCliente;
+
 import uy.com.bse.mibse.sp.ws.mibse.model.dto.ParamObtenerPolizasCliente;
+import uy.com.bse.mibse.sp.ws.mibse.model.dto.ResultObtenerPolizasCliente;
+import uy.com.bse.mibse.sp.ws.mibse.repository.ServicioMiBsePersist;
+import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ParamGenerico;
+import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ResultGenerico;
+import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ResultXmlPL;
+import uy.com.bse.mibse.sp.ws.mibse.utilitario.logica.XMLAbstractSolver;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.parseo.ParseoMiBse;
 
 @Component
@@ -31,7 +32,7 @@ public class ObtenerPolizasClienteSolver extends XMLAbstractSolver {
 
     @Override
     protected ResultXmlPL getXmlResult(ParamGenerico param) {
-        return servicioMiBsePersist.obtenerPolizasCliente( (ParamObtenerPolizasCliente) param);
+        return servicioMiBsePersist.obtenerPolizasCliente((ParamObtenerPolizasCliente) param);
     }
 
     @Override
@@ -41,5 +42,10 @@ public class ObtenerPolizasClienteSolver extends XMLAbstractSolver {
             return parseoMiBse.parsearObtenerPolizasCliente();
         }
         return null;
+    }
+
+    @Override
+    public ParamGenerico getMyParamInstance() {
+        return new ParamObtenerPolizasCliente();
     }
 }

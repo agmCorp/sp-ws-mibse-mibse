@@ -1,16 +1,17 @@
 package uy.com.bse.mibse.sp.ws.mibse.service.solver;
-import uy.com.bse.mibse.sp.ws.mibse.utilitario.logica.XMLAbstractSolver;
-import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ResultGenerico;
-import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ResultXmlPL;
-import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ParamGenerico;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import uy.com.bse.mibse.sp.ws.mibse.model.dto.ParamListaProfesiones;
 import uy.com.bse.mibse.sp.ws.mibse.model.dto.ParamObtenerComunicacionesCliente;
 import uy.com.bse.mibse.sp.ws.mibse.model.dto.ResultObtenerComunicacionesCliente;
-import uy.com.bse.mibse.sp.ws.mibse.utilitario.parseo.ParseoMiBse;
 import uy.com.bse.mibse.sp.ws.mibse.repository.ServicioMiBsePersist;
+import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ParamGenerico;
+import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ResultGenerico;
+import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ResultXmlPL;
+import uy.com.bse.mibse.sp.ws.mibse.utilitario.logica.XMLAbstractSolver;
+import uy.com.bse.mibse.sp.ws.mibse.utilitario.parseo.ParseoMiBse;
 
 @Component
 public class ObtenerComunicacionesClienteSolver extends XMLAbstractSolver {
@@ -19,11 +20,11 @@ public class ObtenerComunicacionesClienteSolver extends XMLAbstractSolver {
 
 	private final ParseoMiBse parseoMiBse;
 
-    @Autowired
-    public ObtenerComunicacionesClienteSolver(ServicioMiBsePersist servicioMiBsePersist, ParseoMiBse parseoMiBse) {
-        this.servicioMiBsePersist = servicioMiBsePersist;
-        this.parseoMiBse = parseoMiBse;
-    }
+	@Autowired
+	public ObtenerComunicacionesClienteSolver(ServicioMiBsePersist servicioMiBsePersist, ParseoMiBse parseoMiBse) {
+		this.servicioMiBsePersist = servicioMiBsePersist;
+		this.parseoMiBse = parseoMiBse;
+	}
 
 	@Override
 	protected ResultGenerico getMyResultInstance() {
@@ -38,10 +39,14 @@ public class ObtenerComunicacionesClienteSolver extends XMLAbstractSolver {
 	@Override
 	protected ResultGenerico parseValues(ResultXmlPL xmlResult) {
 		parseoMiBse.setTextoParsear(xmlResult.getXml());
-        if (parseoMiBse.generarDoc().booleanValue()) {
-            return parseoMiBse.parsearObtenerComunicacionesCliente();
-        }
-        return null;
+		if (parseoMiBse.generarDoc().booleanValue()) {
+			return parseoMiBse.parsearObtenerComunicacionesCliente();
+		}
+		return null;
 	}
 
+	@Override
+	public ParamGenerico getMyParamInstance() {
+		return new ParamObtenerComunicacionesCliente();
+	}
 }

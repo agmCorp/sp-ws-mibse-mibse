@@ -62,14 +62,13 @@ public class ServicioMiBsePersist {
 	}
 
 	public ResultXmlPL obtenerComunicacionesCliente(ParamObtenerComunicacionesCliente param) {
-		Logueo logueo = new Logueo();
 		logueo.setEncabezado(Values.ENCABEZADOPERSIST);
 		logueo.setClase(ServicioMiBsePersist.class);
 		logueo.setMetodo("obtenerComunicacionesCliente");
 
 		logueo.setParametro("Usuario", param.getUsuario());
 		logueo.setParametro("Clave", param.getClave());
-
+		logueo.resetParametros();
 		String nombrePL = databaseMiBseProperties.getObtenerDatosComunicacionesPersona();
 
 		Map<String, Object> inParams = new HashMap<>();
@@ -85,7 +84,7 @@ public class ServicioMiBsePersist {
 
 		logueo.setParametro("Usuario", param.getUsuario());
 		logueo.setParametro("Clave", param.getClave());
-
+		logueo.resetParametros();
 		String nombrePL = databaseMiBseProperties.getObtenerPolizas();
 
 		Map<String, Object> inParams = new HashMap<>();
@@ -101,7 +100,7 @@ public class ServicioMiBsePersist {
 
 		logueo.setParametro("Usuario", param.getUsuario());
 		logueo.setParametro("Clave", param.getClave());
-
+		logueo.resetParametros();
 		String nombrePL = databaseMiBseProperties.getObtenerDatosCliente();
 
 		Map<String, Object> inParams = new HashMap<>();
@@ -120,7 +119,7 @@ public class ServicioMiBsePersist {
 		logueo.setParametro("Clave", param.getClave());
 
 		String nombrePL = databaseMiBseProperties.getObtenerNumeroCliente();
-
+		logueo.resetParametros();
 		persistenciaCallNumericResponse.setCatalogName(databaseMiBseProperties.getCatalogName(nombrePL));
 		persistenciaCallNumericResponse.setProcedureName(databaseMiBseProperties.getProcedureName(nombrePL));
 		logueo.setNombrePl(nombrePL);
@@ -163,7 +162,7 @@ public class ServicioMiBsePersist {
 		logueo.setMetodo("listaProfesiones");
 		logueo.setParametro("Usuario", param.getUsuario());
 		logueo.setParametro("Clave", param.getClave());
-
+		logueo.resetParametros();
 		ResultCodiguera resultado = new ResultCodiguera();
 
 		String sql = "SELECT CAPW_CD_PROFESION COD_PROFESION, CAPW_DE_PROFESION DESC_PROFESION FROM CART_PROFESIONES";
@@ -210,7 +209,4 @@ public class ServicioMiBsePersist {
 		}
 		return resultado;
 	}
-
-
-
 }

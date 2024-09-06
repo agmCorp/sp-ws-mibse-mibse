@@ -423,6 +423,9 @@ Hay que evaluar con el equipo de Web, si sigue siendo necesario el uso de RTimeL
 integrarlo con la migración que está realizando.
 
 ### Desafío 6:  generación de reportes
+
+no se pudo mavenizar: reports-oracle-rwclient.jar
+
 ## ANEXO1: Implementación de Solvers
 
 La implementación de los Solvers sigue un enfoque jerarquico, donde cada Solver hereda de AbstractSolver o XMLAbstractSolver,

@@ -108,6 +108,10 @@ public class Logueo {
 		}
 	}
 
+	public void resetParametros() {
+		this.parametros.clear();
+	}
+
 	/**
 	 * Establece un parametro Double para loguear.
 	 * 

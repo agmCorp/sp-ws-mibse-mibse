@@ -37,18 +37,9 @@ public class ServicioMiBsePersist {
 	private SimpleJdbcCall persistenciaCallXmlResponse;
 	private SimpleJdbcCall persistenciaCallNumericResponse;
 
-
 	@PostConstruct
 	public void init() {
-		persistenciaCallXmlResponse = new SimpleJdbcCall(jdbcTemplate)
-				.withoutProcedureColumnMetaDataAccess()
-				.declareParameters(
-						new SqlParameter("p_usuario", Types.VARCHAR),
-						new SqlOutParameter("p_codError", Types.INTEGER),
-						new SqlOutParameter("p_descError", Types.VARCHAR),
-						new SqlOutParameter("p_sqlError", Types.VARCHAR),
-						new SqlOutParameter("p_datosComunicaciones", Types.CLOB)
-				);
+		initPLGenerico();
 		persistenciaCallNumericResponse = new SimpleJdbcCall(jdbcTemplate)
 				.withoutProcedureColumnMetaDataAccess()
 				.declareParameters(
@@ -62,31 +53,41 @@ public class ServicioMiBsePersist {
 	}
 
 	public ResultXmlPL obtenerComunicacionesCliente(ParamObtenerComunicacionesCliente param) {
+		initPLGenerico();
+		logueo.resetParametros();
 		logueo.setEncabezado(Values.ENCABEZADOPERSIST);
 		logueo.setClase(ServicioMiBsePersist.class);
 		logueo.setMetodo("obtenerComunicacionesCliente");
-
 		logueo.setParametro("Usuario", param.getUsuario());
 		logueo.setParametro("Clave", param.getClave());
-		logueo.resetParametros();
 		String nombrePL = databaseMiBseProperties.getObtenerDatosComunicacionesPersona();
-
 		Map<String, Object> inParams = new HashMap<>();
 		inParams.put("p_usuario", param.getUsuario());
 
 		return ejecutarProcedimiento(nombrePL, inParams, "p_datosComunicaciones",logueo);
 	}
 
+	private void initPLGenerico() {
+		persistenciaCallXmlResponse = new SimpleJdbcCall(jdbcTemplate)
+				.withoutProcedureColumnMetaDataAccess()
+				.declareParameters(
+						new SqlParameter("p_usuario", Types.VARCHAR),
+						new SqlOutParameter("p_codError", Types.INTEGER),
+						new SqlOutParameter("p_descError", Types.VARCHAR),
+						new SqlOutParameter("p_sqlError", Types.VARCHAR),
+						new SqlOutParameter("p_datosComunicaciones", Types.CLOB)
+				);
+	}
+
 	public ResultXmlPL obtenerPolizasCliente(ParamObtenerPolizasCliente param) {
+		initPLGenerico();
+		logueo.resetParametros();
 		logueo.setEncabezado(Values.ENCABEZADOPERSIST);
 		logueo.setClase(ServicioMiBsePersist.class);
 		logueo.setMetodo("obtenerPolizasCliente");
-
 		logueo.setParametro("Usuario", param.getUsuario());
 		logueo.setParametro("Clave", param.getClave());
-		logueo.resetParametros();
 		String nombrePL = databaseMiBseProperties.getObtenerPolizas();
-
 		Map<String, Object> inParams = new HashMap<>();
 		inParams.put("p_usuario", param.getUsuario());
 
@@ -94,15 +95,14 @@ public class ServicioMiBsePersist {
 	}
 
 	public ResultXmlPL obtenerDatosCliente(ParamObtenerDatosCliente param) {
+		initPLGenerico();
+		logueo.resetParametros();
 		logueo.setEncabezado(Values.ENCABEZADOPERSIST);
 		logueo.setClase(ServicioMiBsePersist.class);
 		logueo.setMetodo("obtenerDatosCliente");
-
 		logueo.setParametro("Usuario", param.getUsuario());
 		logueo.setParametro("Clave", param.getClave());
-		logueo.resetParametros();
 		String nombrePL = databaseMiBseProperties.getObtenerDatosCliente();
-
 		Map<String, Object> inParams = new HashMap<>();
 		inParams.put("p_usuario", param.getUsuario());
 
@@ -110,20 +110,17 @@ public class ServicioMiBsePersist {
 	}
 
 	public ResultObtenerNumeroCliente obtenerNumeroCliente(ParamObtenerNumeroCliente param) {
+		logueo.resetParametros();
 		ResultObtenerNumeroCliente resultado = new ResultObtenerNumeroCliente();
 		logueo.setEncabezado(Values.ENCABEZADOPERSIST);
 		logueo.setClase(ServicioMiBsePersist.class);
 		logueo.setMetodo("obtenerNumeroCliente");
-
 		logueo.setParametro("Usuario", param.getUsuario());
 		logueo.setParametro("Clave", param.getClave());
-
 		String nombrePL = databaseMiBseProperties.getObtenerNumeroCliente();
-		logueo.resetParametros();
 		persistenciaCallNumericResponse.setCatalogName(databaseMiBseProperties.getCatalogName(nombrePL));
 		persistenciaCallNumericResponse.setProcedureName(databaseMiBseProperties.getProcedureName(nombrePL));
 		logueo.setNombrePl(nombrePL);
-
 		Map<String, Object> inParams = new HashMap<>();
 		inParams.put("p_usuario", param.getUsuario());
 
@@ -157,17 +154,15 @@ public class ServicioMiBsePersist {
 	}
 
 	public ResultCodiguera listaProfesiones(ParamListaProfesiones param) {
+		logueo.resetParametros();
 		logueo.setEncabezado(Values.ENCABEZADOPERSIST);
 		logueo.setClase(ServicioMiBsePersist.class);
 		logueo.setMetodo("listaProfesiones");
 		logueo.setParametro("Usuario", param.getUsuario());
 		logueo.setParametro("Clave", param.getClave());
-		logueo.resetParametros();
 		ResultCodiguera resultado = new ResultCodiguera();
-
 		String sql = "SELECT CAPW_CD_PROFESION COD_PROFESION, CAPW_DE_PROFESION DESC_PROFESION FROM CART_PROFESIONES";
 		logueo.setParametro("Consulta", sql);
-
 		try {
 			List<Codiguera> profesiones = jdbcTemplate.query(sql, (rs, rowNum) -> {
 				Codiguera profesion = new Codiguera();
@@ -175,15 +170,12 @@ public class ServicioMiBsePersist {
 				profesion.setDescripcion(rs.getString("DESC_PROFESION"));
 				return profesion;
 			});
-
 			if (!profesiones.isEmpty()) {
 				resultado.setItems(profesiones);
 			}
-
 		} catch (Exception e) {
 			persistencia.catchException(resultado, logueo, e);
 		}
-
 		return resultado;
 	}
 
@@ -195,14 +187,11 @@ public class ServicioMiBsePersist {
 			persistenciaCallXmlResponse.setCatalogName(databaseMiBseProperties.getCatalogName(nombrePL));
 			persistenciaCallXmlResponse.setProcedureName(databaseMiBseProperties.getProcedureName(nombrePL));
 			logueo.setNombrePl(nombrePL);
-
 			Map<String, Object> out = persistenciaCallXmlResponse.execute(inParams);
-
 			int codError = (int) out.get("p_codError");
 			String descError = (String) out.get("p_descError");
 			String sqlError = (String) out.get("p_sqlError");
 			Clob clob = (Clob) out.get(nombreResultado);
-
 			persistencia.procesarResultados(resultado, logueo, codError, descError, sqlError, clob);
 		} catch (Exception e) {
 			persistencia.catchException(resultado, logueo, e);

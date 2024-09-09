@@ -1,14 +1,17 @@
 package uy.com.bse.mibse.sp.ws.mibse.service.solver;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import uy.com.bse.mibse.sp.ws.mibse.model.dto.ParamObtenerDatosCliente;
 import uy.com.bse.mibse.sp.ws.mibse.model.dto.ParamObtenerNumeroCliente;
 import uy.com.bse.mibse.sp.ws.mibse.model.dto.ResultObtenerNumeroCliente;
 import uy.com.bse.mibse.sp.ws.mibse.repository.ServicioMiBsePersist;
-import uy.com.bse.mibse.sp.ws.mibse.utilitario.logica.AbstractSolver;
-import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ResultGenerico;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ParamGenerico;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ResultGenerico;
+import uy.com.bse.mibse.sp.ws.mibse.utilitario.logica.AbstractSolver;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.parseo.ParseoMiBse;
+
 @Component
 public class ObtenerNumeroClienteSolver extends AbstractSolver {
 
@@ -23,9 +26,11 @@ public class ObtenerNumeroClienteSolver extends AbstractSolver {
     }
 
     @Override
-    public ResultGenerico procesoLogica(ParamGenerico param){
-        ResultGenerico res= servicioMiBsePersist.obtenerNumeroCliente((ParamObtenerNumeroCliente) param);
-        //ResultGenerico res= checkNull(servicioMiBsePersist.obtenerNumeroCliente((ParamObtenerNumeroCliente) param));
+    public ResultGenerico procesoLogica(ParamGenerico param) {
+        ResultGenerico res = servicioMiBsePersist.obtenerNumeroCliente((ParamObtenerNumeroCliente) param);
+        // ResultGenerico res=
+        // checkNull(servicioMiBsePersist.obtenerNumeroCliente((ParamObtenerNumeroCliente)
+        // param));
         return res;
     }
 
@@ -34,4 +39,8 @@ public class ObtenerNumeroClienteSolver extends AbstractSolver {
         return new ResultObtenerNumeroCliente();
     }
 
+    @Override
+    public ParamGenerico getMyParamInstance() {
+        return new ParamObtenerNumeroCliente();
+    }
 }

@@ -2,16 +2,17 @@ package uy.com.bse.mibse.sp.ws.mibse.utilitario.logica;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ParamGenerico;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ResultGenerico;
-import uy.com.bse.mibse.sp.ws.mibse.utilitario.exception.*;
-
+import uy.com.bse.mibse.sp.ws.mibse.utilitario.exception.ErrorResolver;
+import uy.com.bse.mibse.sp.ws.mibse.utilitario.exception.Values;
 
 public abstract class AbstractSolver implements LogicaSolver {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractSolver.class);
 
-    @Override
+	@Override
 	public ResultGenerico solve(ParamGenerico param) {
 		ResultGenerico result = chequeoPreCondiciones(param);
 		if (result != null) {
@@ -21,20 +22,27 @@ public abstract class AbstractSolver implements LogicaSolver {
 		return result;
 	}
 
+	@Override
+	public String getMyParamFullName() {
+		return getMyParamInstance().getClass().getName();
+	}
+
 	protected ResultGenerico chequeoPreCondiciones(ParamGenerico param) {
 		ResultGenerico salida = null;
 		salida = getMyResultInstance();
 		return salida;
 	}
 
+	protected abstract ParamGenerico getMyParamInstance();
+
 	protected abstract ResultGenerico getMyResultInstance();
 
 	protected abstract ResultGenerico procesoLogica(ParamGenerico param);
 
 	protected void procesoPostCondiciones(ParamGenerico param, ResultGenerico result) {
-		LOG.debug("procesoPostCondiciones fin, result: "+result);
+		LOG.debug("procesoPostCondiciones fin, result: " + result);
 	}
-	
+
 	protected ResultGenerico checkNull(ResultGenerico resultado) {
 		if (resultado == null) {
 			LOG.debug("procesoLogica - retornando objeto vacio ");
@@ -44,9 +52,4 @@ public abstract class AbstractSolver implements LogicaSolver {
 		}
 		return resultado;
 	}
-
-
-
-
-
 }

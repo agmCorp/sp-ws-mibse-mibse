@@ -1,17 +1,16 @@
 package uy.com.bse.mibse.sp.ws.mibse.config;
 
-import jakarta.xml.ws.Endpoint;
+import javax.xml.namespace.QName;
+
 import org.apache.cxf.Bus;
 import org.apache.cxf.binding.soap.SoapBindingConfiguration;
 import org.apache.cxf.jaxws.EndpointImpl;
-import org.apache.cxf.message.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import jakarta.xml.ws.Endpoint;
 import uy.com.bse.mibse.sp.ws.mibse.ws.IWsServiciosMiBse;
-
-import javax.xml.namespace.QName;
-
 
 @Configuration
 public class WebServiceConfig {

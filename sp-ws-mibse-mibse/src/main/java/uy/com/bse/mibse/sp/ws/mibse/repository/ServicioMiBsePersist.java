@@ -15,6 +15,8 @@ import org.springframework.jdbc.core.SqlOutParameter;
 import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.slf4j.Logger;
+import uy.com.bse.mibse.sp.ws.mibse.utilitario.seguridad.ParamValidar;
+
 import java.sql.Types;
 import java.sql.Clob;
 import java.util.HashMap;
@@ -196,6 +198,51 @@ public class ServicioMiBsePersist {
 		} catch (Exception e) {
 			persistencia.catchException(resultado, logueo, e);
 		}
+		return resultado;
+	}
+
+	public ResultCondicion verificaDuplicidadUsuario(ParamGenerico param) {
+		ResultCondicion resultado = new ResultCondicion();
+		logueo.resetParametros();
+		logueo.setEncabezado(Values.ENCABEZADOPERSIST);
+		logueo.setClase(ServicioMiBsePersist.class);
+		logueo.setMetodo("verificaDuplicidadUsuario");
+		logueo.setParametro("Usuario", param.getUsuario());
+
+		String nombrePL = databaseMiBseProperties.getVerificarUsuarioDuplicado();
+		logueo.setNombrePl(nombrePL);
+		persistenciaCallNumericResponse.setCatalogName(databaseMiBseProperties.getCatalogName(nombrePL));
+		persistenciaCallNumericResponse.setProcedureName(databaseMiBseProperties.getProcedureName(nombrePL));
+
+		Map<String, Object> inParams = new HashMap<>();
+		inParams.put("p_usuario", param.getUsuario());
+
+		try {
+			// TODO: usar algo tipo ejecutarProcedimiento
+
+			Map<String, Object> out = persistenciaCallNumericResponse.execute(inParams);
+
+			int codError = (int) out.get("p_codError");
+			String descError = (String) out.get("p_descError");
+			String sqlError = (String) out.get("p_sqlError");
+
+			if (codError == 0) {
+				String res = (String) out.get("return");
+				resultado.setResultadoString(res);
+			} else {
+				ServiciosError error = new ServiciosError();
+				error.setCodigo(codError);
+				error.setDescripcion(descError);
+				resultado.setResultadoString((String) out.get("return"));
+				resultado.setError(error);
+				resultado.setHayError(Boolean.TRUE);
+			}
+
+			persistencia.logResultados(logueo, codError, descError, sqlError);
+		} catch (Exception e) {
+			persistencia.catchException(resultado, logueo, e);
+		}
+
 		return resultado;
 	}
 }

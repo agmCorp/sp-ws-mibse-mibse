@@ -18,6 +18,9 @@ public class DatabaseMiBsePropertiesConfig {
     private String procActualizarDatosComunicaionesPersona;
     private String funObtenerMail;
     private String funObtenerDatosValidados;
+
+    private String verificarUsuarioDuplicado;
+
     private String funVerificarUsuarioDuplicado;
     private String procEnviarMailWS;
     private String procLogActividadMibseWsExt;
@@ -58,6 +61,14 @@ public class DatabaseMiBsePropertiesConfig {
 
     public void setFunObtenerNumeroCliente(String funObtenerNumeroCliente) {
         this.funObtenerNumeroCliente = funObtenerNumeroCliente;
+    }
+
+    public String getVerificarUsuarioDuplicado() {
+        return verificarUsuarioDuplicado;
+    }
+
+    public void setVerificarUsuarioDuplicado(String verificarUsuarioDuplicado) {
+        this.verificarUsuarioDuplicado = verificarUsuarioDuplicado;
     }
 
     public String getFunValidarCodigoAdhesion() {

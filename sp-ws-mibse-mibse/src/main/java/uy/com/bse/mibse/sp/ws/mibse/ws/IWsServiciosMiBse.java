@@ -29,4 +29,8 @@ public interface IWsServiciosMiBse {
 
     @WebMethod
     ResultCodiguera listaProfesiones(@WebParam(name = "param") ParamListaProfesiones param);
+
+    @WebMethod
+    ResultExisteCliente existeCliente(@WebParam(name = "param")ParamExisteCliente param);
+
 }

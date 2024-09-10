@@ -5,15 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import uy.com.bse.mibse.sp.ws.mibse.model.dto.ParamListaProfesiones;
-import uy.com.bse.mibse.sp.ws.mibse.model.dto.ParamObtenerComunicacionesCliente;
-import uy.com.bse.mibse.sp.ws.mibse.model.dto.ParamObtenerDatosCliente;
-import uy.com.bse.mibse.sp.ws.mibse.model.dto.ParamObtenerNumeroCliente;
-import uy.com.bse.mibse.sp.ws.mibse.model.dto.ParamObtenerPolizasCliente;
-import uy.com.bse.mibse.sp.ws.mibse.model.dto.ResultObtenerComunicacionesCliente;
-import uy.com.bse.mibse.sp.ws.mibse.model.dto.ResultObtenerDatosCliente;
-import uy.com.bse.mibse.sp.ws.mibse.model.dto.ResultObtenerNumeroCliente;
-import uy.com.bse.mibse.sp.ws.mibse.model.dto.ResultObtenerPolizasCliente;
+import uy.com.bse.mibse.sp.ws.mibse.model.dto.*;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ResultCodiguera;
 import uy.com.bse.mibse.sp.ws.mibse.utilitario.dato.ResultGenerico;
 
@@ -58,5 +50,12 @@ public class MiBSEService {
 		ResultGenerico result = logicaMiBSE.solve(param);
 		log.debug("listaProfesiones end");
 		return (ResultCodiguera) result;
+	}
+
+	public ResultExisteCliente existeCliente(ParamExisteCliente param) {
+		log.debug("existeCliente start: " + param);
+		ResultGenerico result = logicaMiBSE.solve(param);
+		log.debug("existeCliente end");
+		return (ResultExisteCliente) result;
 	}
 }

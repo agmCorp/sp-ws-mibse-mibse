@@ -15,6 +15,21 @@ spec:
           value: /etc/pki/ca-trust/source/anchors/ca-bundle.crt
         - name: "HOME"
           value: /home/jenkins/agent
+    - name: sonar-scanner-cli
+      image: sonarsource/sonar-scanner-cli:10
+      command:
+        - cat
+      tty: true
+      volumeMounts:
+        - mountPath: /etc/pki/ca-trust/source/anchors
+          name: jenkins-trusted-ca-bundle
+      env:
+        - name: "GIT_SSL_CAINFO"
+          value: /etc/pki/ca-trust/source/anchors/ca-bundle.crt
+        - name: "HOME"
+          value: /home/jenkins/agent
+        - name: "SONAR_USER_HOME"
+          value: /home/jenkins/agent
     - name: "jnlp"
       image: "jenkins/inbound-agent:4.11-1-jdk11"
       volumeMounts:

@@ -91,5 +91,18 @@ pipeline {
                 updateGitlabCommitStatus name: STAGE_NAME, state: 'success'
             }
         }
+        stage("Sonar Scann") {
+            steps {
+                updateGitlabCommitStatus name: STAGE_NAME, state: 'running'
+                container('sonar-scanner-cli') {
+                    script {
+                        sh '''
+                            ./devops/sonar-scan.sh > sonar-output.log 2>&1
+                        '''
+                    }
+                }
+                updateGitlabCommitStatus name: STAGE_NAME, state: 'success'
+            }
+        }
     }
 }
